@@ -86,7 +86,7 @@
     .enter-link::after { content: " ↓"; color: #9a9a96; }
 
     .trail-layer { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
-    .trail-frame { position: absolute; width: clamp(130px, 16vw, 230px); opacity: .74; pointer-events: none; will-change: transform, opacity; animation: expose .18s steps(2, end) both; }
+    .trail-frame { position: absolute; width: clamp(130px, 16vw, 230px); opacity: .74; pointer-events: none; animation: expose .18s steps(2, end) both; }
     .trail-frame img { width: 100%; max-height: 310px; object-fit: cover; filter: grayscale(1) contrast(1.65) brightness(.86); box-shadow: 0 0 0 1px rgba(255,255,255,.2); }
     .trail-frame:nth-child(3n) img { filter: grayscale(1) contrast(2) brightness(1.05); }
     .trail-frame:nth-child(5n) img { filter: grayscale(1) contrast(1.4) invert(1); }
@@ -247,13 +247,13 @@
       </div>
       <div class="archive-meta"><span id="projectCount">04 Projects</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开项目 jiahao man">
-          <div class="project-media"><img src="blob:null/a02e4fb0-e338-459b-aa5c-dead0c69b182" alt="jiahao man 封面"><span class="project-index">01</span></div>
+          <div class="project-media"><img src="blob:null/065e8332-e8a8-4ff8-87bb-835df28a0a68" alt="jiahao man 封面"><span class="project-index">01</span></div>
           <div class="project-info"><h3 class="project-title">jiahao man</h3><span class="project-meta">2026<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开项目 Tsingtao night">
-          <div class="project-media"><img src="blob:null/865533af-29a7-4c33-905c-5cde9464b87a" alt="Tsingtao night 封面"><span class="project-index">02</span></div>
+          <div class="project-media"><img src="blob:null/12efae12-be4e-4690-a1c5-2264a9a02861" alt="Tsingtao night 封面"><span class="project-index">02</span></div>
           <div class="project-info"><h3 class="project-title">Tsingtao night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开项目 warm sea">
-          <div class="project-media"><img src="blob:null/3b297a60-ff2b-40cf-999c-a9f4817b0473" alt="warm sea 封面"><span class="project-index">03</span></div>
+          <div class="project-media"><img src="blob:null/59313762-d345-4805-b712-e2fb055b7219" alt="warm sea 封面"><span class="project-index">03</span></div>
           <div class="project-info"><h3 class="project-title">warm sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开项目 Last sea">
-          <div class="project-media"><img src="blob:null/a6b8b700-1406-4f04-a017-57eb87923867" alt="Last sea 封面"><span class="project-index">04</span></div>
+          <div class="project-media"><img src="blob:null/600b6aea-9abf-4350-9be7-fabc9bf83d7b" alt="Last sea 封面"><span class="project-index">04</span></div>
           <div class="project-info"><h3 class="project-title">Last sea</h3><span class="project-meta">2024<br>sea</span></div></button></div>
     </section>
 
@@ -302,7 +302,7 @@
 
           <form id="projectForm" hidden="">
             <h3 class="panel-title" id="projectFormTitle">新建项目</h3>
-            <input id="editingId" type="hidden" value="">
+            <input id="editingId" type="hidden">
             <div class="field"><label for="projectName">项目名称 *</label><input id="projectName" required="" maxlength="100"></div>
             <div class="field"><label for="projectYear">年份</label><input id="projectYear" maxlength="20" placeholder="2026"></div>
             <div class="field"><label for="projectCategory">类别</label><input id="projectCategory" maxlength="60" placeholder="Photography / Book"></div>
@@ -315,7 +315,7 @@
         </div>
 
         <div class="panel"><h3 class="panel-title">项目顺序</h3><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/717e65e1-746d-4332-8c4d-7003ecffc3f9" alt="">
+          <img class="manager-thumb" src="blob:null/4ac32367-00a0-44e9-b95b-4833f8bbf036" alt="">
           <div><h4 class="manager-name">jiahao man</h4><span class="manager-sub">2026 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -323,7 +323,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/87dbc6e8-e7f7-4c3e-8c53-7d0e8cdb5d1c" alt="">
+          <img class="manager-thumb" src="blob:null/c463be15-8cf8-4517-af74-04670fc5e5ee" alt="">
           <div><h4 class="manager-name">Tsingtao night</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -331,7 +331,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/42d19dee-bc43-44aa-9247-374286d0dd2c" alt="">
+          <img class="manager-thumb" src="blob:null/35a87b30-9e42-4c9c-b993-8f5d61a25713" alt="">
           <div><h4 class="manager-name">warm sea</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -339,7 +339,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/9fd48493-c956-403c-adea-8234d55f750a" alt="">
+          <img class="manager-thumb" src="blob:null/edc90f49-cef5-4483-89ad-27c8062378d7" alt="">
           <div><h4 class="manager-name">Last sea</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -351,7 +351,7 @@
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status">网站资料已保存</div>
+  <div class="toast" id="toast" role="status"></div>
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
   <script>
@@ -572,7 +572,6 @@
       frame.append(image);
       elements.trail.append(frame);
       trailIndex += 1;
-      while (elements.trail.children.length > 26) elements.trail.firstElementChild.remove();
     }
 
     elements.hero.addEventListener("pointermove", (event) => {
