@@ -42,18 +42,28 @@
       z-index: 900;
       height: var(--header-h);
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: 1fr auto;
       align-items: center;
       padding: 0 16px;
-      border-bottom: 1px solid currentColor;
+      border-bottom: 0;
       color: var(--white);
       mix-blend-mode: difference;
       pointer-events: none;
+      opacity: 0;
+      transform: translateY(-105%);
+      transition: opacity .45s ease, transform .65s cubic-bezier(.2,.75,.2,1);
     }
 
-    .brand, .header-center, .header-actions { pointer-events: auto; }
-    .brand { min-width: 0; font-family: Arial, Helvetica, sans-serif; font-size: 19px; font-weight: 900; text-transform: uppercase; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .header-center { font-size: 10px; text-transform: uppercase; }
+    .site-header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--white); opacity: 0; transition: opacity .25s ease .38s; pointer-events: none; }
+
+    .site-header .header-actions { pointer-events: none; }
+    body.has-scrolled .site-header {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    body.has-scrolled .site-header::after { opacity: 1; }
+    body.has-scrolled .site-header .header-actions { pointer-events: auto; }
+    .header-center { display: none; }
     .header-actions { justify-self: end; display: flex; align-items: center; gap: 16px; }
     .text-button { padding: 4px 0; border: 0; border-bottom: 1px solid transparent; color: inherit; background: none; font-size: 10px; text-transform: uppercase; cursor: pointer; }
     .text-button:hover { border-color: currentColor; }
@@ -80,9 +90,44 @@
       background: #111;
     }
 
-    .hero-copy { position: absolute; inset: var(--header-h) 0 0; z-index: 500; display: flex; flex-direction: column; justify-content: space-between; padding: 22px 18px 16px; pointer-events: none; }
+    .hero-copy { position: absolute; inset: var(--header-h) 0 0; z-index: 950; display: flex; flex-direction: column; justify-content: space-between; padding: 22px 18px 16px; pointer-events: none; }
     .hero-kicker { display: flex; justify-content: space-between; gap: 20px; font-size: 10px; text-transform: uppercase; }
-    .hero-title { margin: 0; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: clamp(64px, 12.8vw, 190px); font-weight: 900; line-height: .78; text-transform: uppercase; letter-spacing: 0; white-space: nowrap; overflow: hidden; mix-blend-mode: difference; }
+    .hero-title {
+      margin: 0;
+      max-width: 100%;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 1px rgba(241,240,235,.78);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(64px, 12.8vw, 190px);
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      white-space: nowrap;
+      overflow: visible;
+      padding-bottom: .16em;
+      paint-order: stroke fill;
+      opacity: 1;
+      text-shadow: none;
+      background: transparent;
+      transform-origin: left top;
+      position: fixed;
+      left: 18px;
+      top: 50%;
+      width: calc(100vw - 36px);
+      transform: translateY(-50%);
+      min-height: 1.1em;
+      transition: left .42s cubic-bezier(.2,.75,.2,1), top .42s cubic-bezier(.2,.75,.2,1), transform .42s cubic-bezier(.2,.75,.2,1), font-size .42s cubic-bezier(.2,.75,.2,1), line-height .42s cubic-bezier(.2,.75,.2,1), padding-bottom .42s ease;
+    }
+    body.has-scrolled .hero-title {
+      left: 16px;
+      top: 8px;
+      transform: none;
+      font-size: clamp(18px, 1.9vw, 26px);
+      line-height: 1.1;
+      padding-bottom: 4px;
+    }
     .hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; }
     .hero-intro { width: min(460px, 70vw); margin: 0; font-size: 12px; line-height: 1.45; text-transform: uppercase; }
     .enter-link { pointer-events: auto; color: var(--white); font-family: Arial, Helvetica, sans-serif; font-size: 28px; font-weight: 800; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
@@ -102,7 +147,7 @@
     .archive-meta { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 10px; text-transform: uppercase; }
 
     .project-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 130px 18px; padding-top: 80px; }
-    .project-card { grid-column: span 5; min-width: 0; border: 0; padding: 0; color: inherit; background: none; text-align: left; cursor: pointer; }
+    .project-card { position: relative; grid-column: span 5; min-width: 0; border: 0; padding: 0; color: inherit; background: none; text-align: left; cursor: pointer; }
     .project-card:nth-child(even) { grid-column: 8 / span 5; margin-top: 80px; }
     .project-card:nth-child(4n + 3) { grid-column: 2 / span 5; }
     .project-media { position: relative; overflow: hidden; min-height: 180px; background: #aaa9a5; }
@@ -110,18 +155,61 @@
     .project-card:nth-child(3n) .project-media img { aspect-ratio: 4 / 5; }
     .project-card:hover .project-media img, .project-card:focus-visible .project-media img { filter: grayscale(1) contrast(2.2) invert(1); transform: scale(1.015); }
     .project-index { position: absolute; right: 7px; top: 6px; padding: 2px 4px; color: var(--white); background: var(--black); font-size: 10px; }
-    .project-info { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; padding-top: 8px; border-top: 1px solid var(--ink); }
-    .project-title { margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: clamp(24px, 3.3vw, 54px); line-height: .88; text-transform: uppercase; }
-    .project-meta { font-size: 9px; line-height: 1.35; text-align: right; text-transform: uppercase; white-space: nowrap; }
+    .project-hover-title { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding: 18px; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+    .project-hover-title span { color: transparent; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1.45px rgba(248,247,242,.78); paint-order: stroke fill; opacity: .9; font-family: Arial, Helvetica, sans-serif; font-size: clamp(28px, 4vw, 66px); font-weight: 900; line-height: .9; text-align: center; text-shadow: 0 0 1px rgba(255,255,255,.58), 0 0 5px rgba(0,0,0,.62), 0 0 12px rgba(0,0,0,.3); text-transform: uppercase; }
+    .project-card:hover .project-hover-title, .project-card:focus-visible .project-hover-title { opacity: 1; }
+    .project-info { display: none; }
+    .project-title, .project-meta { display: none; }
 
     .empty-state { grid-column: 1 / -1; padding: 100px 20px; border: 1px dashed var(--ink); text-align: center; }
     .empty-state h3 { margin: 0 0 12px; font-family: Arial, Helvetica, sans-serif; font-size: 38px; text-transform: uppercase; }
 
-    .about { display: grid; grid-template-columns: 1.3fr .7fr; gap: 60px; min-height: 70vh; padding: 100px 16px; color: var(--white); background: var(--black); }
+    .about { display: none; grid-template-columns: 1.3fr .7fr; gap: 60px; min-height: 70vh; padding: 100px 16px; color: var(--white); background: var(--black); }
+    .about.is-visible { display: grid; }
     .about-statement { margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: clamp(42px, 6vw, 94px); font-weight: 800; line-height: .94; text-transform: uppercase; }
     .about-side { display: flex; flex-direction: column; justify-content: space-between; gap: 50px; }
     .about-copy { margin: 0; font-size: 13px; line-height: 1.65; white-space: pre-line; }
     .about-contact { font-size: 11px; text-transform: uppercase; }
+    .about-view, .contact-view { position: fixed; inset: 0; z-index: 1250; display: none; overflow: auto; color: var(--white); background: var(--black); }
+    .about-view.is-open, .contact-view.is-open { display: block; }
+    .about-view-inner { display: grid; grid-template-columns: 1.3fr .7fr; gap: 60px; min-height: calc(100% - 52px); padding: 100px 16px 120px; }
+    .about-view .about-statement { align-self: start; }
+    .about-view .about-side { align-self: stretch; }
+    .contact-view-inner { display: flex; min-height: calc(100% - 52px); flex-direction: column; justify-content: space-between; gap: 70px; padding: clamp(70px, 10vw, 150px) 16px 40px; }
+    .contact-view-title { max-width: 1100px; margin: 0; font: 900 clamp(58px, 12vw, 180px)/.8 Arial, Helvetica, sans-serif; letter-spacing: -.055em; text-transform: uppercase; overflow-wrap: anywhere; }
+    .contact-view-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; border-top: 1px solid var(--white); padding-top: 16px; }
+    .contact-view-copy { max-width: 660px; margin: 0; font-size: 13px; line-height: 1.7; white-space: pre-line; }
+    .contact-view-email { justify-self: end; font: 800 clamp(18px, 3vw, 42px)/1 Arial, Helvetica, sans-serif; text-decoration: none; overflow-wrap: anywhere; }
+
+    .menu-panel, .essays-view, .essay-reader { position: fixed; inset: 0; display: none; overflow: auto; background: var(--paper); color: var(--ink); }
+    .menu-panel, .essays-view { z-index: 1250; }
+    .essay-reader { z-index: 1350; }
+    .menu-panel.is-open, .essays-view.is-open, .essay-reader.is-open, .about-view.is-open, .contact-view.is-open { display: block; }
+    /* Menu and Close use the same bold display style as the site's other
+       navigation labels, with a larger size for easier reading and tapping. */
+    .header-actions #openMenu, .menu-close { font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 800; letter-spacing: .02em; line-height: 1; text-transform: uppercase; }
+    .menu-close { position: absolute; top: 14px; right: 16px; z-index: 2; border: 0; padding: 4px 0; color: var(--ink); background: transparent; cursor: pointer; }
+    .menu-nav { display: grid; place-items: center; align-content: center; gap: clamp(20px, 4vh, 46px); min-height: 100%; padding: 70px 20px; }
+    .menu-nav a, .menu-nav button { border: 0; padding: 0; color: var(--ink); background: none; font: 900 clamp(42px, 7vw, 104px)/.86 Arial, Helvetica, sans-serif; letter-spacing: -.04em; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+    .menu-nav a:hover, .menu-nav a:focus-visible, .menu-nav button:hover, .menu-nav button:focus-visible { color: transparent; -webkit-text-stroke: 1px var(--ink); }
+    .menu-panel :focus-visible, .essays-view :focus-visible, .essay-reader :focus-visible { outline-color: var(--ink); }
+    .about-view :focus-visible, .contact-view :focus-visible { outline-color: var(--white); }
+    .menu-credit { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); color: var(--grey); font-size: 10px; white-space: nowrap; }
+
+    .essays-intro { max-width: 760px; padding: 32px 12px 18px; color: var(--grey); font-size: 12px; line-height: 1.6; white-space: pre-line; }
+    .essay-list { padding: 18px 12px 100px; }
+    .essay-entry { display: grid; grid-template-columns: minmax(220px, 28vw) minmax(0, 1fr); gap: 28px; width: 100%; border: 0; border-top: 1px solid var(--line); padding: 22px 0; color: var(--ink); background: transparent; text-align: left; cursor: pointer; }
+    .essay-entry:last-child { border-bottom: 1px solid var(--line); }
+    .essay-date { color: transparent; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgba(21,21,21,.72); font: 400 clamp(42px, 6.5vw, 92px)/.86 Arial, Helvetica, sans-serif; letter-spacing: -.045em; white-space: nowrap; }
+    .essay-entry:hover .essay-date, .essay-entry:focus-visible .essay-date { -webkit-text-stroke-color: var(--ink); }
+    .essay-entry-copy { align-self: center; max-width: 760px; }
+    .essay-entry-title { margin: 0 0 10px; font: 700 clamp(16px, 1.8vw, 26px)/1.08 Arial, Helvetica, sans-serif; text-transform: uppercase; }
+    .essay-entry-excerpt { margin: 0; color: var(--grey); font-size: 12px; line-height: 1.45; }
+    .essay-reader { z-index: 1350; }
+    .essay-reader-inner { width: min(900px, 100%); margin: 0 auto; padding: 76px 18px 110px; }
+    .essay-reader-date { margin: 0 0 16px; color: var(--ink); font-size: 11px; text-transform: uppercase; }
+    .essay-reader-title { margin: 0 0 34px; font: 900 clamp(44px, 8vw, 110px)/.84 Arial, Helvetica, sans-serif; text-transform: uppercase; }
+    .essay-reader-body { max-width: 720px; white-space: pre-line; font-size: 14px; line-height: 1.8; }
 
     .project-view, .studio { position: fixed; inset: 0; z-index: 950; display: none; overflow: auto; background: var(--paper); }
     .project-view.is-open, .studio.is-open { display: block; }
@@ -150,37 +238,79 @@
     .detail-thumb.is-active { border-color: var(--signal); }
     .detail-thumb.is-active img, .detail-thumb:hover img { filter: none; }
 
-    .image-lightbox { position: fixed; inset: 0; z-index: 1400; display: none; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; padding: 52px 18px 24px; background: rgba(8,8,8,.96); cursor: zoom-out; }
+    .image-lightbox { position: fixed; inset: 0; z-index: 1400; display: none; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; padding: 52px 18px 24px; background: rgba(8,8,8,.96); cursor: zoom-out; }
     .image-lightbox.is-open { display: flex; }
-    .image-lightbox img { display: block; align-self: center; max-width: 96vw; max-height: 90vh; width: auto; height: auto; margin-left: auto; margin-right: auto; object-fit: contain; box-shadow: 0 0 0 1px rgba(255,255,255,.28); cursor: zoom-out; }
+    .image-lightbox-stage { position: relative; display: grid; width: 100%; height: 100%; min-width: 0; min-height: 0; place-items: center; overflow: hidden; }
+    .image-lightbox-image-wrap { display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 0 clamp(48px, 6vw, 76px); overflow: hidden; touch-action: pan-y; }
+    .image-lightbox img { display: block; flex: 0 1 auto; width: auto !important; height: auto !important; max-width: min(100%, calc(100vw - 132px)); max-height: calc(100vh - 88px); max-height: calc(100dvh - 88px); margin: auto; object-fit: contain; box-shadow: 0 0 0 1px rgba(255,255,255,.28); cursor: zoom-out; user-select: none; -webkit-user-drag: none; }
     .image-lightbox-close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border: 1px solid var(--white); color: var(--white); background: transparent; font-size: 24px; line-height: 1; cursor: pointer; }
     .image-lightbox-close:hover { color: var(--black); background: var(--white); }
+    .image-lightbox-nav { position: absolute; top: 50%; z-index: 3; display: grid; place-items: center; width: 44px; height: 58px; border: 0; border-radius: 0; padding: 0; color: rgba(255,255,255,.72); background: transparent; font: 300 30px/1 Arial, Helvetica, sans-serif; transform: translateY(-50%); cursor: pointer; transition: color .16s ease, opacity .16s ease, transform .16s ease; }
+    .image-lightbox-nav.is-prev { left: 4px; }
+    .image-lightbox-nav.is-next { right: 4px; }
+    .image-lightbox-nav:hover:not(:disabled) { color: var(--white); transform: translateY(-50%) scale(1.12); }
+    .image-lightbox-nav:focus-visible { color: var(--white); outline: 1px dashed rgba(255,255,255,.62); outline-offset: -7px; }
+    .image-lightbox-nav:disabled { display: none; }
+    .image-lightbox-counter { position: absolute; left: 16px; top: 16px; z-index: 2; color: var(--white); font: 700 10px/1 Arial, Helvetica, sans-serif; letter-spacing: .12em; }
 
-    .studio-shell { width: min(1120px, 100%); margin: 0 auto; padding: 36px 16px 90px; }
+    .studio-shell { width: min(1320px, 100%); margin: 0 auto; padding: 32px 16px 90px; }
     .studio-lead { display: flex; justify-content: space-between; gap: 30px; align-items: end; padding-bottom: 24px; border-bottom: 1px solid var(--ink); }
     .studio-lead h2 { margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: clamp(45px, 8vw, 92px); line-height: .8; text-transform: uppercase; }
     .studio-lead p { width: min(400px, 45%); margin: 0; font-size: 11px; line-height: 1.5; }
-    .studio-toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 20px 0; }
+    .studio-toolbar { position: sticky; top: 52px; z-index: 24; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--ink); background: var(--paper); }
+    .studio-toolbar-note { margin-left: auto; color: var(--grey); font-size: 9px; text-transform: uppercase; }
     .action-button { min-height: 38px; padding: 8px 12px; border: 1px solid var(--ink); color: var(--ink); background: transparent; font-size: 10px; text-transform: uppercase; cursor: pointer; }
     .action-button:hover, .action-button.primary { color: var(--white); background: var(--black); }
     .action-button.danger { color: var(--signal); border-color: var(--signal); }
-    .studio-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; }
+    .studio-layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 34px; padding-top: 26px; }
+    .studio-tabs { position: sticky; top: 120px; align-self: start; display: grid; gap: 6px; }
+    .studio-tab { min-height: 44px; border: 1px solid var(--ink); padding: 10px 12px; color: var(--ink); background: transparent; font: 800 12px/1 Arial, Helvetica, sans-serif; text-align: left; text-transform: uppercase; cursor: pointer; }
+    .studio-tab:hover, .studio-tab.is-active { color: var(--white); background: var(--black); }
+    .studio-section { display: none; }
+    .studio-section.is-active { display: block; }
+    .studio-section-head { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--ink); }
+    .studio-section-head h3 { margin: 0; font: 900 clamp(34px, 5vw, 70px)/.82 Arial, Helvetica, sans-serif; letter-spacing: -.04em; text-transform: uppercase; }
+    .studio-section-head p { width: min(440px, 48%); margin: 0; color: var(--grey); font-size: 10px; line-height: 1.5; }
+    .studio-card { margin-bottom: 26px; border: 1px solid var(--ink); padding: 18px; background: rgba(255,255,255,.14); }
+    .studio-card-title { margin: 0 0 16px; font: 800 18px/1 Arial, Helvetica, sans-serif; text-transform: uppercase; }
+    .studio-two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .studio-editor-grid { display: grid; grid-template-columns: minmax(300px, .8fr) minmax(420px, 1.2fr); gap: 24px; align-items: start; }
     .panel { border-top: 1px solid var(--ink); padding-top: 12px; }
     .panel-title { margin: 0 0 18px; font-family: Arial, Helvetica, sans-serif; font-size: 22px; text-transform: uppercase; }
     .field { display: grid; gap: 5px; margin-bottom: 13px; }
     .field label, .field-label { font-size: 9px; text-transform: uppercase; }
-    .field input, .field textarea { width: 100%; border: 1px solid var(--ink); border-radius: 0; padding: 10px; color: var(--ink); background: rgba(255,255,255,.2); font-size: 12px; }
+    .field input, .field textarea, .field select { width: 100%; border: 1px solid var(--ink); border-radius: 0; padding: 10px; color: var(--ink); background: rgba(255,255,255,.2); font-size: 12px; }
     .field textarea { min-height: 105px; resize: vertical; line-height: 1.45; }
     .field input[type=file] { padding: 8px; background: var(--white); }
+    .record-drop-zone { position: relative; display: grid; place-items: center; min-height: 154px; border: 1px dashed var(--ink); padding: 22px; background: rgba(255,255,255,.18); overflow: hidden; transition: color .18s ease, background .18s ease, border-color .18s ease; }
+    .record-drop-zone:hover, .record-drop-zone:focus-within { background: rgba(255,255,255,.5); border-style: solid; }
+    .record-drop-zone.is-dragging { color: var(--white); background: var(--black); border-color: var(--black); border-style: solid; }
+    .record-drop-zone.is-busy { opacity: .72; }
+    .record-file-input { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; margin: 0; padding: 0 !important; border: 0 !important; opacity: 0; cursor: pointer; }
+    .record-drop-zone.is-busy .record-file-input { cursor: progress; }
+    .record-drop-copy { position: relative; z-index: 1; display: grid; justify-items: center; gap: 7px; max-width: 460px; text-align: center; pointer-events: none; }
+    .record-drop-copy strong { font: 900 clamp(20px, 3vw, 32px)/1 Arial, Helvetica, sans-serif; letter-spacing: -.03em; text-transform: uppercase; }
+    .record-drop-copy span { font-size: 9px; line-height: 1.55; text-transform: uppercase; }
+    .record-drop-copy .record-drop-formats { color: var(--grey); }
+    .record-drop-zone.is-dragging .record-drop-formats { color: #b8b8b8; }
     .music-settings { margin: 24px 0; padding: 12px 0 18px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+    .studio-card.music-settings { margin: 0 0 26px; padding: 18px; border: 1px solid var(--ink); }
     .music-settings h4 { margin: 0 0 14px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; text-transform: uppercase; }
     .music-current { min-height: 17px; margin: 7px 0 12px; font-size: 9px; line-height: 1.4; overflow-wrap: anywhere; text-transform: uppercase; }
+    .music-compression-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; margin: 14px 0; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .music-compression-options .check-field { margin: 0 0 13px; }
+    .music-compression-status { grid-column: 1 / -1; min-height: 18px; margin: 0; color: var(--grey); font-size: 9px; line-height: 1.5; text-transform: uppercase; }
     .check-field { display: flex; align-items: flex-start; gap: 8px; margin: 12px 0; font-size: 10px; line-height: 1.4; }
     .check-field input { flex: 0 0 auto; width: 16px; height: 16px; margin: 0; accent-color: var(--signal); }
+    .compression-card { display: grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 18px; align-items: end; }
+    .compression-card .check-field { align-self: center; margin: 0 0 13px; }
+    .compression-status { grid-column: 1 / -1; min-height: 18px; margin: -2px 0 0; color: var(--grey); font-size: 9px; line-height: 1.5; text-transform: uppercase; }
     .music-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
     .manager-list { display: grid; gap: 8px; }
     .manager-item { display: grid; grid-template-columns: 82px 1fr auto; gap: 12px; align-items: center; border: 1px solid var(--ink); padding: 8px; background: rgba(255,255,255,.18); }
+    .essay-manager-item { grid-template-columns: 1fr auto; padding: 12px; }
+    .essay-manager-excerpt { margin: 7px 0 0; color: var(--grey); font-size: 10px; line-height: 1.45; }
     .manager-thumb { width: 82px; aspect-ratio: 4/3; object-fit: cover; filter: grayscale(1) contrast(1.4); background: #aaa; }
     .manager-name { margin: 0 0 4px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; text-transform: uppercase; }
     .manager-sub { font-size: 9px; text-transform: uppercase; }
@@ -191,6 +321,7 @@
     .existing-image { position: relative; width: 76px; height: 76px; border: 1px solid var(--ink); }
     .existing-image img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
     .existing-image button { position: absolute; right: 2px; top: 2px; width: 22px; height: 22px; border: 0; color: var(--white); background: var(--signal); cursor: pointer; }
+    .existing-image-size { position: absolute; left: 2px; bottom: 2px; max-width: calc(100% - 4px); padding: 2px 4px; color: var(--white); background: rgba(0,0,0,.78); font-size: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .status { min-height: 18px; margin: 12px 0 0; color: var(--signal); font-size: 10px; text-transform: uppercase; }
 
     .toast { position: fixed; right: 14px; bottom: 14px; z-index: 1200; max-width: min(360px, calc(100vw - 28px)); padding: 12px 14px; color: var(--white); background: var(--black); border-left: 4px solid var(--signal); font-size: 11px; line-height: 1.4; transform: translateY(140%); transition: transform .25s ease; }
@@ -201,12 +332,12 @@
       :root { --header-h: 48px; }
       .site-header { grid-template-columns: 1fr auto; padding: 0 10px; }
       .header-center { display: none; }
-      .brand { font-size: 16px; }
       .header-actions { gap: 10px; }
       .hero { min-height: 600px; }
       .hero-copy { padding: 14px 10px 10px; }
       .hero-kicker span:last-child { display: none; }
-      .hero-title { font-size: clamp(46px, 14vw, 68px); line-height: .8; }
+      .hero-title { font-size: clamp(46px, 14vw, 68px); line-height: 1; }
+      body.has-scrolled .hero-title { left: 10px; top: 8px; transform: none; font-size: 16px; line-height: 1.1; padding-bottom: 3px; }
       .hero-bottom { display: block; }
       .hero-intro { width: 100%; margin-bottom: 18px; }
       .enter-link { font-size: 22px; }
@@ -217,8 +348,18 @@
       .project-grid { display: block; padding-top: 46px; }
       .project-card, .project-card:nth-child(even), .project-card:nth-child(4n + 3) { display: block; width: 100%; margin: 0 0 72px; }
       .project-title { font-size: 36px; }
-      .about { display: block; min-height: 0; padding: 76px 12px; }
+      .project-hover-title span { font-size: clamp(26px, 9vw, 42px); }
+      .essay-entry { grid-template-columns: 1fr; gap: 12px; padding: 18px 0; }
+      .essay-date { font-size: clamp(42px, 15vw, 70px); }
+      .essay-entry-copy { padding-left: 8px; }
+      .about { display: none; min-height: 0; padding: 76px 12px; }
+      .about.is-visible { display: block; }
       .about-side { margin-top: 50px; }
+      .about-view-inner { display: block; min-height: 0; padding: 76px 12px 90px; }
+      .about-view .about-side { margin-top: 50px; }
+      .contact-view-inner { min-height: calc(100svh - 52px); padding: 64px 12px 24px; }
+      .contact-view-bottom { display: block; }
+      .contact-view-email { display: inline-block; margin-top: 46px; }
       .project-view-head { display: block; padding: 34px 10px 50px; }
       .detail-copy { margin-top: 42px; }
       .detail-gallery { padding: 28px 10px 90px; }
@@ -227,12 +368,33 @@
       .detail-figure img { display: block; width: 100%; height: auto; max-height: none; object-fit: contain; }
       .detail-figure figcaption { justify-content: center; padding-top: 12px; }
       .detail-nav, .detail-thumbs { display: none; }
-      .image-lightbox { padding: 52px 10px 20px; }
-      .image-lightbox img { max-width: 100%; max-height: calc(100svh - 72px); margin: 0 auto; }
+      .image-lightbox { padding: 52px 8px 16px; }
+      .image-lightbox-image-wrap { padding: 0 34px; }
+      .image-lightbox img { width: auto !important; height: auto !important; max-width: calc(100vw - 84px); max-height: calc(100vh - 76px); max-height: calc(100dvh - 76px); margin: auto; }
+      .image-lightbox-nav { width: 34px; height: 50px; color: rgba(255,255,255,.78); background: transparent; font-size: 26px; }
+      .image-lightbox-nav.is-prev { left: 0; }
+      .image-lightbox-nav.is-next { right: 0; }
+      .image-lightbox-counter { left: 10px; top: 18px; }
       .studio-shell { padding: 28px 10px 80px; }
       .studio-lead { display: block; }
       .studio-lead p { width: 100%; margin-top: 24px; }
-      .studio-grid { display: block; }
+      .studio-toolbar { top: 52px; }
+      .studio-toolbar-note { width: 100%; margin: 4px 0 0; }
+      .studio-layout { display: block; padding-top: 16px; }
+      .studio-tabs { position: sticky; top: 108px; z-index: 22; display: flex; gap: 6px; margin: 0 -10px 22px; padding: 8px 10px; overflow-x: auto; background: var(--paper); border-bottom: 1px solid var(--ink); }
+      .studio-tab { flex: 0 0 auto; min-height: 38px; white-space: nowrap; }
+      .studio-section-head { display: block; }
+      .studio-section-head p { width: 100%; margin-top: 14px; }
+      .studio-two-column, .studio-editor-grid { display: block; }
+      .compression-card { display: block; }
+      .compression-card .check-field { margin-bottom: 18px; }
+      .music-compression-options { display: block; }
+      .studio-editor-grid > * { margin-bottom: 22px; }
+      .studio-card { padding: 14px; }
+      .manager-item { grid-template-columns: 64px 1fr; }
+      .manager-thumb { width: 64px; }
+      .manager-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+      .essay-manager-item { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 42px; }
       .manager-item { grid-template-columns: 62px 1fr; }
       .manager-thumb { width: 62px; }
@@ -249,18 +411,17 @@
       .hero { cursor: auto; }
       .trail-layer { display: none; }
       .project-media img { transition: none; }
+      .site-header, .site-header::after, .hero-title { transition: none; }
     }
   </style>
 </head>
-<body style="">
+<body class="has-scrolled" style="">
   <div class="grain" aria-hidden="true"></div>
   <header class="site-header">
-    <a class="brand" id="brandName" href="#top">HUMORPOPPY</a>
-    <span class="header-center">Photography / Project Archive</span>
     <div class="header-actions">
       <button class="music-toggle is-playing" id="musicToggle" type="button" aria-label="暂停背景音乐" title="暂停背景音乐"><span id="musicToggleIcon">Ⅱ</span></button>
-      <button class="text-button" id="openStudio" type="button" hidden="">管理作品</button>
-      <a class="text-button" href="#archive">项目</a>
+      <button class="text-button" id="openStudio" type="button" hidden="">管理网站</button>
+      <button class="text-button" id="openMenu" type="button">Menu</button>
     </div>
   </header>
 
@@ -268,30 +429,32 @@
     <section class="hero" id="hero" aria-label="移动鼠标或触摸浏览作品">
       <div class="trail-layer" id="trailLayer" aria-hidden="true"></div>
       <div class="hero-copy">
-        <div class="hero-kicker"><span id="heroDescriptor">a humor poppy</span><span>Move to expose / Scroll to enter</span></div>
+        <div class="hero-kicker"><span id="heroDescriptor">a humor poppy</span></div>
         <h1 class="hero-title" id="heroName">HUMORPOPPY</h1>
         <div class="hero-bottom">
           <p class="hero-intro" id="heroIntro"></p>
-          <a class="enter-link" href="#archive">查看作品</a>
+          <a class="enter-link" href="#archive">記録</a>
         </div>
       </div>
     </section>
 
     <section class="archive" id="archive">
       <div class="section-header">
-        <h2>Projects</h2>
+        <h2>Record</h2>
         <p class="section-intro" id="archiveIntro"></p>
       </div>
-      <div class="archive-meta"><span id="projectCount">04 Projects</span><span id="archiveYear">Archive / 2026</span></div>
-      <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开项目 jiahao man">
-          <div class="project-media"><img src="blob:null/c3a2ac23-6ffd-4646-a5e8-13dc8ca7c8c6" alt="jiahao man 封面"><span class="project-index">01</span></div>
-          <div class="project-info"><h3 class="project-title">jiahao man</h3><span class="project-meta">2026<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开项目 Tsingtao night">
-          <div class="project-media"><img src="blob:null/f1c54b9c-e91d-4563-aefb-cc5002c5f0bc" alt="Tsingtao night 封面"><span class="project-index">02</span></div>
-          <div class="project-info"><h3 class="project-title">Tsingtao night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开项目 warm sea">
-          <div class="project-media"><img src="blob:null/30d16eca-46f0-456c-85b9-02eb04bff0d9" alt="warm sea 封面"><span class="project-index">03</span></div>
-          <div class="project-info"><h3 class="project-title">warm sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开项目 Last sea">
-          <div class="project-media"><img src="blob:null/85e2dd32-a8c8-41d5-91b1-7ea7e3dd3bdc" alt="Last sea 封面"><span class="project-index">04</span></div>
-          <div class="project-info"><h3 class="project-title">Last sea</h3><span class="project-meta">2024<br>sea</span></div></button></div>
+      <div class="archive-meta"><span id="projectCount">05 Record</span><span id="archiveYear">Archive / 2026</span></div>
+      <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
+          <div class="project-media"><img src="blob:null/5bccb70c-03b7-4ed1-a277-05ad41559dab" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record Tsingtao night">
+          <div class="project-media"><img src="blob:null/d597b96a-6900-445b-b248-1644ea767fff" alt="Tsingtao night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>Tsingtao night</span></div></div>
+          <div class="project-info"><h3 class="project-title">Tsingtao night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record warm sea">
+          <div class="project-media"><img src="blob:null/027d0c07-cfa1-4f08-bdc9-253d3ecacdf2" alt="warm sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>warm sea</span></div></div>
+          <div class="project-info"><h3 class="project-title">warm sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record Last ice">
+          <div class="project-media"><img src="blob:null/8c5a7ab1-8125-46c1-baec-eb43ed8957de" alt="Last ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>Last ice</span></div></div>
+          <div class="project-info"><h3 class="project-title">Last ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
+          <div class="project-media"><img src="blob:null/e47800a2-7248-4daf-a3ac-e98f3e50d36b" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
     <section class="about" id="about">
@@ -304,109 +467,224 @@
   </main>
 
   <section class="project-view" id="projectView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-    <div class="overlay-bar"><h2 class="overlay-title" id="detailBarTitle">Project</h2><button class="icon-button" id="closeProject" type="button" aria-label="关闭项目">×</button></div>
+    <div class="overlay-bar"><h2 class="overlay-title" id="detailBarTitle">warm sea</h2><button class="icon-button" id="closeProject" type="button" aria-label="关闭 Record">×</button></div>
     <div class="project-view-head">
-      <h2 class="detail-heading" id="detailTitle">Project</h2>
-      <div class="detail-copy"><div class="detail-meta" id="detailMeta"></div><p class="detail-description" id="detailDescription"></p></div>
+      <h2 class="detail-heading" id="detailTitle">warm sea</h2>
+      <div class="detail-copy"><div class="detail-meta" id="detailMeta">2024 / Fragments</div><p class="detail-description" id="detailDescription">人与海鸥</p></div>
     </div>
     <div class="detail-gallery" id="detailGallery">
       <div class="detail-stage" id="detailStage">
         <button class="detail-nav" id="prevImage" type="button" aria-label="上一张图片">←</button>
         <figure class="detail-figure">
-          <div class="detail-image-shell" id="detailImageShell"><img id="detailImage" src="" alt=""></div>
-          <figcaption><span id="detailCounter"></span></figcaption>
+          <div class="detail-image-shell" id="detailImageShell"><img id="detailImage" src="blob:null/4241ec12-9cbb-4391-a9db-8ef91e75bbaf" alt="warm sea 3"></div>
+          <figcaption><span id="detailCounter">03 / 03</span></figcaption>
         </figure>
         <button class="detail-nav" id="nextImage" type="button" aria-label="下一张图片">→</button>
       </div>
-      <div class="detail-thumbs" id="detailThumbs" aria-label="项目图片缩略图"></div>
+      <div class="detail-thumbs" id="detailThumbs" aria-label="Record 图片缩略图"><button class="detail-thumb" type="button" aria-label="查看第 1 张图片" aria-current="false"><img src="blob:null/0879d14b-c858-491a-9738-f4aec1662dda" alt=""></button><button class="detail-thumb" type="button" aria-label="查看第 2 张图片" aria-current="false"><img src="blob:null/7f8f7fd2-a423-448d-891a-bc7873f576fe" alt=""></button><button class="detail-thumb is-active" type="button" aria-label="查看第 3 张图片" aria-current="true"><img src="blob:null/4241ec12-9cbb-4391-a9db-8ef91e75bbaf" alt=""></button></div>
     </div>
   </section>
 
   <section class="image-lightbox" id="imageLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="放大查看图片">
     <button class="image-lightbox-close" id="closeLightbox" type="button" aria-label="关闭放大图片">×</button>
-    <img id="lightboxImage" src="" alt="">
+    <span class="image-lightbox-counter" id="lightboxCounter" aria-live="polite">03 / 03</span>
+    <div class="image-lightbox-stage" id="lightboxStage">
+      <button class="image-lightbox-nav is-prev" id="lightboxPrev" type="button" aria-label="上一张放大图片">←</button>
+      <div class="image-lightbox-image-wrap" id="lightboxImageWrap"><img id="lightboxImage" alt="warm sea 3"></div>
+      <button class="image-lightbox-nav is-next" id="lightboxNext" type="button" aria-label="下一张放大图片">→</button>
+    </div>
   </section>
 
   <section class="studio" id="studio" aria-hidden="false" role="dialog" aria-modal="true" aria-labelledby="studioTitle" hidden="">
     <div class="overlay-bar"><h2 class="overlay-title">Local Portfolio Studio</h2><button class="icon-button" id="closeStudio" type="button" aria-label="关闭管理界面">×</button></div>
     <div class="studio-shell">
-      <div class="studio-lead"><h2 id="studioTitle">管理作品</h2><p>图片和文字保存在这个浏览器中，不会上传到服务器。清除浏览器数据前，请先导出备份。</p></div>
+      <div class="studio-lead"><div><span class="field-label">Local Portfolio Editor</span><h2 id="studioTitle">网站管理</h2></div><p>所有文字、Record、文章和音乐都保存在当前浏览器。修改完成后生成新的 GitHub 发布包，访客只能查看，不能进入管理界面。</p></div>
       <div class="studio-toolbar">
-        <button class="action-button primary" id="newProject" type="button">＋ 新建项目</button>
-        <button class="action-button" id="saveProfile" type="button">保存网站资料</button>
-        <button class="action-button primary" id="buildPublish" type="button">生成 GitHub 发布包（ZIP）</button>
-        <button class="action-button" id="exportData" type="button">导出备份</button>
-        <button class="action-button" id="importData" type="button">导入备份</button>
-        <button class="action-button danger" id="removeDemo" type="button">移除示例</button>
-        <input id="importFile" type="file" accept="application/json" hidden="">
+        <button class="action-button primary" id="saveProfile" type="button">保存全部页面文字</button>
+        <button class="action-button primary" id="buildPublish" type="button">生成 GitHub 发布包</button>
+        <span class="studio-toolbar-note">Record 与 Essays 请在各自编辑表单中单独保存</span>
       </div>
+      <div class="studio-layout">
+        <nav class="studio-tabs" aria-label="管理页面分类">
+          <button class="studio-tab is-active" type="button" data-studio-tab="overview">基本资料</button>
+          <button class="studio-tab" type="button" data-studio-tab="record">Record</button>
+          <button class="studio-tab" type="button" data-studio-tab="essays">Essays</button>
+          <button class="studio-tab" type="button" data-studio-tab="pages">页面设置</button>
+          <button class="studio-tab" type="button" data-studio-tab="publish">音乐与发布</button>
+        </nav>
 
-      <div class="studio-grid">
-        <div class="panel">
-          <h3 class="panel-title">网站资料</h3>
-          <div class="field"><label for="profileName">姓名 / 品牌</label><input id="profileName" maxlength="32"></div>
-          <div class="field"><label for="profileDescriptor">身份说明</label><input id="profileDescriptor" maxlength="80"></div>
-          <div class="field"><label for="profileIntro">首页简介</label><textarea id="profileIntro" maxlength="280"></textarea></div>
-          <div class="field"><label for="profileArchiveIntro">项目页简介</label><textarea id="profileArchiveIntro" maxlength="300"></textarea></div>
-          <div class="field"><label for="profileStatement">关于页大标题</label><textarea id="profileStatement" maxlength="220"></textarea></div>
-          <div class="field"><label for="profileAbout">个人介绍</label><textarea id="profileAbout" maxlength="1000"></textarea></div>
-          <div class="field"><label for="profileEmail">联系邮箱</label><input id="profileEmail" type="email"></div>
-          <div class="music-settings">
-            <h4>背景音乐</h4>
-            <div class="field"><label for="musicFile">上传或替换音乐</label><input id="musicFile" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac"><span class="field-label">推荐 MP3，文件尽量控制在 15 MB 以内。</span></div>
-            <p class="music-current" id="musicCurrent">Sound Horizon - 美しきもの.mp3</p>
-            <label class="check-field" for="musicAutoStart"><input id="musicAutoStart" type="checkbox" checked=""><span>访客首次点击或触摸页面后自动播放</span></label>
-            <div class="music-actions"><button class="action-button" id="previewMusic" type="button">试听 / 暂停</button><button class="action-button danger" id="removeMusic" type="button">移除音乐</button></div>
-          </div>
+        <div class="studio-content">
+          <section class="studio-section is-active" data-studio-section="overview">
+            <div class="studio-section-head"><h3>基本资料</h3><p>控制首页姓名、身份说明、首页简介与 Record 列表上方的说明文字。</p></div>
+            <div class="studio-card">
+              <div class="studio-two-column">
+                <div class="field"><label for="profileName">姓名 / 品牌</label><input id="profileName" maxlength="32"></div>
+                <div class="field"><label for="profileDescriptor">身份说明</label><input id="profileDescriptor" maxlength="80"></div>
+              </div>
+              <div class="field"><label for="profileIntro">首页简介</label><textarea id="profileIntro" maxlength="280"></textarea></div>
+              <div class="field"><label for="profileArchiveIntro">Record 页面简介</label><textarea id="profileArchiveIntro" maxlength="500"></textarea></div>
+            </div>
+          </section>
 
-          <form id="projectForm" hidden="">
-            <h3 class="panel-title" id="projectFormTitle">新建项目</h3>
-            <input id="editingId" type="hidden">
-            <div class="field"><label for="projectName">项目名称 *</label><input id="projectName" required="" maxlength="100"></div>
-            <div class="field"><label for="projectYear">年份</label><input id="projectYear" maxlength="20" placeholder="2026"></div>
-            <div class="field"><label for="projectCategory">类别</label><input id="projectCategory" maxlength="60" placeholder="Photography / Book"></div>
-            <div class="field"><label for="projectDescription">项目说明</label><textarea id="projectDescription" maxlength="5000"></textarea></div>
-            <div class="field"><label for="projectImages">添加图片 *</label><input id="projectImages" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" multiple=""><span class="field-label">可以反复选择一张或多张，新图片会继续追加，不会覆盖前面已选图片。</span></div>
-            <div class="existing-images" id="existingImages"></div>
-            <div class="form-actions"><button class="action-button primary" type="submit">保存项目</button><button class="action-button" id="cancelProject" type="button">取消</button></div>
-          </form>
-          <p class="status" id="statusText" role="status" style="color: var(--ink);">正在整理 GitHub 发布包，请不要关闭页面……</p>
-        </div>
-
-        <div class="panel"><h3 class="panel-title">项目顺序</h3><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/609df4d6-a946-45c9-bf1c-22b3a21f120c" alt="">
-          <div><h4 class="manager-name">jiahao man</h4><span class="manager-sub">2026 / 1 IMAGE</span></div>
+          <section class="studio-section" data-studio-section="record">
+            <div class="studio-section-head"><h3>Record</h3><p>创建、编辑、排序和删除摄影 Record。图片可以分多次选择，后选图片会继续追加。</p></div>
+            <div class="studio-card compression-card">
+              <label class="check-field" for="imageCompressionEnabled"><input id="imageCompressionEnabled" type="checkbox" checked=""><span><strong>上传时自动压缩</strong><br>只在你的浏览器本地处理，不上传原图。</span></label>
+              <div class="field"><label for="imageCompressionTarget">每张图片目标大小</label><select id="imageCompressionTarget"><option value="400">约 400 KB</option><option value="700">约 700 KB</option><option value="900" selected="">约 900 KB</option><option value="1200">约 1.2 MB</option></select></div>
+              <div class="field"><label for="imageCompressionMaxEdge">图片最长边</label><select id="imageCompressionMaxEdge"><option value="1600">1600 px</option><option value="2000">2000 px</option><option value="2400" selected="">2400 px</option><option value="3000">3000 px</option></select></div>
+              <p class="compression-status" id="imageCompressionStatus">自动压缩已开启：目标约 1200 KB，最长边 3000 px。</p>
+            </div>
+            <div class="studio-editor-grid">
+              <div class="studio-card">
+                <button class="action-button primary" id="newProject" type="button">＋ 新建 Record</button>
+                <form id="projectForm" hidden="">
+                  <h3 class="panel-title" id="projectFormTitle">新建 Record</h3>
+                  <input id="editingId" type="hidden">
+                  <div class="field"><label for="projectName">Record 名称 *</label><input id="projectName" required="" maxlength="100"></div>
+                  <div class="studio-two-column">
+                    <div class="field"><label for="projectYear">年份</label><input id="projectYear" maxlength="20" placeholder="2026"></div>
+                    <div class="field"><label for="projectCategory">类别</label><input id="projectCategory" maxlength="60" placeholder="Photography / Book"></div>
+                  </div>
+                  <div class="field"><label for="projectDescription">Record 说明</label><textarea id="projectDescription" maxlength="5000"></textarea></div>
+                  <div class="field">
+                    <label for="projectImages">添加图片 *</label>
+                    <div class="record-drop-zone" id="recordDropZone">
+                      <input class="record-file-input" id="projectImages" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" multiple="" aria-label="选择或拖拽 Record 图片">
+                      <div class="record-drop-copy">
+                        <strong>拖拽照片到这里</strong>
+                        <span>或点击此区域选择一张或多张图片，可分多次继续追加</span>
+                        <span class="record-drop-formats">JPEG / PNG / WebP 自动压缩 · GIF / SVG 保留原文件</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="existing-images" id="existingImages"></div>
+                  <div class="form-actions"><button class="action-button primary" type="submit">保存 Record</button><button class="action-button" id="cancelProject" type="button">取消</button></div>
+                </form>
+              </div>
+              <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
+          <img class="manager-thumb" src="blob:null/b4da5a67-b505-4aa2-921a-d6842fefcf70" alt="">
+          <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/db1b4808-fe31-4d8c-81db-ec3637d426a2" alt="">
-          <div><h4 class="manager-name">Tsingtao night</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
+          <img class="manager-thumb" src="blob:null/e88cc7bb-7d3c-4c70-bd1f-f8393d627ffa" alt="">
+          <div><h4 class="manager-name">Tsingtao night</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/7b086568-1c37-4871-a27c-8ca603cf85de" alt="">
-          <div><h4 class="manager-name">warm sea</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
+          <img class="manager-thumb" src="blob:null/7dd7aa86-a020-4998-b846-deb0465b6234" alt="">
+          <div><h4 class="manager-name">warm sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/5aa8bdb3-28aa-48b8-9285-927e62e6503f" alt="">
-          <div><h4 class="manager-name">Last sea</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
+          <img class="manager-thumb" src="blob:null/ed15cc02-181f-4433-8779-0d96799bb45e" alt="">
+          <div><h4 class="manager-name">Last ice</h4><span class="manager-sub">2024 / 4 IMAGES</span></div>
+          <div class="manager-actions">
+            <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
+            <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
+            <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
+            <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
+          </div></article><article class="manager-item">
+          <img class="manager-thumb" src="blob:null/a94252f8-bce3-4acb-b331-0d3b6702a408" alt="">
+          <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动" disabled="">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article></div></div>
+            </div>
+          </section>
+
+          <section class="studio-section" data-studio-section="essays">
+            <div class="studio-section-head"><h3>Essays</h3><p>在这里直接写文章，或导入 TXT / Markdown 文本。文章会随备份和 GitHub 发布包一起保存。</p></div>
+            <div class="studio-editor-grid">
+              <div class="studio-card">
+                <button class="action-button primary" id="newEssay" type="button">＋ 新建文章</button>
+                <form id="essayForm" hidden="">
+                  <h3 class="panel-title" id="essayFormTitle">新建文章</h3>
+                  <input id="editingEssayId" type="hidden">
+                  <div class="field"><label for="essayTitleInput">文章标题 *</label><input id="essayTitleInput" required="" maxlength="220"></div>
+                  <div class="field"><label for="essayDateInput">日期</label><input id="essayDateInput" maxlength="40" placeholder="14.08.2026"></div>
+                  <div class="field"><label for="essayExcerptInput">列表摘要</label><textarea id="essayExcerptInput" maxlength="600"></textarea></div>
+                  <div class="field"><label for="essayBodyInput">文章正文 *</label><textarea id="essayBodyInput" required="" maxlength="100000"></textarea></div>
+                  <div class="field"><label for="essayTextFile">从 TXT / Markdown 导入正文</label><input id="essayTextFile" type="file" accept=".txt,.md,text/plain,text/markdown"><span class="field-label">导入只会填入编辑框，仍需点击“保存文章”。</span></div>
+                  <div class="form-actions"><button class="action-button primary" type="submit">保存文章</button><button class="action-button" id="cancelEssay" type="button">取消</button></div>
+                </form>
+              </div>
+              <div class="studio-card"><h4 class="studio-card-title">文章列表与顺序</h4><div class="manager-list" id="essayManagerList"><article class="manager-item essay-manager-item">
+          <div><h4 class="manager-name">时间如水</h4><span class="manager-sub">14.08.2026</span><p class="essay-manager-excerpt">流水落花春去也，天上人间。</p></div>
+          <div class="manager-actions">
+            <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动文章" disabled="">↑</button>
+            <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动文章" disabled="">↓</button>
+            <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑文章">✎</button>
+            <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除文章">×</button>
+          </div></article></div></div>
+            </div>
+          </section>
+
+          <section class="studio-section" data-studio-section="pages">
+            <div class="studio-section-head"><h3>页面设置</h3><p>自定义 Essays、About、Contact 页面，以及 Menu 最下方的小字。</p></div>
+            <div class="studio-two-column">
+              <div class="studio-card">
+                <h4 class="studio-card-title">Essays 页面</h4>
+                <div class="field"><label for="profileEssaysTitle">页面标题</label><input id="profileEssaysTitle" maxlength="60"></div>
+                <div class="field"><label for="profileEssaysIntro">页面简介</label><textarea id="profileEssaysIntro" maxlength="1000"></textarea></div>
+              </div>
+              <div class="studio-card">
+                <h4 class="studio-card-title">Menu 页面</h4>
+                <div class="field"><label for="profileMenuCredit">Menu 下方小字</label><input id="profileMenuCredit" maxlength="180"></div>
+              </div>
+              <div class="studio-card">
+                <h4 class="studio-card-title">About 页面</h4>
+                <div class="field"><label for="profileStatement">About 大标题</label><textarea id="profileStatement" maxlength="400"></textarea></div>
+                <div class="field"><label for="profileAbout">About 正文</label><textarea id="profileAbout" maxlength="5000"></textarea></div>
+              </div>
+              <div class="studio-card">
+                <h4 class="studio-card-title">Contact 页面</h4>
+                <div class="field"><label for="profileContactTitle">Contact 大标题</label><textarea id="profileContactTitle" maxlength="300"></textarea></div>
+                <div class="field"><label for="profileContactBody">Contact 说明文字</label><textarea id="profileContactBody" maxlength="2000"></textarea></div>
+                <div class="field"><label for="profileEmail">联系邮箱</label><input id="profileEmail" type="email"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="studio-section" data-studio-section="publish">
+            <div class="studio-section-head"><h3>音乐与发布</h3><p>更换背景音乐、生成 GitHub 发布包，并在重要修改后导出完整备份。</p></div>
+            <div class="studio-two-column">
+              <div class="studio-card music-settings">
+                <h4 class="studio-card-title">背景音乐</h4>
+                <div class="field"><label for="musicFile">上传或替换音乐</label><input id="musicFile" type="file" accept="audio/mpeg,.mp3,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac"><span class="field-label">上传 MP3 时可自动重新编码并减小体积。建议在电脑端操作。</span></div>
+                <p class="music-current" id="musicCurrent">Sound Horizon - 美しきもの-web.mp3 / 4.50 MB</p>
+                <div class="music-compression-options">
+                  <label class="check-field" for="musicCompressionEnabled"><input id="musicCompressionEnabled" type="checkbox" checked=""><span><strong>MP3 上传后自动压缩</strong><br>已在目标大小以内的文件不会重复压缩。</span></label>
+                  <div class="field"><label for="musicCompressionTarget">目标文件大小</label><select id="musicCompressionTarget"><option value="3">约 3 MB</option><option value="5" selected="">约 5 MB</option><option value="8">约 8 MB</option></select></div>
+                  <p class="music-compression-status" id="musicCompressionStatus">MP3 自动压缩已开启：目标约 5 MB。</p>
+                  <span class="field-label">使用 lamejs / LAME（LGPL）在本地编码；lame.min.js 必须与 index.html 放在同一文件夹。</span>
+                </div>
+                <label class="check-field" for="musicAutoStart"><input id="musicAutoStart" type="checkbox" checked=""><span>访客首次点击或触摸页面后自动播放</span></label>
+                <div class="music-actions"><button class="action-button" id="previewMusic" type="button">试听 / 暂停</button><button class="action-button danger" id="removeMusic" type="button">移除音乐</button></div>
+              </div>
+              <div class="studio-card">
+                <h4 class="studio-card-title">备份与清理</h4>
+                <p class="field-label">备份包含所有 Record、图片、文章、页面文字和音乐设置。</p>
+                <div class="form-actions"><button class="action-button" id="exportData" type="button">导出完整备份</button><button class="action-button" id="importData" type="button">导入备份</button><button class="action-button danger" id="removeDemo" type="button">移除示例 Record</button></div>
+                <input id="importFile" type="file" accept="application/json" hidden="">
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
+      <p class="status" id="statusText" role="status" style="color: var(--ink);">正在整理 GitHub 发布包，请不要关闭页面……</p>
     </div>
   </section>
 
@@ -415,12 +693,12 @@
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
   <script>
-    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","email":"1976904825@qq.com"},"music":{"name":"Sound Horizon - 美しきもの.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"jiahao man","year":"2026","category":"Street","description":"通宵网吧一夜，于飞鱼街道前。","images":[{"name":"鸡.png","url":"assets/images/project-1-1.png"}]},{"id":"demo-2","order":1,"title":"Tsingtao night","year":"2024","category":"Urban","description":"两人夜晚在海边。","images":[{"name":"未知.png","url":"assets/images/project-2-1.png"}]},{"id":"demo-3","order":2,"title":"warm sea","year":"2024","category":"Fragments","description":"冬日暖阳羽绒人海鸥","images":[{"name":"warmm.png","url":"assets/images/project-3-1.png"}]},{"id":"demo-4","order":3,"title":"Last sea","year":"2024","category":"sea","description":"无意义","images":[{"name":"seaa.png","url":"assets/images/project-4-1.png"}]}]};
+    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","essaysTitle":"Essays","essaysIntro":"Notes on photography, memory, walking, and the unstable life of images.","contactTitle":"Start a conversation.","contactBody":"For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.","menuCredit":"website by humorpoppy.","imageCompressionEnabled":true,"imageCompressionTargetKb":1200,"imageCompressionMaxEdge":3000,"musicCompressionEnabled":true,"musicCompressionTargetMb":5,"email":"1976904825@qq.com"},"essays":[{"id":"eeec8415-0f0b-4cad-a84d-efe6864d5640","date":"14.08.2026","title":"时间如水","excerpt":"流水落花春去也，天上人间。","body":"帘外雨潺潺，春意阑珊。罗衾不耐五更寒，梦里不知身是客，一晌贪欢。\n独自莫凭栏，无限江山，别时容易见时难。流水落花春去也，天上人间。"}],"music":{"name":"Sound Horizon - 美しきもの-web.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"wanglaoji","year":"2025","category":"Street","description":"飞鱼一夜。","images":[{"name":"鸡.png","url":"assets/images/project-1-1.png"},{"name":"R0002159.webp","url":"assets/images/project-1-2.webp"},{"name":"R0002161.webp","url":"assets/images/project-1-3.webp"}]},{"id":"demo-2","order":1,"title":"Tsingtao night","year":"2024","category":"Urban","description":"夜晚在海边","images":[{"name":"未知.png","url":"assets/images/project-2-1.png"},{"name":"R0001865.webp","url":"assets/images/project-2-2.webp"},{"name":"R0001887.webp","url":"assets/images/project-2-3.webp"}]},{"id":"demo-3","order":2,"title":"warm sea","year":"2024","category":"Fragments","description":"人与海鸥","images":[{"name":"warmm.png","url":"assets/images/project-3-1.png"},{"name":"R0001563.webp","url":"assets/images/project-3-2.webp"},{"name":"R0001366.webp","url":"assets/images/project-3-3.webp"}]},{"id":"demo-4","order":3,"title":"Last ice","year":"2024","category":"ice","description":"冰冷冰块","images":[{"name":"seaa.png","url":"assets/images/project-4-1.png"},{"name":"R0001639.webp","url":"assets/images/project-4-2.webp"},{"name":"R0001645.webp","url":"assets/images/project-4-3.webp"},{"name":"R0001511.webp","url":"assets/images/project-4-4.webp"}]},{"id":"6fe68e03-95d4-43c7-b8c3-3b789e34fdd8","order":4,"title":"几分之几","year":"","category":"","description":"几分之几。","images":[{"name":"R0001325.webp","url":"assets/images/project-5-1.webp"}]}]};
     const PUBLIC_MODE = true;
     const DEMO_PROJECTS = [
       {
         id: "demo-1", order: 0, demo: true, title: "Night Crossing", year: "2026", category: "Street / Study",
-        description: "示例项目。上传你的作品后，可以在管理界面移除全部示例。",
+        description: "示例 Record。上传你的作品后，可以在管理界面移除全部示例。",
         images: [{ url: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1600&q=85", name: "night-crossing.jpg" }]
       },
       {
@@ -430,12 +708,12 @@
       },
       {
         id: "demo-3", order: 2, demo: true, title: "Stray Light", year: "2024", category: "Fragments",
-        description: "项目可以包含多张图片，点击卡片后会进入独立的纵向观看页面。",
+        description: "Record 可以包含多张图片，点击卡片后会进入独立的观看页面。",
         images: [{ url: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=1600&q=85", name: "stray-light.jpg" }]
       },
       {
         id: "demo-4", order: 3, demo: true, title: "Last Train", year: "2023", category: "Night / Transit",
-        description: "首页的图片轨迹会自动从当前所有项目中抽取图片。",
+        description: "首页的图片轨迹会自动从当前所有 Record 中抽取图片。",
         images: [{ url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1600&q=85", name: "last-train.jpg" }]
       }
     ];
@@ -447,17 +725,35 @@
       archiveIntro: "作品并不按照整齐的网格陈列。它们保留自己的比例、时间和观看距离。",
       statement: "Images are evidence, accidents, and unfinished memories.",
       about: "在这里写下你的创作实践、长期关注的主题，以及你希望观众如何进入这些图像。",
+      essaysTitle: "Essays",
+      essaysIntro: "Notes on photography, memory, walking, and the unstable life of images.",
+      contactTitle: "Start a conversation.",
+      contactBody: "For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.",
+      menuCredit: "Image archive / writing / correspondence",
+      imageCompressionEnabled: true,
+      imageCompressionTargetKb: 900,
+      imageCompressionMaxEdge: 2400,
+      musicCompressionEnabled: true,
+      musicCompressionTargetMb: 5,
       email: "hello@example.com"
     };
+
+    const DEFAULT_ESSAYS = [
+      { id: "essay-1", date: "01.12.2025", title: "Perception, Controlled Hallucination, And the Interpretation of Light", excerpt: "A short note on seeing, attention, and the unstable edge between image and memory.", body: "Light is never only illumination. It is an active participant in the way a scene becomes legible, then becomes memory.\n\nThese notes follow the small failures of perception that photographs leave behind: the gap between what was there and what the eye decided to keep." },
+      { id: "essay-2", date: "12.09.2019", title: "Everyone Has a Story About the Street", excerpt: "Fragments from walking, waiting, and looking again.", body: "The street is an unfinished archive. Every passage changes the meaning of the last one, and every image is a partial return." },
+      { id: "essay-3", date: "15.01.2015", title: "The Missive and the Paperclip", excerpt: "On collecting ordinary evidence and giving it another order.", body: "An archive does not need to be complete to be truthful. It only needs to keep the marks that prove someone was paying attention." }
+    ];
 
     const DB_NAME = "nocturne-portfolio";
     const DB_VERSION = 1;
     let db;
     let projects = [];
     let profile = { ...DEFAULT_PROFILE };
+    let essays = [...DEFAULT_ESSAYS];
     let music = { name: "", type: "", blob: null, url: "", autoStart: true };
     let objectUrls = [];
     let musicObjectUrl = "";
+    let mp3EncoderLoadPromise = null;
     let musicAutoStartAttempted = false;
     let trailSources = [];
     let trailIndex = 0;
@@ -471,13 +767,17 @@
     let detailSwipeStartX = null;
     let detailSwipeStartY = null;
     let detailSwipeMoved = false;
+    let lightboxSwipeStartX = null;
+    let lightboxSwipeStartY = null;
+    let lightboxSwipeMoved = false;
 
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => [...document.querySelectorAll(selector)];
     const elements = {
       hero: $("#hero"), trail: $("#trailLayer"), grid: $("#projectGrid"), manager: $("#managerList"),
       projectView: $("#projectView"), studio: $("#studio"), form: $("#projectForm"), toast: $("#toast"),
-      status: $("#statusText"), existingImages: $("#existingImages"), audio: $("#backgroundMusic")
+      status: $("#statusText"), existingImages: $("#existingImages"), audio: $("#backgroundMusic"),
+      essayManager: $("#essayManagerList"), essayForm: $("#essayForm")
     };
 
     function openDatabase() {
@@ -508,6 +808,8 @@
     const deleteProject = (id) => storeRequest("projects", "readwrite", (store) => store.delete(id));
     const getProfile = () => storeRequest("settings", "readonly", (store) => store.get("profile"));
     const putProfile = (data) => storeRequest("settings", "readwrite", (store) => store.put({ key: "profile", value: data }));
+    const getEssays = () => storeRequest("settings", "readonly", (store) => store.get("essays"));
+    const putEssays = (data) => storeRequest("settings", "readwrite", (store) => store.put({ key: "essays", value: data }));
     const getMusic = () => storeRequest("settings", "readonly", (store) => store.get("music"));
     const putMusic = (data) => storeRequest("settings", "readwrite", (store) => store.put({ key: "music", value: data }));
     const deleteMusic = () => storeRequest("settings", "readwrite", (store) => store.delete("music"));
@@ -516,6 +818,7 @@
       if (PUBLIC_MODE && PUBLISHED_DATA) {
         profile = { ...DEFAULT_PROFILE, ...PUBLISHED_DATA.profile };
         projects = PUBLISHED_DATA.projects.sort((a, b) => a.order - b.order);
+        essays = Array.isArray(PUBLISHED_DATA.essays) ? PUBLISHED_DATA.essays : [...DEFAULT_ESSAYS];
         music = { ...music, ...(PUBLISHED_DATA.music || {}) };
         $("#openStudio").hidden = true;
         elements.studio.hidden = true;
@@ -523,8 +826,10 @@
         db = await openDatabase();
         projects = (await getAllProjects()).sort((a, b) => a.order - b.order);
         const savedProfile = await getProfile();
+        const savedEssays = await getEssays();
         const savedMusic = await getMusic();
         if (savedProfile?.value) profile = { ...DEFAULT_PROFILE, ...savedProfile.value };
+        if (Array.isArray(savedEssays?.value)) essays = savedEssays.value;
         if (savedMusic?.value) music = { ...music, ...savedMusic.value };
         if (!projects.length) {
           for (const project of DEMO_PROJECTS) await putProject(project);
@@ -555,12 +860,13 @@
       applyMusic();
       renderProjects();
       renderManager();
+      renderEssayManager();
+      renderEssays();
       updateTrailSources();
     }
 
     function applyProfile() {
       document.title = `${profile.name} / Photography Archive`;
-      $("#brandName").textContent = profile.name;
       $("#heroName").textContent = profile.name;
       $("#heroDescriptor").textContent = profile.descriptor;
       $("#heroIntro").textContent = profile.intro;
@@ -569,6 +875,9 @@
       $("#aboutCopy").textContent = profile.about;
       $("#contactLink").textContent = profile.email;
       $("#contactLink").href = `mailto:${profile.email}`;
+      if ($("#menuCredit")) $("#menuCredit").textContent = profile.menuCredit;
+      if (elements.about) renderAboutView();
+      if (elements.contact) renderContactView();
       $("#archiveYear").textContent = `Archive / ${new Date().getFullYear()}`;
       $("#profileName").value = profile.name;
       $("#profileDescriptor").value = profile.descriptor;
@@ -576,6 +885,22 @@
       $("#profileArchiveIntro").value = profile.archiveIntro;
       $("#profileStatement").value = profile.statement;
       $("#profileAbout").value = profile.about;
+      $("#profileEssaysTitle").value = profile.essaysTitle;
+      $("#profileEssaysIntro").value = profile.essaysIntro;
+      $("#profileContactTitle").value = profile.contactTitle;
+      $("#profileContactBody").value = profile.contactBody;
+      $("#profileMenuCredit").value = profile.menuCredit;
+      $("#imageCompressionEnabled").checked = profile.imageCompressionEnabled !== false;
+      $("#imageCompressionTarget").value = String(profile.imageCompressionTargetKb || 900);
+      $("#imageCompressionMaxEdge").value = String(profile.imageCompressionMaxEdge || 2400);
+      $("#imageCompressionStatus").textContent = profile.imageCompressionEnabled !== false
+        ? `自动压缩已开启：目标约 ${profile.imageCompressionTargetKb || 900} KB，最长边 ${profile.imageCompressionMaxEdge || 2400} px。`
+        : "自动压缩已关闭，新加入的图片会保留原文件。";
+      $("#musicCompressionEnabled").checked = profile.musicCompressionEnabled !== false;
+      $("#musicCompressionTarget").value = String(profile.musicCompressionTargetMb || 5);
+      $("#musicCompressionStatus").textContent = profile.musicCompressionEnabled !== false
+        ? `MP3 自动压缩已开启：目标约 ${profile.musicCompressionTargetMb || 5} MB。`
+        : "MP3 自动压缩已关闭，上传后保留原文件。";
       $("#profileEmail").value = profile.email;
     }
 
@@ -588,7 +913,7 @@
 
     function applyMusic() {
       const source = getMusicSource();
-      const currentName = music.name || "尚未添加背景音乐";
+      const currentName = music.name ? `${music.name}${music.blob?.size ? ` / ${formatFileSize(music.blob.size)}` : ""}` : "尚未添加背景音乐";
       $("#musicCurrent").textContent = currentName;
       $("#musicAutoStart").checked = music.autoStart !== false;
       $("#previewMusic").disabled = !source;
@@ -640,9 +965,9 @@
 
     function renderProjects() {
       elements.grid.innerHTML = "";
-      $("#projectCount").textContent = `${String(projects.length).padStart(2, "0")} Projects`;
+      $("#projectCount").textContent = `${String(projects.length).padStart(2, "0")} Record`;
       if (!projects.length) {
-        elements.grid.innerHTML = `<div class="empty-state"><h3>还没有作品</h3><p>打开右上角“管理作品”，创建你的第一个项目。</p></div>`;
+        elements.grid.innerHTML = `<div class="empty-state"><h3>还没有 Record</h3><p>打开右上角“管理网站”，创建你的第一个 Record。</p></div>`;
         return;
       }
       projects.forEach((project, index) => {
@@ -650,19 +975,25 @@
         const card = document.createElement("button");
         card.className = "project-card";
         card.type = "button";
-        card.setAttribute("aria-label", `打开项目 ${project.title}`);
+        card.setAttribute("aria-label", `打开 Record ${project.title}`);
         card.innerHTML = `
           <div class="project-media"><img src="${cover}" alt="${escapeHtml(project.title)} 封面"><span class="project-index">${String(index + 1).padStart(2, "0")}</span></div>
-          <div class="project-info"><h3 class="project-title">${escapeHtml(project.title)}</h3><span class="project-meta">${escapeHtml(project.year || "UNDATED")}<br>${escapeHtml(project.category || "PROJECT")}</span></div>`;
+          <div class="project-info"><h3 class="project-title">${escapeHtml(project.title)}</h3><span class="project-meta">${escapeHtml(project.year || "UNDATED")}<br>${escapeHtml(project.category || "RECORD")}</span></div>`;
         card.addEventListener("click", () => openProject(project.id));
         elements.grid.append(card);
+        const hoverTitle = document.createElement("div");
+        hoverTitle.className = "project-hover-title";
+        const hoverTitleText = document.createElement("span");
+        hoverTitleText.textContent = project.title;
+        hoverTitle.append(hoverTitleText);
+        card.querySelector(".project-media")?.append(hoverTitle);
       });
     }
 
     function renderManager() {
       elements.manager.innerHTML = "";
       if (!projects.length) {
-        elements.manager.innerHTML = "<p>暂无项目。</p>";
+        elements.manager.innerHTML = "<p>暂无 Record。</p>";
         return;
       }
       projects.forEach((project, index) => {
@@ -684,6 +1015,34 @@
         item.querySelector('[data-action="edit"]').addEventListener("click", () => editProject(project.id));
         item.querySelector('[data-action="delete"]').addEventListener("click", () => confirmDeleteProject(project.id));
         elements.manager.append(item);
+      });
+    }
+
+    function renderEssayManager() {
+      if (!elements.essayManager) return;
+      elements.essayManager.innerHTML = "";
+      if (!essays.length) {
+        elements.essayManager.innerHTML = "<p>暂无文章。点击“新建文章”开始写作。</p>";
+        return;
+      }
+      essays.forEach((essay, index) => {
+        const item = document.createElement("article");
+        item.className = "manager-item essay-manager-item";
+        item.innerHTML = `
+          <div><h4 class="manager-name">${escapeHtml(essay.title)}</h4><span class="manager-sub">${escapeHtml(essay.date || "UNDATED")}</span><p class="essay-manager-excerpt">${escapeHtml(essay.excerpt || essay.body.slice(0, 120))}</p></div>
+          <div class="manager-actions">
+            <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动文章">↑</button>
+            <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动文章">↓</button>
+            <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑文章">✎</button>
+            <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除文章">×</button>
+          </div>`;
+        item.querySelector('[data-action="up"]').disabled = index === 0;
+        item.querySelector('[data-action="down"]').disabled = index === essays.length - 1;
+        item.querySelector('[data-action="up"]').addEventListener("click", () => moveEssay(index, -1));
+        item.querySelector('[data-action="down"]').addEventListener("click", () => moveEssay(index, 1));
+        item.querySelector('[data-action="edit"]').addEventListener("click", () => editEssay(essay.id));
+        item.querySelector('[data-action="delete"]').addEventListener("click", () => confirmDeleteEssay(essay.id));
+        elements.essayManager.append(item);
       });
     }
 
@@ -814,11 +1173,26 @@
       showDetailImage(currentDetailIndex + direction);
     }
 
+    function showLightboxImage(index) {
+      if (!currentDetailProject?.displayImages.length) return;
+      showDetailImage(index);
+      const total = currentDetailProject.displayImages.length;
+      const image = currentDetailProject.displayImages[currentDetailIndex];
+      $("#lightboxImage").src = image.displayUrl;
+      $("#lightboxImage").alt = `${currentDetailProject.title} ${currentDetailIndex + 1}`;
+      $("#lightboxCounter").textContent = `${String(currentDetailIndex + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+      $("#lightboxPrev").disabled = total <= 1;
+      $("#lightboxNext").disabled = total <= 1;
+    }
+
+    function changeLightboxImage(direction) {
+      if (!currentDetailProject || currentDetailProject.displayImages.length <= 1) return;
+      showLightboxImage(currentDetailIndex + direction);
+    }
+
     function openLightbox() {
-      const image = $("#detailImage");
-      if (!currentDetailProject || !image.src) return;
-      $("#lightboxImage").src = image.currentSrc || image.src;
-      $("#lightboxImage").alt = image.alt;
+      if (!currentDetailProject?.displayImages.length) return;
+      showLightboxImage(currentDetailIndex);
       $("#imageLightbox").classList.add("is-open");
       $("#imageLightbox").setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -829,6 +1203,9 @@
       $("#imageLightbox").classList.remove("is-open");
       $("#imageLightbox").setAttribute("aria-hidden", "true");
       $("#lightboxImage").removeAttribute("src");
+      lightboxSwipeStartX = null;
+      lightboxSwipeStartY = null;
+      lightboxSwipeMoved = false;
       if (elements.projectView.classList.contains("is-open")) document.body.style.overflow = "hidden";
       else if (!elements.studio.classList.contains("is-open")) document.body.style.overflow = "";
     }
@@ -853,10 +1230,16 @@
       $("#closeStudio").focus();
     }
 
+    function activateStudioSection(name) {
+      $$('[data-studio-tab]').forEach((button) => button.classList.toggle("is-active", button.dataset.studioTab === name));
+      $$('[data-studio-section]').forEach((section) => section.classList.toggle("is-active", section.dataset.studioSection === name));
+      elements.studio.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     function resetProjectForm() {
       elements.form.reset();
       $("#editingId").value = "";
-      $("#projectFormTitle").textContent = "新建项目";
+      $("#projectFormTitle").textContent = "新建 Record";
       editingImages = [];
       renderExistingImages();
       elements.form.hidden = true;
@@ -872,7 +1255,7 @@
       const project = projects.find((item) => item.id === id);
       if (!project) return;
       $("#editingId").value = project.id;
-      $("#projectFormTitle").textContent = "编辑项目";
+      $("#projectFormTitle").textContent = "编辑 Record";
       $("#projectName").value = project.title;
       $("#projectYear").value = project.year || "";
       $("#projectCategory").value = project.category || "";
@@ -889,7 +1272,9 @@
       editingImages.forEach((image, index) => {
         const item = document.createElement("div");
         item.className = "existing-image";
-        item.innerHTML = `<img src="${imageSource(image)}" alt=""><button type="button" aria-label="移除这张图片">×</button>`;
+        const size = image.blob?.size || 0;
+        item.title = [image.name, size ? formatFileSize(size) : ""].filter(Boolean).join(" / ");
+        item.innerHTML = `<img src="${imageSource(image)}" alt=""><span class="existing-image-size">${size ? formatFileSize(size) : "REMOTE"}</span><button type="button" aria-label="移除这张图片">×</button>`;
         item.querySelector("button").addEventListener("click", () => {
           editingImages.splice(index, 1);
           renderExistingImages();
@@ -898,16 +1283,192 @@
       });
     }
 
-    $("#projectImages").addEventListener("change", (event) => {
-      const addedImages = [...event.target.files].map((file) => ({
-        name: file.name,
-        type: file.type,
-        blob: file
-      }));
-      editingImages.push(...addedImages);
-      event.target.value = "";
-      renderExistingImages();
-      if (addedImages.length) setStatus(`已追加 ${addedImages.length} 张图片，当前共 ${editingImages.length} 张。`, false);
+    function formatFileSize(bytes) {
+      if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
+      if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(bytes >= 10 * 1024 * 1024 ? 1 : 2)} MB`;
+      return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    }
+
+    function canvasToBlob(canvas, type, quality) {
+      return new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Image encoding failed")), type, quality));
+    }
+
+    async function loadCompressionSource(file) {
+      if ("createImageBitmap" in window) {
+        try {
+          const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+          return { source: bitmap, width: bitmap.width, height: bitmap.height, cleanup: () => bitmap.close?.() };
+        } catch (error) {
+          try {
+            const bitmap = await createImageBitmap(file);
+            return { source: bitmap, width: bitmap.width, height: bitmap.height, cleanup: () => bitmap.close?.() };
+          } catch (fallbackError) {}
+        }
+      }
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+        image.onload = () => resolve({ source: image, width: image.naturalWidth, height: image.naturalHeight, cleanup: () => URL.revokeObjectURL(url) });
+        image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Image decode failed")); };
+        image.src = url;
+      });
+    }
+
+    async function compressRecordImage(file) {
+      const enabled = $("#imageCompressionEnabled").checked;
+      const supported = ["image/jpeg", "image/png", "image/webp"].includes(file.type);
+      if (!enabled || !supported) return { name: file.name, type: file.type, blob: file, originalSize: file.size, compressed: false };
+
+      const targetBytes = (Number($("#imageCompressionTarget").value) || 900) * 1024;
+      const maxEdge = Number($("#imageCompressionMaxEdge").value) || 2400;
+      const loaded = await loadCompressionSource(file);
+      try {
+        const sourceMaxEdge = Math.max(loaded.width, loaded.height);
+        const initialScale = Math.min(1, maxEdge / sourceMaxEdge);
+        if (file.size <= targetBytes && initialScale === 1) {
+          return { name: file.name, type: file.type, blob: file, originalSize: file.size, compressed: false };
+        }
+
+        let width = Math.max(1, Math.round(loaded.width * initialScale));
+        let height = Math.max(1, Math.round(loaded.height * initialScale));
+        let output = null;
+        let round = 0;
+
+        while (round < 6) {
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const context = canvas.getContext("2d", { alpha: true });
+          if (!context) throw new Error("Canvas unavailable");
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = "high";
+          context.drawImage(loaded.source, 0, 0, width, height);
+
+          let quality = round === 0 ? .88 : .8;
+          while (quality >= .46) {
+            output = await canvasToBlob(canvas, "image/webp", quality);
+            if (output.size <= targetBytes) break;
+            quality -= .07;
+          }
+          canvas.width = 1;
+          canvas.height = 1;
+          if (output?.size <= targetBytes || Math.max(width, height) <= 1100) break;
+
+          const ratio = Math.max(.68, Math.min(.9, Math.sqrt(targetBytes / output.size) * .94));
+          width = Math.max(1, Math.round(width * ratio));
+          height = Math.max(1, Math.round(height * ratio));
+          round += 1;
+        }
+
+        if (!output || (output.size >= file.size && initialScale === 1)) {
+          return { name: file.name, type: file.type, blob: file, originalSize: file.size, compressed: false };
+        }
+        const baseName = file.name.replace(/\.[^.]+$/, "") || "record-image";
+        const outputType = output.type || "image/webp";
+        const extension = outputType === "image/png" ? "png" : outputType === "image/jpeg" ? "jpg" : "webp";
+        return { name: `${baseName}.${extension}`, type: outputType, blob: output, originalSize: file.size, compressed: true };
+      } finally {
+        loaded.cleanup();
+      }
+    }
+
+    const projectImagesInput = $("#projectImages");
+    const recordDropZone = $("#recordDropZone");
+    const supportedRecordImageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"]);
+    let recordImageQueue = Promise.resolve();
+
+    function isSupportedRecordImage(file) {
+      const type = (file.type || "").toLowerCase();
+      return supportedRecordImageTypes.has(type) || /\.(?:jpe?g|png|webp|gif|svg)$/i.test(file.name || "");
+    }
+
+    async function addRecordImageFiles(fileList) {
+      const allFiles = [...fileList];
+      const files = allFiles.filter(isSupportedRecordImage);
+      const ignoredCount = allFiles.length - files.length;
+      if (!files.length) {
+        const message = ignoredCount ? `没有发现可用图片，已忽略 ${ignoredCount} 个不支持的文件。` : "没有发现可用图片。";
+        $("#imageCompressionStatus").textContent = message;
+        setStatus(message, true);
+        return;
+      }
+      recordDropZone.classList.add("is-busy");
+      recordDropZone.setAttribute("aria-busy", "true");
+      let originalBytes = 0;
+      let finalBytes = 0;
+      let compressedCount = 0;
+      let failedCount = 0;
+      const addedImages = [];
+      try {
+        for (let index = 0; index < files.length; index++) {
+          const file = files[index];
+          originalBytes += file.size;
+          $("#imageCompressionStatus").textContent = `正在处理 ${index + 1} / ${files.length}：${file.name}`;
+          try {
+            const image = await compressRecordImage(file);
+            addedImages.push(image);
+            finalBytes += image.blob.size;
+            if (image.compressed) compressedCount += 1;
+          } catch (error) {
+            console.warn("Image compression failed; original file retained.", error);
+            addedImages.push({ name: file.name, type: file.type, blob: file, originalSize: file.size, compressed: false });
+            finalBytes += file.size;
+            failedCount += 1;
+          }
+        }
+        editingImages.push(...addedImages);
+        renderExistingImages();
+        const savedPercent = originalBytes ? Math.max(0, Math.round((1 - finalBytes / originalBytes) * 100)) : 0;
+        const summary = `已加入 ${addedImages.length} 张，其中 ${compressedCount} 张已压缩：${formatFileSize(originalBytes)} → ${formatFileSize(finalBytes)}，节省 ${savedPercent}%${failedCount ? `；${failedCount} 张处理失败并保留原文件` : ""}${ignoredCount ? `；已忽略 ${ignoredCount} 个不支持的文件` : ""}`;
+        $("#imageCompressionStatus").textContent = summary;
+        setStatus(`${summary}。当前 Record 共 ${editingImages.length} 张图片。`, false);
+      } finally {
+        projectImagesInput.value = "";
+        recordDropZone.classList.remove("is-busy");
+        recordDropZone.removeAttribute("aria-busy");
+      }
+    }
+
+    function queueRecordImageFiles(fileList) {
+      const files = [...fileList];
+      if (!files.length) return;
+      recordImageQueue = recordImageQueue
+        .then(() => addRecordImageFiles(files))
+        .catch((error) => {
+          console.error("Record image processing failed.", error);
+          const message = "图片处理发生错误，请重新添加。";
+          $("#imageCompressionStatus").textContent = message;
+          setStatus(message, true);
+        });
+    }
+
+    projectImagesInput.addEventListener("change", (event) => {
+      queueRecordImageFiles(event.target.files);
+    });
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      recordDropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+
+    recordDropZone.addEventListener("dragenter", () => {
+      recordDropZone.classList.add("is-dragging");
+    });
+
+    recordDropZone.addEventListener("dragover", (event) => {
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+      recordDropZone.classList.add("is-dragging");
+    });
+
+    recordDropZone.addEventListener("dragleave", (event) => {
+      if (!recordDropZone.contains(event.relatedTarget)) recordDropZone.classList.remove("is-dragging");
+    });
+
+    recordDropZone.addEventListener("drop", (event) => {
+      recordDropZone.classList.remove("is-dragging");
+      queueRecordImageFiles(event.dataTransfer?.files || []);
     });
 
     elements.form.addEventListener("submit", async (event) => {
@@ -935,8 +1496,8 @@
       projects.sort((a, b) => a.order - b.order);
       resetProjectForm();
       renderAll();
-      setStatus("项目已保存在当前浏览器。", false);
-      showToast("项目已保存");
+      setStatus("Record 已保存在当前浏览器。", false);
+      showToast("Record 已保存");
     });
 
     async function moveProject(index, direction) {
@@ -956,13 +1517,101 @@
 
     async function confirmDeleteProject(id) {
       const project = projects.find((item) => item.id === id);
-      if (!project || !window.confirm(`确定删除“${project.title}”吗？此操作无法撤销。`)) return;
+      if (!project || !window.confirm(`确定删除 Record“${project.title}”吗？此操作无法撤销。`)) return;
       await deleteProject(id);
       projects = projects.filter((item) => item.id !== id);
       await persistOrder();
       renderAll();
-      showToast("项目已删除");
+      showToast("Record 已删除");
     }
+
+    function resetEssayForm() {
+      elements.essayForm.reset();
+      $("#editingEssayId").value = "";
+      $("#essayFormTitle").textContent = "新建文章";
+      elements.essayForm.hidden = true;
+    }
+
+    function startNewEssay() {
+      resetEssayForm();
+      elements.essayForm.hidden = false;
+      const now = new Date();
+      $("#essayDateInput").value = `${String(now.getDate()).padStart(2, "0")}.${String(now.getMonth() + 1).padStart(2, "0")}.${now.getFullYear()}`;
+      $("#essayTitleInput").focus();
+    }
+
+    function editEssay(id) {
+      const essay = essays.find((item) => item.id === id);
+      if (!essay) return;
+      $("#editingEssayId").value = essay.id;
+      $("#essayFormTitle").textContent = "编辑文章";
+      $("#essayTitleInput").value = essay.title;
+      $("#essayDateInput").value = essay.date || "";
+      $("#essayExcerptInput").value = essay.excerpt || "";
+      $("#essayBodyInput").value = essay.body || "";
+      $("#essayTextFile").value = "";
+      elements.essayForm.hidden = false;
+      elements.essayForm.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function persistEssays() {
+      await putEssays(essays);
+      renderEssayManager();
+      renderEssays();
+    }
+
+    async function moveEssay(index, direction) {
+      const target = index + direction;
+      if (target < 0 || target >= essays.length) return;
+      [essays[index], essays[target]] = [essays[target], essays[index]];
+      await persistEssays();
+    }
+
+    async function confirmDeleteEssay(id) {
+      const essay = essays.find((item) => item.id === id);
+      if (!essay || !window.confirm(`确定删除文章“${essay.title}”吗？此操作无法撤销。`)) return;
+      essays = essays.filter((item) => item.id !== id);
+      await persistEssays();
+      resetEssayForm();
+      showToast("文章已删除");
+    }
+
+    $("#essayTextFile").addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        $("#essayBodyInput").value = await file.text();
+        if (!$("#essayTitleInput").value.trim()) $("#essayTitleInput").value = file.name.replace(/\.(txt|md)$/i, "");
+        setStatus(`已读取 ${file.name}，请检查内容后保存文章。`, false);
+      } catch (error) {
+        setStatus("无法读取这个文本文件。", true);
+      }
+    });
+
+    elements.essayForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const title = $("#essayTitleInput").value.trim();
+      const body = $("#essayBodyInput").value.trim();
+      if (!title || !body) {
+        setStatus("文章标题和正文不能为空。", true);
+        return;
+      }
+      const editingId = $("#editingEssayId").value;
+      const existingIndex = essays.findIndex((item) => item.id === editingId);
+      const essay = {
+        id: editingId || (crypto.randomUUID ? crypto.randomUUID() : `essay-${Date.now()}`),
+        date: $("#essayDateInput").value.trim(),
+        title,
+        excerpt: $("#essayExcerptInput").value.trim(),
+        body
+      };
+      if (existingIndex >= 0) essays[existingIndex] = essay;
+      else essays.push(essay);
+      await persistEssays();
+      resetEssayForm();
+      setStatus("文章已保存在当前浏览器。", false);
+      showToast("文章已保存");
+    });
 
     async function saveProfile() {
       profile = {
@@ -972,12 +1621,51 @@
         archiveIntro: $("#profileArchiveIntro").value.trim(),
         statement: $("#profileStatement").value.trim(),
         about: $("#profileAbout").value.trim(),
+        essaysTitle: $("#profileEssaysTitle").value.trim(),
+        essaysIntro: $("#profileEssaysIntro").value.trim(),
+        contactTitle: $("#profileContactTitle").value.trim(),
+        contactBody: $("#profileContactBody").value.trim(),
+        menuCredit: $("#profileMenuCredit").value.trim(),
+        imageCompressionEnabled: $("#imageCompressionEnabled").checked,
+        imageCompressionTargetKb: Number($("#imageCompressionTarget").value) || 900,
+        imageCompressionMaxEdge: Number($("#imageCompressionMaxEdge").value) || 2400,
+        musicCompressionEnabled: $("#musicCompressionEnabled").checked,
+        musicCompressionTargetMb: Number($("#musicCompressionTarget").value) || 5,
         email: $("#profileEmail").value.trim()
       };
       await putProfile(profile);
       await saveMusicSettings();
       applyProfile();
-      showToast("网站资料已保存");
+      renderEssays();
+      showToast("全部页面文字已保存");
+    }
+
+    async function saveCompressionPreferences() {
+      profile = {
+        ...profile,
+        imageCompressionEnabled: $("#imageCompressionEnabled").checked,
+        imageCompressionTargetKb: Number($("#imageCompressionTarget").value) || 900,
+        imageCompressionMaxEdge: Number($("#imageCompressionMaxEdge").value) || 2400
+      };
+      await putProfile(profile);
+      const message = profile.imageCompressionEnabled
+        ? `自动压缩已开启：目标约 ${profile.imageCompressionTargetKb} KB，最长边 ${profile.imageCompressionMaxEdge} px。`
+        : "自动压缩已关闭，新加入的图片会保留原文件。";
+      $("#imageCompressionStatus").textContent = message;
+      showToast("图片压缩设置已保存");
+    }
+
+    async function saveMusicCompressionPreferences() {
+      profile = {
+        ...profile,
+        musicCompressionEnabled: $("#musicCompressionEnabled").checked,
+        musicCompressionTargetMb: Number($("#musicCompressionTarget").value) || 5
+      };
+      await putProfile(profile);
+      $("#musicCompressionStatus").textContent = profile.musicCompressionEnabled
+        ? `MP3 自动压缩已开启：目标约 ${profile.musicCompressionTargetMb} MB。`
+        : "MP3 自动压缩已关闭，上传后保留原文件。";
+      showToast("音乐压缩设置已保存");
     }
 
     async function saveMusicSettings() {
@@ -987,28 +1675,146 @@
       applyMusic();
     }
 
+    function loadMp3Encoder() {
+      if (window.lamejs?.Mp3Encoder) return Promise.resolve(window.lamejs);
+      if (mp3EncoderLoadPromise) return mp3EncoderLoadPromise;
+      mp3EncoderLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = new URL("lame.min.js", document.baseURI).href;
+        script.async = true;
+        script.onload = () => window.lamejs?.Mp3Encoder ? resolve(window.lamejs) : reject(new Error("MP3 encoder unavailable"));
+        script.onerror = () => reject(new Error("Unable to load lame.min.js"));
+        document.head.append(script);
+      }).catch((error) => {
+        mp3EncoderLoadPromise = null;
+        throw error;
+      });
+      return mp3EncoderLoadPromise;
+    }
+
+    function chooseMp3Bitrate(durationSeconds, targetMegabytes) {
+      const desired = Math.floor((targetMegabytes * 1024 * 1024 * 8 / Math.max(1, durationSeconds) / 1000) * .96);
+      const rates = [48, 56, 64, 80, 96, 112, 128, 160, 192];
+      return rates.filter((rate) => rate <= desired).pop() || rates[0];
+    }
+
+    function copyFloatSamplesToInt16(source, target, offset, length) {
+      for (let index = 0; index < length; index++) {
+        const sample = Math.max(-1, Math.min(1, source[offset + index] || 0));
+        target[index] = sample < 0 ? sample * 32768 : sample * 32767;
+      }
+    }
+
+    async function compressMp3File(file) {
+      const targetMegabytes = Number($("#musicCompressionTarget").value) || 5;
+      const targetBytes = targetMegabytes * 1024 * 1024;
+      if (file.size <= targetBytes) return { blob: file, name: file.name, bitrate: null, compressed: false, alreadySmall: true };
+
+      const lame = await loadMp3Encoder();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) throw new Error("Web Audio is unavailable");
+      const audioContext = new AudioContextClass({ sampleRate: 44100 });
+      let audioBuffer;
+      try {
+        $("#musicCompressionStatus").textContent = "正在读取并解码 MP3……";
+        audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
+      } finally {
+        await audioContext.close().catch(() => {});
+      }
+
+      const channels = Math.min(2, Math.max(1, audioBuffer.numberOfChannels));
+      const sampleRate = audioBuffer.sampleRate;
+      const bitrate = chooseMp3Bitrate(audioBuffer.duration, targetMegabytes);
+      const encoder = new lame.Mp3Encoder(channels, sampleRate, bitrate);
+      const leftSource = audioBuffer.getChannelData(0);
+      const rightSource = channels > 1 ? audioBuffer.getChannelData(1) : null;
+      const blockSize = 1152;
+      const leftPcm = new Int16Array(blockSize);
+      const rightPcm = channels > 1 ? new Int16Array(blockSize) : null;
+      const encodedParts = [];
+      const totalBlocks = Math.ceil(audioBuffer.length / blockSize);
+
+      for (let offset = 0, block = 0; offset < audioBuffer.length; offset += blockSize, block++) {
+        const length = Math.min(blockSize, audioBuffer.length - offset);
+        copyFloatSamplesToInt16(leftSource, leftPcm, offset, length);
+        let encoded;
+        if (channels > 1) {
+          copyFloatSamplesToInt16(rightSource, rightPcm, offset, length);
+          encoded = encoder.encodeBuffer(leftPcm.subarray(0, length), rightPcm.subarray(0, length));
+        } else {
+          encoded = encoder.encodeBuffer(leftPcm.subarray(0, length));
+        }
+        if (encoded.length) encodedParts.push(new Int8Array(encoded));
+        if (block % 120 === 0) {
+          const progress = Math.min(99, Math.round((block / totalBlocks) * 100));
+          $("#musicCompressionStatus").textContent = `正在压缩 MP3：${progress}% / ${bitrate} KBPS`;
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+
+      const flushed = encoder.flush();
+      if (flushed.length) encodedParts.push(new Int8Array(flushed));
+      const blob = new Blob(encodedParts, { type: "audio/mpeg" });
+      if (!blob.size || blob.size >= file.size) return { blob: file, name: file.name, bitrate: null, compressed: false };
+      const baseName = file.name.replace(/\.mp3$/i, "") || "background-music";
+      return { blob, name: `${baseName}-web.mp3`, bitrate, compressed: true };
+    }
+
     async function handleMusicFile(file) {
       if (!file) return;
+      const input = $("#musicFile");
+      const isMp3 = file.type === "audio/mpeg" || /\.mp3$/i.test(file.name);
+      const compressionEnabled = $("#musicCompressionEnabled").checked && isMp3;
       const sizeMb = file.size / 1024 / 1024;
-      if (sizeMb > 25 && !window.confirm(`音乐文件约 ${sizeMb.toFixed(1)} MB，会明显增大发布文件。仍然使用吗？`)) {
-        $("#musicFile").value = "";
+      if (!compressionEnabled && sizeMb > 25 && !window.confirm(`音乐文件约 ${sizeMb.toFixed(1)} MB，会明显增大发布文件。仍然使用吗？`)) {
+        input.value = "";
         return;
       }
+
+      input.disabled = true;
       elements.audio.pause();
-      if (musicObjectUrl) URL.revokeObjectURL(musicObjectUrl);
-      musicObjectUrl = "";
-      music = {
-        name: file.name,
-        type: file.type,
-        blob: file,
-        url: "",
-        autoStart: $("#musicAutoStart").checked
-      };
-      await putMusic(music);
-      $("#musicFile").value = "";
-      musicAutoStartAttempted = false;
-      applyMusic();
-      showToast("背景音乐已保存");
+      try {
+        let prepared = { blob: file, name: file.name, bitrate: null, compressed: false };
+        if (compressionEnabled) {
+          $("#musicCompressionStatus").textContent = `准备压缩：${file.name} / ${formatFileSize(file.size)}`;
+          try {
+            prepared = await compressMp3File(file);
+          } catch (error) {
+            console.error("MP3 compression failed; original file retained.", error);
+            $("#musicCompressionStatus").textContent = "MP3 压缩失败，已保留原文件。请确认 lame.min.js 与 index.html 位于同一文件夹。";
+          }
+        } else if (!isMp3 && $("#musicCompressionEnabled").checked) {
+          $("#musicCompressionStatus").textContent = "当前文件不是 MP3，已保留原格式。";
+        }
+
+        if (compressionEnabled && !prepared.compressed && !prepared.alreadySmall && sizeMb > 25 && !window.confirm(`MP3 压缩没有成功，原文件约 ${sizeMb.toFixed(1)} MB。仍然保存原文件吗？`)) return;
+
+        if (musicObjectUrl) URL.revokeObjectURL(musicObjectUrl);
+        musicObjectUrl = "";
+        music = {
+          name: prepared.name,
+          type: prepared.blob.type || file.type,
+          blob: prepared.blob,
+          url: "",
+          autoStart: $("#musicAutoStart").checked
+        };
+        await putMusic(music);
+        musicAutoStartAttempted = false;
+        applyMusic();
+        if (prepared.compressed) {
+          const reduction = Math.max(0, Math.round((1 - prepared.blob.size / file.size) * 100));
+          $("#musicCompressionStatus").textContent = `压缩完成：${formatFileSize(file.size)} → ${formatFileSize(prepared.blob.size)}，${prepared.bitrate} KBPS，节省 ${reduction}%。`;
+          showToast("MP3 已压缩并保存");
+        } else {
+          if (prepared.alreadySmall) {
+            $("#musicCompressionStatus").textContent = `原文件已经在目标大小以内（${formatFileSize(file.size)}），无需重复压缩。`;
+          }
+          showToast("背景音乐已保存");
+        }
+      } finally {
+        input.value = "";
+        input.disabled = false;
+      }
     }
 
     async function removeBackgroundMusic() {
@@ -1025,8 +1831,8 @@
 
     async function removeDemoProjects() {
       const demos = projects.filter((project) => project.demo);
-      if (!demos.length) return showToast("没有示例项目");
-      if (!window.confirm("确定移除所有示例项目吗？")) return;
+      if (!demos.length) return showToast("没有示例 Record");
+      if (!window.confirm("确定移除所有示例 Record 吗？")) return;
       for (const project of demos) await deleteProject(project.id);
       projects = projects.filter((project) => !project.demo);
       await persistOrder();
@@ -1065,7 +1871,7 @@
       const exportedMusic = music.blob
         ? { name: music.name, type: music.type, autoStart: music.autoStart, dataUrl: await blobToDataUrl(music.blob) }
         : { name: music.name, type: music.type, autoStart: music.autoStart, url: music.url };
-      const payload = { version: 1, exportedAt: new Date().toISOString(), profile, music: exportedMusic, projects: exportedProjects };
+      const payload = { version: 2, exportedAt: new Date().toISOString(), profile, essays, music: exportedMusic, projects: exportedProjects };
       const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -1190,7 +1996,7 @@
 
     async function buildPublishVersion() {
       if (!projects.length) {
-        setStatus("请先添加至少一个项目。", true);
+        setStatus("请先添加至少一个 Record。", true);
         return;
       }
       setStatus("正在整理 GitHub 发布包，请不要关闭页面……", false);
@@ -1204,7 +2010,7 @@
           assets.push({ name: musicUrl, data: music.blob });
           publishedMusic = { name: music.name, type: music.type || music.blob.type, autoStart: music.autoStart, url: musicUrl };
         }
-        const payload = { profile, music: publishedMusic, projects: publishedProjects };
+        const payload = { profile, essays, music: publishedMusic, projects: publishedProjects };
         const safePayload = JSON.stringify(payload).replace(/<\/script/gi, "<\\/script");
         const publishedDocument = document.documentElement.cloneNode(true);
         publishedDocument.querySelector("body").style.overflow = "";
@@ -1213,6 +2019,12 @@
         publishedDocument.querySelector("#studio").classList.remove("is-open");
         publishedDocument.querySelector("#projectView").classList.remove("is-open");
         publishedDocument.querySelector("#projectView").setAttribute("aria-hidden", "true");
+        ["#menuPanel", "#essaysView", "#essayReader", "#aboutView", "#contactView", "#imageLightbox"].forEach((selector) => {
+          const overlay = publishedDocument.querySelector(selector);
+          if (!overlay) return;
+          overlay.classList.remove("is-open");
+          overlay.setAttribute("aria-hidden", "true");
+        });
         publishedDocument.querySelector("#trailLayer").innerHTML = "";
         publishedDocument.querySelector("#toast").classList.remove("is-visible");
         publishedDocument.querySelector("#backgroundMusic").pause?.();
@@ -1255,8 +2067,8 @@
     async function importBackup(file) {
       try {
         const payload = JSON.parse(await file.text());
-        if (payload.version !== 1 || !Array.isArray(payload.projects)) throw new Error("Invalid backup");
-        if (!window.confirm("导入会替换当前浏览器中的所有作品，确定继续吗？")) return;
+        if (![1, 2].includes(payload.version) || !Array.isArray(payload.projects)) throw new Error("Invalid backup");
+        if (!window.confirm("导入会替换当前浏览器中的所有 Record、文章和页面设置，确定继续吗？")) return;
         const transaction = db.transaction(["projects", "settings"], "readwrite");
         transaction.objectStore("projects").clear();
         transaction.objectStore("settings").clear();
@@ -1267,6 +2079,8 @@
         }
         profile = { ...DEFAULT_PROFILE, ...(payload.profile || {}) };
         await putProfile(profile);
+        essays = Array.isArray(payload.essays) ? payload.essays : [...DEFAULT_ESSAYS];
+        await putEssays(essays);
         if (payload.music?.dataUrl) {
           music = {
             name: payload.music.name,
@@ -1310,7 +2124,261 @@
       toastTimer = setTimeout(() => elements.toast.classList.remove("is-visible"), 2400);
     }
 
+    function setupMenuAndEssays() {
+      if (!$("#menuPanel")) {
+        document.body.insertAdjacentHTML("beforeend", `
+          <section class="menu-panel" id="menuPanel" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menu">
+            <button class="menu-close" id="closeMenu" type="button">Close</button>
+            <nav class="menu-nav" aria-label="Main menu">
+              <a href="#archive" data-menu-close>Record</a>
+              <button id="openEssays" type="button">Essays</button>
+              <button id="openAbout" type="button">About</button>
+              <button id="openContact" type="button">Contact</button>
+            </nav>
+            <p class="menu-credit" id="menuCredit"></p>
+          </section>
+          <section class="essays-view" id="essaysView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="essaysTitle">
+            <div class="overlay-bar"><h2 class="overlay-title" id="essaysTitle">Essays</h2><button class="icon-button" id="closeEssays" type="button" aria-label="Close essays">×</button></div>
+            <div class="essays-intro" id="essaysIntro"></div>
+            <div class="essay-list" id="essayList"></div>
+          </section>
+          <section class="about-view" id="aboutView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aboutViewTitle">
+            <div class="overlay-bar"><h2 class="overlay-title" id="aboutViewTitle">About</h2><button class="icon-button" id="closeAbout" type="button" aria-label="Close about">×</button></div>
+            <div class="about-view-inner">
+              <p class="about-statement" id="aboutViewStatement"></p>
+              <div class="about-side">
+                <p class="about-copy" id="aboutViewCopy"></p>
+                <a class="about-contact" id="aboutViewContact" href="mailto:hello@example.com"></a>
+              </div>
+            </div>
+          </section>
+          <section class="contact-view" id="contactView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contactViewTitle">
+            <div class="overlay-bar"><h2 class="overlay-title">Contact</h2><button class="icon-button" id="closeContact" type="button" aria-label="Close contact">×</button></div>
+            <div class="contact-view-inner">
+              <h2 class="contact-view-title" id="contactViewTitle"></h2>
+              <div class="contact-view-bottom"><p class="contact-view-copy" id="contactViewCopy"></p><a class="contact-view-email" id="contactViewEmail" href="mailto:hello@example.com"></a></div>
+            </div>
+          </section>
+          <section class="essay-reader" id="essayReader" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="essayReaderTitle">
+            <div class="overlay-bar"><h2 class="overlay-title">Essay</h2><button class="icon-button" id="closeEssayReader" type="button" aria-label="Close essay">×</button></div>
+            <article class="essay-reader-inner">
+              <p class="essay-reader-date" id="essayReaderDate"></p>
+              <h2 class="essay-reader-title" id="essayReaderTitle"></h2>
+              <div class="essay-reader-body" id="essayReaderBody"></div>
+            </article>
+          </section>`);
+      }
+      elements.menu = $("#menuPanel");
+      elements.essays = $("#essaysView");
+      elements.about = $("#aboutView");
+      elements.contact = $("#contactView");
+      elements.essayReader = $("#essayReader");
+      // Normalize the close glyphs even when an older copied file contains a
+      // garbled character in the inline template.
+      $("#closeEssays").textContent = "\u00d7";
+      $("#closeEssayReader").textContent = "\u00d7";
+      $("#closeAbout").textContent = "\u00d7";
+      $("#closeContact").textContent = "\u00d7";
+      const menuTrigger = $(".header-actions .text-button[href='#archive']");
+      if (menuTrigger) {
+        menuTrigger.id = "openMenu";
+        menuTrigger.textContent = "Menu";
+        menuTrigger.removeAttribute("href");
+        menuTrigger.setAttribute("role", "button");
+      }
+      $(".enter-link").textContent = "記録";
+      $(".section-header h2").textContent = "Record";
+      $("#detailBarTitle").textContent = "Record";
+      $("#detailTitle").textContent = "Record";
+      $("#menuCredit").textContent = profile.menuCredit;
+      renderAboutView();
+      renderContactView();
+      renderEssays();
+    }
+
+    function syncOverlayScroll() {
+      const overlayOpen = [elements.menu, elements.essays, elements.about, elements.contact, elements.essayReader, elements.projectView, elements.studio, $("#imageLightbox")]
+        .some((item) => item?.classList.contains("is-open"));
+      document.body.style.overflow = overlayOpen ? "hidden" : "";
+    }
+
+    function openMenu() {
+      // A menu opened from any secondary view always starts from a clean state.
+      // Otherwise the hidden Essays layer can remain above the page after a
+      // navigation click.
+      if (elements.essays?.classList.contains("is-open") || elements.essayReader?.classList.contains("is-open")) {
+        closeEssays();
+      }
+      closeAbout();
+      closeContact();
+      elements.menu.classList.add("is-open");
+      elements.menu.setAttribute("aria-hidden", "false");
+      syncOverlayScroll();
+      $("#closeMenu").focus();
+    }
+
+    function closeMenu() {
+      elements.menu.classList.remove("is-open");
+      elements.menu.setAttribute("aria-hidden", "true");
+      syncOverlayScroll();
+    }
+
+    function renderAboutView() {
+      if (!elements.about) return;
+      $("#aboutViewStatement").textContent = profile.statement;
+      $("#aboutViewCopy").textContent = profile.about;
+      $("#aboutViewContact").textContent = profile.email;
+      $("#aboutViewContact").href = `mailto:${profile.email}`;
+    }
+
+    function openAbout() {
+      closeMenu();
+      closeEssays();
+      closeContact();
+      renderAboutView();
+      elements.about.classList.add("is-open");
+      elements.about.setAttribute("aria-hidden", "false");
+      syncOverlayScroll();
+      $("#closeAbout").focus();
+    }
+
+    function closeAbout() {
+      if (!elements.about) return;
+      elements.about.classList.remove("is-open");
+      elements.about.setAttribute("aria-hidden", "true");
+      syncOverlayScroll();
+    }
+
+    function renderContactView() {
+      if (!elements.contact) return;
+      $("#contactViewTitle").textContent = profile.contactTitle;
+      $("#contactViewCopy").textContent = profile.contactBody;
+      $("#contactViewEmail").textContent = profile.email;
+      $("#contactViewEmail").href = `mailto:${profile.email}`;
+    }
+
+    function openContact() {
+      closeMenu();
+      closeEssays();
+      closeAbout();
+      renderContactView();
+      elements.contact.classList.add("is-open");
+      elements.contact.setAttribute("aria-hidden", "false");
+      syncOverlayScroll();
+      $("#closeContact").focus();
+    }
+
+    function closeContact() {
+      if (!elements.contact) return;
+      elements.contact.classList.remove("is-open");
+      elements.contact.setAttribute("aria-hidden", "true");
+      syncOverlayScroll();
+    }
+
+    function renderEssays() {
+      const list = $("#essayList");
+      if (!list) return;
+      $("#essaysTitle").textContent = profile.essaysTitle || "Essays";
+      $("#essaysIntro").textContent = profile.essaysIntro || "";
+      list.innerHTML = "";
+      if (!essays.length) {
+        list.innerHTML = '<div class="empty-state"><h3>No essays yet</h3><p>New writing will appear here.</p></div>';
+        return;
+      }
+      essays.forEach((essay) => {
+        const entry = document.createElement("button");
+        entry.className = "essay-entry";
+        entry.type = "button";
+        entry.setAttribute("aria-label", `Read essay ${essay.title}`);
+        const date = document.createElement("span");
+        date.className = "essay-date";
+        date.textContent = essay.date;
+        const copy = document.createElement("span");
+        copy.className = "essay-entry-copy";
+        const title = document.createElement("span");
+        title.className = "essay-entry-title";
+        title.textContent = essay.title;
+        const excerpt = document.createElement("span");
+        excerpt.className = "essay-entry-excerpt";
+        excerpt.textContent = essay.excerpt;
+        copy.append(title, excerpt);
+        entry.append(date, copy);
+        entry.addEventListener("click", () => openEssayReader(essay.id));
+        list.append(entry);
+      });
+    }
+
+    function openEssays() {
+      closeMenu();
+      closeAbout();
+      closeContact();
+      renderEssays();
+      elements.essays.classList.add("is-open");
+      elements.essays.setAttribute("aria-hidden", "false");
+      syncOverlayScroll();
+      $("#closeEssays").focus();
+    }
+
+    function closeEssays() {
+      closeEssayReader();
+      elements.essays.classList.remove("is-open");
+      elements.essays.setAttribute("aria-hidden", "true");
+      syncOverlayScroll();
+    }
+
+    function openEssayReader(id) {
+      const essay = essays.find((item) => item.id === id);
+      if (!essay) return;
+      $("#essayReaderDate").textContent = essay.date;
+      $("#essayReaderTitle").textContent = essay.title;
+      $("#essayReaderBody").textContent = essay.body;
+      elements.essayReader.classList.add("is-open");
+      elements.essayReader.setAttribute("aria-hidden", "false");
+      syncOverlayScroll();
+      $("#closeEssayReader").focus();
+    }
+
+    function closeEssayReader() {
+      if (!elements.essayReader) return;
+      elements.essayReader.classList.remove("is-open");
+      elements.essayReader.setAttribute("aria-hidden", "true");
+      syncOverlayScroll();
+    }
+
+    function updateScrollState() {
+      const scrollY = window.scrollY;
+      document.body.classList.toggle("has-scrolled", scrollY > 36);
+    }
+
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    updateScrollState();
+
+    setupMenuAndEssays();
     $("#openStudio").addEventListener("click", openStudio);
+    $("#openMenu").addEventListener("click", (event) => { event.preventDefault(); openMenu(); });
+    $("#closeMenu").addEventListener("click", closeMenu);
+    $("#openEssays").addEventListener("click", openEssays);
+    $("#openAbout").addEventListener("click", openAbout);
+    $("#openContact").addEventListener("click", openContact);
+    $("#closeEssays").addEventListener("click", closeEssays);
+    $("#closeAbout").addEventListener("click", closeAbout);
+    $("#closeContact").addEventListener("click", closeContact);
+    $("#closeEssayReader").addEventListener("click", closeEssayReader);
+    $$('[data-menu-close]').forEach((link) => link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href") || "";
+      closeEssayReader();
+      closeEssays();
+      closeAbout();
+      closeContact();
+      closeMenu();
+      // Let mailto links behave normally, but handle in-page navigation after
+      // the full-screen overlays have been removed.
+      if (href.startsWith("#")) {
+        event.preventDefault();
+        const target = document.querySelector(href);
+        requestAnimationFrame(() => target?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      }
+    }));
     $("#closeStudio").addEventListener("click", () => closeOverlay(elements.studio));
     $("#closeProject").addEventListener("click", () => closeOverlay(elements.projectView));
     $("#prevImage").addEventListener("click", () => changeDetailImage(-1));
@@ -1357,13 +2425,60 @@
       }
       openLightbox();
     });
+    $("#lightboxPrev").addEventListener("click", () => changeLightboxImage(-1));
+    $("#lightboxNext").addEventListener("click", () => changeLightboxImage(1));
     $("#closeLightbox").addEventListener("click", closeLightbox);
-    $("#lightboxImage").addEventListener("click", closeLightbox);
+    function finishLightboxSwipe(clientX, clientY) {
+      if (lightboxSwipeStartX === null) return;
+      const distance = clientX - lightboxSwipeStartX;
+      const verticalDistance = clientY - lightboxSwipeStartY;
+      lightboxSwipeStartX = null;
+      lightboxSwipeStartY = null;
+      if (Math.abs(distance) < 48 || Math.abs(distance) < Math.abs(verticalDistance) * 1.15) return;
+      lightboxSwipeMoved = true;
+      changeLightboxImage(distance > 0 ? -1 : 1);
+    }
+
+    $("#lightboxImageWrap").addEventListener("touchstart", (event) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      lightboxSwipeMoved = false;
+      lightboxSwipeStartX = touch.clientX;
+      lightboxSwipeStartY = touch.clientY;
+    }, { passive: true });
+    $("#lightboxImageWrap").addEventListener("touchend", (event) => {
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+      finishLightboxSwipe(touch.clientX, touch.clientY);
+    }, { passive: true });
+    $("#lightboxImageWrap").addEventListener("touchcancel", () => {
+      lightboxSwipeStartX = null;
+      lightboxSwipeStartY = null;
+      lightboxSwipeMoved = false;
+    }, { passive: true });
+    $("#lightboxImage").addEventListener("click", () => {
+      if (lightboxSwipeMoved) {
+        lightboxSwipeMoved = false;
+        return;
+      }
+      closeLightbox();
+    });
+    $("#lightboxStage").addEventListener("click", (event) => {
+      if (event.target === event.currentTarget || event.target === $("#lightboxImageWrap")) closeLightbox();
+    });
     $("#imageLightbox").addEventListener("click", (event) => {
       if (event.target === event.currentTarget) closeLightbox();
     });
     $("#newProject").addEventListener("click", startNewProject);
     $("#cancelProject").addEventListener("click", resetProjectForm);
+    $("#newEssay").addEventListener("click", startNewEssay);
+    $("#cancelEssay").addEventListener("click", resetEssayForm);
+    $$('[data-studio-tab]').forEach((button) => button.addEventListener("click", () => activateStudioSection(button.dataset.studioTab)));
+    $("#imageCompressionEnabled").addEventListener("change", saveCompressionPreferences);
+    $("#imageCompressionTarget").addEventListener("change", saveCompressionPreferences);
+    $("#imageCompressionMaxEdge").addEventListener("change", saveCompressionPreferences);
+    $("#musicCompressionEnabled").addEventListener("change", saveMusicCompressionPreferences);
+    $("#musicCompressionTarget").addEventListener("change", saveMusicCompressionPreferences);
     $("#saveProfile").addEventListener("click", saveProfile);
     $("#musicFile").addEventListener("change", (event) => handleMusicFile(event.target.files[0]));
     $("#musicAutoStart").addEventListener("change", saveMusicSettings);
@@ -1379,8 +2494,29 @@
     $("#importData").addEventListener("click", () => $("#importFile").click());
     $("#importFile").addEventListener("change", (event) => event.target.files[0] && importBackup(event.target.files[0]));
     document.addEventListener("keydown", (event) => {
-      if ($("#imageLightbox").classList.contains("is-open") && event.key === "Escape") {
-        closeLightbox();
+      if ($("#imageLightbox").classList.contains("is-open")) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeLightbox();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          changeLightboxImage(-1);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          changeLightboxImage(1);
+        }
+        return;
+      }
+      if (elements.essayReader?.classList.contains("is-open") && event.key === "Escape") {
+        closeEssayReader();
+      } else if (elements.about?.classList.contains("is-open") && event.key === "Escape") {
+        closeAbout();
+      } else if (elements.contact?.classList.contains("is-open") && event.key === "Escape") {
+        closeContact();
+      } else if (elements.essays?.classList.contains("is-open") && event.key === "Escape") {
+        closeEssays();
+      } else if (elements.menu?.classList.contains("is-open") && event.key === "Escape") {
+        closeMenu();
       } else if (elements.projectView.classList.contains("is-open") && event.key === "ArrowLeft") {
         event.preventDefault();
         changeDetailImage(-1);
@@ -1399,6 +2535,46 @@
       elements.grid.innerHTML = `<div class="empty-state"><h3>无法打开本地存储</h3><p>请使用现代浏览器打开此页面，并允许网站保存本地数据。</p></div>`;
     });
   </script>
+          <section class="menu-panel" id="menuPanel" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menu">
+            <button class="menu-close" id="closeMenu" type="button">Close</button>
+            <nav class="menu-nav" aria-label="Main menu">
+              <a href="#archive" data-menu-close="">Record</a>
+              <button id="openEssays" type="button">Essays</button>
+              <button id="openAbout" type="button">About</button>
+              <button id="openContact" type="button">Contact</button>
+            </nav>
+            <p class="menu-credit" id="menuCredit">website by humorpoppy.</p>
+          </section>
+          <section class="essays-view" id="essaysView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="essaysTitle">
+            <div class="overlay-bar"><h2 class="overlay-title" id="essaysTitle">Essays</h2><button class="icon-button" id="closeEssays" type="button" aria-label="Close essays">×</button></div>
+            <div class="essays-intro" id="essaysIntro">Notes on photography, memory, walking, and the unstable life of images.</div>
+            <div class="essay-list" id="essayList"><button class="essay-entry" type="button" aria-label="Read essay 时间如水"><span class="essay-date">14.08.2026</span><span class="essay-entry-copy"><span class="essay-entry-title">时间如水</span><span class="essay-entry-excerpt">流水落花春去也，天上人间。</span></span></button></div>
+          </section>
+          <section class="about-view" id="aboutView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aboutViewTitle">
+            <div class="overlay-bar"><h2 class="overlay-title" id="aboutViewTitle">About</h2><button class="icon-button" id="closeAbout" type="button" aria-label="Close about">×</button></div>
+            <div class="about-view-inner">
+              <p class="about-statement" id="aboutViewStatement"></p>
+              <div class="about-side">
+                <p class="about-copy" id="aboutViewCopy"></p>
+                <a class="about-contact" id="aboutViewContact" href="mailto:1976904825@qq.com">1976904825@qq.com</a>
+              </div>
+            </div>
+          </section>
+          <section class="contact-view" id="contactView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contactViewTitle">
+            <div class="overlay-bar"><h2 class="overlay-title">Contact</h2><button class="icon-button" id="closeContact" type="button" aria-label="Close contact">×</button></div>
+            <div class="contact-view-inner">
+              <h2 class="contact-view-title" id="contactViewTitle">Start a conversation.</h2>
+              <div class="contact-view-bottom"><p class="contact-view-copy" id="contactViewCopy">For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.</p><a class="contact-view-email" id="contactViewEmail" href="mailto:1976904825@qq.com">1976904825@qq.com</a></div>
+            </div>
+          </section>
+          <section class="essay-reader" id="essayReader" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="essayReaderTitle">
+            <div class="overlay-bar"><h2 class="overlay-title">Essay</h2><button class="icon-button" id="closeEssayReader" type="button" aria-label="Close essay">×</button></div>
+            <article class="essay-reader-inner">
+              <p class="essay-reader-date" id="essayReaderDate"></p>
+              <h2 class="essay-reader-title" id="essayReaderTitle"></h2>
+              <div class="essay-reader-body" id="essayReaderBody"></div>
+            </article>
+          </section>
 
 
 </body></html>
