@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A local-first photography portfolio and project archive.">
-  <title>幽默波比 / Photography Archive</title>
+  <title>HUMORPOPPY / Photography Archive</title>
   <style>
     :root {
       --black: #090909;
@@ -57,9 +57,9 @@
     .header-actions { justify-self: end; display: flex; align-items: center; gap: 16px; }
     .text-button { padding: 4px 0; border: 0; border-bottom: 1px solid transparent; color: inherit; background: none; font-size: 10px; text-transform: uppercase; cursor: pointer; }
     .text-button:hover { border-color: currentColor; }
-    .music-toggle { display: inline-grid; width: 28px; height: 28px; place-items: center; border: 1px solid currentColor; border-radius: 50%; color: inherit; background: transparent; font-family: Arial, Helvetica, sans-serif; font-size: 11px; cursor: pointer; }
-    .music-toggle:hover { color: var(--black); background: var(--white); }
-    .music-toggle.is-playing { color: var(--white); background: var(--signal); border-color: var(--signal); }
+    .music-toggle { display: inline-grid; width: 28px; height: 28px; place-items: center; border: 1px solid var(--white); border-radius: 50%; color: var(--black); background: var(--white); font-family: Arial, Helvetica, sans-serif; font-size: 11px; cursor: pointer; }
+    .music-toggle:hover { color: var(--white); background: var(--black); }
+    .music-toggle.is-playing { color: var(--black); background: var(--white); border-color: var(--white); box-shadow: none; }
 
     .hero {
       position: relative;
@@ -138,7 +138,7 @@
     .detail-gallery { padding: 70px 16px 120px; }
     .detail-stage { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 14px; align-items: center; width: min(1180px, 100%); margin: 0 auto; }
     .detail-figure { min-width: 0; margin: 0; }
-    .detail-image-shell { display: grid; height: min(72vh, 820px); min-height: 420px; place-items: center; overflow: hidden; background: #b8b7b3; touch-action: pan-y; }
+    .detail-image-shell { display: grid; height: min(72vh, 820px); min-height: 420px; place-items: center; overflow: hidden; background: transparent; touch-action: pan-y; }
     .detail-figure img { width: 100%; height: 100%; object-fit: contain; }
     .detail-figure figcaption { display: flex; justify-content: flex-end; min-height: 28px; padding-top: 7px; border-top: 1px solid var(--ink); font-size: 9px; text-transform: uppercase; }
     .detail-nav { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid var(--ink); border-radius: 0; color: var(--ink); background: transparent; font-family: Arial, Helvetica, sans-serif; font-size: 25px; cursor: pointer; }
@@ -149,6 +149,12 @@
     .detail-thumb img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.3); }
     .detail-thumb.is-active { border-color: var(--signal); }
     .detail-thumb.is-active img, .detail-thumb:hover img { filter: none; }
+
+    .image-lightbox { position: fixed; inset: 0; z-index: 1400; display: none; place-items: center; padding: 52px 18px 24px; background: rgba(8,8,8,.96); cursor: zoom-out; }
+    .image-lightbox.is-open { display: grid; }
+    .image-lightbox img { display: block; max-width: 96vw; max-height: 90vh; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 0 1px rgba(255,255,255,.28); cursor: zoom-out; }
+    .image-lightbox-close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border: 1px solid var(--white); color: var(--white); background: transparent; font-size: 24px; line-height: 1; cursor: pointer; }
+    .image-lightbox-close:hover { color: var(--black); background: var(--white); }
 
     .studio-shell { width: min(1120px, 100%); margin: 0 auto; padding: 36px 16px 90px; }
     .studio-lead { display: flex; justify-content: space-between; gap: 30px; align-items: end; padding-bottom: 24px; border-bottom: 1px solid var(--ink); }
@@ -247,10 +253,10 @@
 <body style="">
   <div class="grain" aria-hidden="true"></div>
   <header class="site-header">
-    <a class="brand" id="brandName" href="#top">幽默波比</a>
+    <a class="brand" id="brandName" href="#top">HUMORPOPPY</a>
     <span class="header-center">Photography / Project Archive</span>
     <div class="header-actions">
-      <button class="music-toggle" id="musicToggle" type="button" aria-label="播放背景音乐" title="播放背景音乐" hidden=""><span id="musicToggleIcon">▶</span></button>
+      <button class="music-toggle is-playing" id="musicToggle" type="button" aria-label="暂停背景音乐" title="暂停背景音乐"><span id="musicToggleIcon">Ⅱ</span></button>
       <button class="text-button" id="openStudio" type="button" hidden="">管理作品</button>
       <a class="text-button" href="#archive">项目</a>
     </div>
@@ -261,7 +267,7 @@
       <div class="trail-layer" id="trailLayer" aria-hidden="true"></div>
       <div class="hero-copy">
         <div class="hero-kicker"><span id="heroDescriptor">a humor poppy</span><span>Move to expose / Scroll to enter</span></div>
-        <h1 class="hero-title" id="heroName">幽默波比</h1>
+        <h1 class="hero-title" id="heroName">HUMORPOPPY</h1>
         <div class="hero-bottom">
           <p class="hero-intro" id="heroIntro"></p>
           <a class="enter-link" href="#archive">查看作品</a>
@@ -276,13 +282,13 @@
       </div>
       <div class="archive-meta"><span id="projectCount">04 Projects</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开项目 jiahao man">
-          <div class="project-media"><img src="blob:null/cae2ab79-4331-4ad7-9b76-3b089faa44be" alt="jiahao man 封面"><span class="project-index">01</span></div>
+          <div class="project-media"><img src="blob:null/616ffb83-54d5-4be3-81dd-c22765ae336b" alt="jiahao man 封面"><span class="project-index">01</span></div>
           <div class="project-info"><h3 class="project-title">jiahao man</h3><span class="project-meta">2026<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开项目 Tsingtao night">
-          <div class="project-media"><img src="blob:null/2550c133-70a4-4975-ab96-85925c0f5a81" alt="Tsingtao night 封面"><span class="project-index">02</span></div>
+          <div class="project-media"><img src="blob:null/b0235e83-6f6a-46ee-9fba-4a060f268925" alt="Tsingtao night 封面"><span class="project-index">02</span></div>
           <div class="project-info"><h3 class="project-title">Tsingtao night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开项目 warm sea">
-          <div class="project-media"><img src="blob:null/0a692f8d-1f8a-475c-a345-22999c05f957" alt="warm sea 封面"><span class="project-index">03</span></div>
+          <div class="project-media"><img src="blob:null/19b5e637-0205-432c-b78a-82553e22e24a" alt="warm sea 封面"><span class="project-index">03</span></div>
           <div class="project-info"><h3 class="project-title">warm sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开项目 Last sea">
-          <div class="project-media"><img src="blob:null/7e53a201-1e83-4934-81b3-4efc60e6c07b" alt="Last sea 封面"><span class="project-index">04</span></div>
+          <div class="project-media"><img src="blob:null/9a73ab19-b711-4956-be54-d87051a464f4" alt="Last sea 封面"><span class="project-index">04</span></div>
           <div class="project-info"><h3 class="project-title">Last sea</h3><span class="project-meta">2024<br>sea</span></div></button></div>
     </section>
 
@@ -296,22 +302,27 @@
   </main>
 
   <section class="project-view" id="projectView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-    <div class="overlay-bar"><h2 class="overlay-title" id="detailBarTitle">jiahao man</h2><button class="icon-button" id="closeProject" type="button" aria-label="关闭项目">×</button></div>
+    <div class="overlay-bar"><h2 class="overlay-title" id="detailBarTitle">Project</h2><button class="icon-button" id="closeProject" type="button" aria-label="关闭项目">×</button></div>
     <div class="project-view-head">
-      <h2 class="detail-heading" id="detailTitle">jiahao man</h2>
-      <div class="detail-copy"><div class="detail-meta" id="detailMeta">2026 / Street</div><p class="detail-description" id="detailDescription">通宵网吧一夜，于飞鱼街道前。</p></div>
+      <h2 class="detail-heading" id="detailTitle">Project</h2>
+      <div class="detail-copy"><div class="detail-meta" id="detailMeta"></div><p class="detail-description" id="detailDescription"></p></div>
     </div>
     <div class="detail-gallery" id="detailGallery">
       <div class="detail-stage" id="detailStage">
-        <button class="detail-nav" id="prevImage" type="button" aria-label="上一张图片" disabled="">←</button>
+        <button class="detail-nav" id="prevImage" type="button" aria-label="上一张图片">←</button>
         <figure class="detail-figure">
-          <div class="detail-image-shell" id="detailImageShell"><img id="detailImage" src="blob:null/5b14be43-24d1-45c2-a114-fb0534102921" alt="jiahao man 1"></div>
-          <figcaption><span id="detailCounter">01 / 01</span></figcaption>
+          <div class="detail-image-shell" id="detailImageShell"><img id="detailImage" src="" alt=""></div>
+          <figcaption><span id="detailCounter"></span></figcaption>
         </figure>
-        <button class="detail-nav" id="nextImage" type="button" aria-label="下一张图片" disabled="">→</button>
+        <button class="detail-nav" id="nextImage" type="button" aria-label="下一张图片">→</button>
       </div>
-      <div class="detail-thumbs" id="detailThumbs" aria-label="项目图片缩略图" hidden=""><button class="detail-thumb is-active" type="button" aria-label="查看第 1 张图片" aria-current="true"><img src="blob:null/5b14be43-24d1-45c2-a114-fb0534102921" alt=""></button></div>
+      <div class="detail-thumbs" id="detailThumbs" aria-label="项目图片缩略图"></div>
     </div>
+  </section>
+
+  <section class="image-lightbox" id="imageLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="放大查看图片">
+    <button class="image-lightbox-close" id="closeLightbox" type="button" aria-label="关闭放大图片">×</button>
+    <img id="lightboxImage" src="" alt="">
   </section>
 
   <section class="studio" id="studio" aria-hidden="false" role="dialog" aria-modal="true" aria-labelledby="studioTitle" hidden="">
@@ -341,9 +352,9 @@
           <div class="music-settings">
             <h4>背景音乐</h4>
             <div class="field"><label for="musicFile">上传或替换音乐</label><input id="musicFile" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac"><span class="field-label">推荐 MP3，文件尽量控制在 15 MB 以内。</span></div>
-            <p class="music-current" id="musicCurrent">尚未添加背景音乐</p>
+            <p class="music-current" id="musicCurrent">Sound Horizon - 美しきもの.mp3</p>
             <label class="check-field" for="musicAutoStart"><input id="musicAutoStart" type="checkbox" checked=""><span>访客首次点击或触摸页面后自动播放</span></label>
-            <div class="music-actions"><button class="action-button" id="previewMusic" type="button" disabled="">试听 / 暂停</button><button class="action-button danger" id="removeMusic" type="button" disabled="">移除音乐</button></div>
+            <div class="music-actions"><button class="action-button" id="previewMusic" type="button">试听 / 暂停</button><button class="action-button danger" id="removeMusic" type="button">移除音乐</button></div>
           </div>
 
           <form id="projectForm" hidden="">
@@ -361,7 +372,7 @@
         </div>
 
         <div class="panel"><h3 class="panel-title">项目顺序</h3><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/6002808e-24c3-4817-a26f-8225ffe18f6c" alt="">
+          <img class="manager-thumb" src="blob:null/f5a09577-dd2c-4d50-b51f-66b8b42eaf04" alt="">
           <div><h4 class="manager-name">jiahao man</h4><span class="manager-sub">2026 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -369,7 +380,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/b24337c1-f9ce-4aeb-aae9-21aa7cf973a9" alt="">
+          <img class="manager-thumb" src="blob:null/61d7e8c1-2289-4c2f-bf15-185bfad4b497" alt="">
           <div><h4 class="manager-name">Tsingtao night</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -377,7 +388,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/bfe6bbeb-a2b5-4242-be30-0b6cea6a7b6c" alt="">
+          <img class="manager-thumb" src="blob:null/fbf41f9d-640f-4577-aa20-e709e8948f25" alt="">
           <div><h4 class="manager-name">warm sea</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -385,7 +396,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/e17343fe-af79-43d3-9b93-a8badd02f4db" alt="">
+          <img class="manager-thumb" src="blob:null/9753500a-6146-4f60-ad11-a8f18bdd88f6" alt="">
           <div><h4 class="manager-name">Last sea</h4><span class="manager-sub">2024 / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -397,12 +408,12 @@
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status">网站资料已保存</div>
+  <div class="toast" id="toast" role="status"></div>
   <audio id="backgroundMusic" loop="" preload="metadata"></audio>
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
   <script>
-    const PUBLISHED_DATA = {"profile":{"name":"幽默波比","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","email":"1976904825@qq.com"},"music":{"name":"","type":"","autoStart":true,"url":""},"projects":[{"id":"demo-1","order":0,"title":"jiahao man","year":"2026","category":"Street","description":"通宵网吧一夜，于飞鱼街道前。","images":[{"name":"鸡.png","url":"assets/images/project-1-1.png"}]},{"id":"demo-2","order":1,"title":"Tsingtao night","year":"2024","category":"Urban","description":"两人夜晚在海边。","images":[{"name":"未知.png","url":"assets/images/project-2-1.png"}]},{"id":"demo-3","order":2,"title":"warm sea","year":"2024","category":"Fragments","description":"冬日暖阳羽绒人海鸥","images":[{"name":"warmm.png","url":"assets/images/project-3-1.png"}]},{"id":"demo-4","order":3,"title":"Last sea","year":"2024","category":"sea","description":"无意义","images":[{"name":"seaa.png","url":"assets/images/project-4-1.png"}]}]};
+    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","email":"1976904825@qq.com"},"music":{"name":"Sound Horizon - 美しきもの.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"jiahao man","year":"2026","category":"Street","description":"通宵网吧一夜，于飞鱼街道前。","images":[{"name":"鸡.png","url":"assets/images/project-1-1.png"}]},{"id":"demo-2","order":1,"title":"Tsingtao night","year":"2024","category":"Urban","description":"两人夜晚在海边。","images":[{"name":"未知.png","url":"assets/images/project-2-1.png"}]},{"id":"demo-3","order":2,"title":"warm sea","year":"2024","category":"Fragments","description":"冬日暖阳羽绒人海鸥","images":[{"name":"warmm.png","url":"assets/images/project-3-1.png"}]},{"id":"demo-4","order":3,"title":"Last sea","year":"2024","category":"sea","description":"无意义","images":[{"name":"seaa.png","url":"assets/images/project-4-1.png"}]}]};
     const PUBLIC_MODE = true;
     const DEMO_PROJECTS = [
       {
@@ -457,6 +468,7 @@
     let currentDetailIndex = 0;
     let detailSwipeStartX = null;
     let detailSwipeStartY = null;
+    let detailSwipeMoved = false;
 
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -800,13 +812,34 @@
       showDetailImage(currentDetailIndex + direction);
     }
 
+    function openLightbox() {
+      const image = $("#detailImage");
+      if (!currentDetailProject || !image.src) return;
+      $("#lightboxImage").src = image.currentSrc || image.src;
+      $("#lightboxImage").alt = image.alt;
+      $("#imageLightbox").classList.add("is-open");
+      $("#imageLightbox").setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      $("#closeLightbox").focus();
+    }
+
+    function closeLightbox() {
+      $("#imageLightbox").classList.remove("is-open");
+      $("#imageLightbox").setAttribute("aria-hidden", "true");
+      $("#lightboxImage").removeAttribute("src");
+      if (elements.projectView.classList.contains("is-open")) document.body.style.overflow = "hidden";
+      else if (!elements.studio.classList.contains("is-open")) document.body.style.overflow = "";
+    }
+
     function closeOverlay(overlay) {
       overlay.classList.remove("is-open");
       overlay.setAttribute("aria-hidden", "true");
       if (overlay === elements.projectView) {
+        if ($("#imageLightbox").classList.contains("is-open")) closeLightbox();
         currentDetailProject = null;
         detailSwipeStartX = null;
         detailSwipeStartY = null;
+        detailSwipeMoved = false;
       }
       if (!elements.projectView.classList.contains("is-open") && !elements.studio.classList.contains("is-open")) document.body.style.overflow = "";
     }
@@ -1287,11 +1320,13 @@
       detailSwipeStartX = null;
       detailSwipeStartY = null;
       if (Math.abs(distance) < 48 || Math.abs(distance) < Math.abs(verticalDistance) * 1.15) return;
+      detailSwipeMoved = true;
       changeDetailImage(distance > 0 ? -1 : 1);
     }
 
     $("#detailImageShell").addEventListener("pointerdown", (event) => {
       if (event.pointerType === "touch") return;
+      detailSwipeMoved = false;
       detailSwipeStartX = event.clientX;
       detailSwipeStartY = event.clientY;
     });
@@ -1299,10 +1334,11 @@
       if (event.pointerType === "touch") return;
       finishDetailSwipe(event.clientX, event.clientY);
     });
-    $("#detailImageShell").addEventListener("pointercancel", () => { detailSwipeStartX = null; detailSwipeStartY = null; });
+    $("#detailImageShell").addEventListener("pointercancel", () => { detailSwipeStartX = null; detailSwipeStartY = null; detailSwipeMoved = false; });
     $("#detailImageShell").addEventListener("touchstart", (event) => {
       const touch = event.touches[0];
       if (!touch) return;
+      detailSwipeMoved = false;
       detailSwipeStartX = touch.clientX;
       detailSwipeStartY = touch.clientY;
     }, { passive: true });
@@ -1311,7 +1347,19 @@
       if (!touch) return;
       finishDetailSwipe(touch.clientX, touch.clientY);
     }, { passive: true });
-    $("#detailImageShell").addEventListener("touchcancel", () => { detailSwipeStartX = null; detailSwipeStartY = null; }, { passive: true });
+    $("#detailImageShell").addEventListener("touchcancel", () => { detailSwipeStartX = null; detailSwipeStartY = null; detailSwipeMoved = false; }, { passive: true });
+    $("#detailImage").addEventListener("click", () => {
+      if (detailSwipeMoved) {
+        detailSwipeMoved = false;
+        return;
+      }
+      openLightbox();
+    });
+    $("#closeLightbox").addEventListener("click", closeLightbox);
+    $("#lightboxImage").addEventListener("click", closeLightbox);
+    $("#imageLightbox").addEventListener("click", (event) => {
+      if (event.target === event.currentTarget) closeLightbox();
+    });
     $("#newProject").addEventListener("click", startNewProject);
     $("#cancelProject").addEventListener("click", resetProjectForm);
     $("#saveProfile").addEventListener("click", saveProfile);
@@ -1329,7 +1377,9 @@
     $("#importData").addEventListener("click", () => $("#importFile").click());
     $("#importFile").addEventListener("change", (event) => event.target.files[0] && importBackup(event.target.files[0]));
     document.addEventListener("keydown", (event) => {
-      if (elements.projectView.classList.contains("is-open") && event.key === "ArrowLeft") {
+      if ($("#imageLightbox").classList.contains("is-open") && event.key === "Escape") {
+        closeLightbox();
+      } else if (elements.projectView.classList.contains("is-open") && event.key === "ArrowLeft") {
         event.preventDefault();
         changeDetailImage(-1);
       } else if (elements.projectView.classList.contains("is-open") && event.key === "ArrowRight") {
