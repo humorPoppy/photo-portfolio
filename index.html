@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A local-first photography portfolio and project archive.">
   <title>HUMORPOPPY / Photography Archive</title>
+  <link rel="preload" as="image" href="assets/cursor/butterfly.webp" type="image/webp">
   <style>
     :root {
       --black: #090909;
@@ -19,6 +20,9 @@
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; background: var(--black); }
     body { margin: 0; color: var(--ink); background: var(--paper); font-family: "Courier New", Courier, monospace; overflow-x: hidden; }
+    body.is-loading, body.home-gated { overflow: hidden; }
+    body.home-gated { position: fixed; inset: 0; width: 100%; height: 100%; background: var(--black); overscroll-behavior: none; }
+    body.home-gated .archive { visibility: hidden; pointer-events: none; }
     button, input, textarea { font: inherit; }
     button { color: inherit; }
     img { display: block; max-width: 100%; }
@@ -34,6 +38,120 @@
       pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.94' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.62'/%3E%3C/svg%3E");
       mix-blend-mode: multiply;
+    }
+
+    .butterfly-cursor {
+      position: fixed;
+      inset: 0;
+      z-index: 1900;
+      display: none;
+      pointer-events: none;
+    }
+    .butterfly-cursor-mark {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .butterfly-cursor-mark {
+      width: 100px;
+      height: 100px;
+      transition: opacity .18s linear;
+    }
+    .butterfly-cursor-mark img {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .butterfly-cursor.is-visible .butterfly-cursor-mark { opacity: 1; }
+
+    @media (hover: hover) and (pointer: fine) and (min-width: 851px) {
+      body.butterfly-cursor-enabled .butterfly-cursor { display: block; }
+    }
+
+    .site-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 1800;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      cursor: crosshair;
+      color: #fff;
+      background: #fff;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .8s ease, visibility 0s linear .8s;
+    }
+    .site-loader.is-ready { opacity: 0; visibility: hidden; pointer-events: none; }
+    .site-loader-wipe {
+      position: absolute;
+      z-index: 1;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--black);
+      transition: top .68s cubic-bezier(.76, 0, .24, 1);
+      will-change: top;
+    }
+    .site-loader.is-wiping .site-loader-wipe { top: 0; }
+    .site-loader-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: opacity .24s ease;
+    }
+    .site-loader.is-wiping .site-loader-content { opacity: 0; }
+    .site-loader-text {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      font: 500 16px/1 Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .site-loader-word {
+      display: inline-block;
+      width: 0;
+      height: 18px;
+      margin: 0 4px;
+      overflow: hidden;
+      opacity: 0;
+      white-space: nowrap;
+      animation: loader-word-in 1s ease-in-out forwards;
+    }
+    @keyframes loader-word-in {
+      0% { width: 8px; opacity: 0; }
+      80% { width: 86px; opacity: 0; }
+      100% { width: 86px; opacity: 1; }
+    }
+    .site-loader-trail {
+      width: clamp(130px, 16vw, 230px);
+      margin-top: 28px;
+      opacity: 0;
+      transform: scale(.96);
+      transition: opacity .24s steps(2, end), transform .24s steps(2, end);
+    }
+    .site-loader-trail.is-visible { opacity: .74; transform: scale(1); }
+    .site-loader-trail img {
+      display: block;
+      width: 100%;
+      max-height: 310px;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.65) brightness(.86);
+      box-shadow: 0 0 0 1px rgba(9,9,9,.18);
     }
 
     .site-header {
@@ -91,6 +209,13 @@
     }
 
     .hero-copy { position: absolute; inset: var(--header-h) 0 0; z-index: 950; display: flex; flex-direction: column; justify-content: space-between; padding: 22px 18px 16px; pointer-events: none; }
+    .hero.is-edge-bouncing .hero-copy, .hero.is-edge-bouncing .trail-layer { animation: home-edge-bounce .58s cubic-bezier(.2,.72,.2,1); }
+    @keyframes home-edge-bounce {
+      0% { transform: translateY(0); }
+      34% { transform: translateY(-18px); }
+      68% { transform: translateY(5px); }
+      100% { transform: translateY(0); }
+    }
     .hero-kicker { display: flex; justify-content: space-between; gap: 20px; font-size: 10px; text-transform: uppercase; }
     .hero-title {
       margin: 0;
@@ -120,6 +245,35 @@
       min-height: 1.1em;
       transition: left .42s cubic-bezier(.2,.75,.2,1), top .42s cubic-bezier(.2,.75,.2,1), transform .42s cubic-bezier(.2,.75,.2,1), font-size .42s cubic-bezier(.2,.75,.2,1), line-height .42s cubic-bezier(.2,.75,.2,1), padding-bottom .42s ease;
     }
+    .hero-name-roll {
+      --hero-name-line: 1.12em;
+      display: flex;
+      align-items: flex-start;
+      height: var(--hero-name-line);
+      overflow: visible;
+    }
+    .hero-name-letter {
+      display: inline-block;
+      flex: 0 0 auto;
+      height: var(--hero-name-line);
+      overflow: hidden;
+      vertical-align: top;
+    }
+    .hero-name-letter.is-space { width: .28em; }
+    .hero-name-track {
+      display: flex;
+      flex-direction: column;
+      transform: translateY(calc(-1 * var(--hero-name-line)));
+      transition: transform .42s cubic-bezier(.2,.75,.2,1);
+      will-change: transform;
+    }
+    .hero-name-glyph {
+      display: block;
+      height: var(--hero-name-line);
+      line-height: 1;
+      flex: 0 0 var(--hero-name-line);
+    }
+    .hero-title.is-name-rolling .hero-name-track { transform: translateY(0); }
     body.has-scrolled .hero-title {
       left: 16px;
       top: 8px;
@@ -136,8 +290,8 @@
     .trail-layer { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
     .trail-frame { position: absolute; width: clamp(130px, 16vw, 230px); opacity: .74; pointer-events: none; animation: expose .18s steps(2, end) both; }
     .trail-frame img { width: 100%; max-height: 310px; object-fit: cover; filter: grayscale(1) contrast(1.65) brightness(.86); box-shadow: 0 0 0 1px rgba(255,255,255,.2); }
-    .trail-frame:nth-child(3n) img { filter: grayscale(1) contrast(2) brightness(1.05); }
-    .trail-frame:nth-child(5n) img { filter: grayscale(1) contrast(1.4) invert(1); }
+    .trail-frame.tone-hard img { filter: grayscale(1) contrast(2) brightness(1.05); }
+    .trail-frame.tone-inverted img { filter: grayscale(1) contrast(1.4) invert(1); }
     @keyframes expose { from { opacity: 0; transform: scale(.96); } to { opacity: .74; transform: scale(1); } }
 
     .archive { min-height: 100vh; padding: 96px 16px 120px; background: var(--paper); }
@@ -209,7 +363,19 @@
     .essay-reader-inner { width: min(900px, 100%); margin: 0 auto; padding: 76px 18px 110px; }
     .essay-reader-date { margin: 0 0 16px; color: var(--ink); font-size: 11px; text-transform: uppercase; }
     .essay-reader-title { margin: 0 0 34px; font: 900 clamp(44px, 8vw, 110px)/.84 Arial, Helvetica, sans-serif; text-transform: uppercase; }
-    .essay-reader-body { max-width: 720px; white-space: pre-line; font-size: 14px; line-height: 1.8; }
+    .essay-reader-body { max-width: 720px; font-size: 14px; line-height: 1.8; }
+    .essay-rich-text { overflow-wrap: anywhere; }
+    .essay-rich-text > :first-child { margin-top: 0; }
+    .essay-rich-text > :last-child { margin-bottom: 0; }
+    .essay-rich-text p { margin: 0 0 1.35em; }
+    .essay-rich-text h2 { margin: 2.1em 0 .7em; font: 800 clamp(22px, 3.2vw, 38px)/1.02 Arial, Helvetica, sans-serif; text-transform: uppercase; }
+    .essay-rich-text blockquote { margin: 2em 0; padding: 4px 0 4px 22px; border-left: 2px solid var(--ink); font-size: 1.12em; line-height: 1.65; }
+    .essay-rich-text ul, .essay-rich-text ol { margin: 0 0 1.35em; padding-left: 1.5em; }
+    .essay-rich-text li + li { margin-top: .45em; }
+    .essay-rich-text a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .essay-reader-media { width: min(100%, 860px); margin: 54px 0; }
+    .essay-reader-media img { display: block; width: 100%; height: auto; max-height: 86vh; object-fit: contain; background: #d8d8d4; }
+    .essay-reader-media figcaption { margin-top: 8px; color: var(--grey); font-size: 9px; line-height: 1.45; text-transform: uppercase; }
 
     .project-view, .studio { position: fixed; inset: 0; z-index: 950; display: none; overflow: auto; background: var(--paper); }
     .project-view.is-open, .studio.is-open { display: block; }
@@ -318,10 +484,52 @@
     .mini-button { width: 32px; height: 30px; border: 1px solid var(--ink); background: transparent; cursor: pointer; }
     .mini-button:hover { color: var(--white); background: var(--black); }
     .existing-images { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .existing-image { position: relative; width: 76px; height: 76px; border: 1px solid var(--ink); }
+    .existing-image { position: relative; width: 96px; height: 96px; border: 1px solid var(--ink); background: #aaa; }
+    .existing-image.is-cover { outline: 2px solid var(--ink); outline-offset: 2px; }
     .existing-image img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
-    .existing-image button { position: absolute; right: 2px; top: 2px; width: 22px; height: 22px; border: 0; color: var(--white); background: var(--signal); cursor: pointer; }
-    .existing-image-size { position: absolute; left: 2px; bottom: 2px; max-width: calc(100% - 4px); padding: 2px 4px; color: var(--white); background: rgba(0,0,0,.78); font-size: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .existing-image-remove { position: absolute; right: 2px; top: 2px; width: 22px; height: 22px; border: 0; color: var(--white); background: var(--signal); cursor: pointer; }
+    .existing-image-cover { position: absolute; left: 2px; right: 2px; bottom: 2px; height: 22px; border: 1px solid var(--white); color: var(--white); background: rgba(9,9,9,.78); font-size: 8px; text-transform: uppercase; cursor: pointer; }
+    .existing-image.is-cover .existing-image-cover { color: var(--black); background: var(--white); }
+    .existing-image-size { position: absolute; left: 2px; top: 2px; max-width: calc(100% - 30px); padding: 2px 4px; color: var(--white); background: rgba(0,0,0,.78); font-size: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .existing-images-help { margin: 8px 0 0; color: var(--grey); font-size: 9px; line-height: 1.45; text-transform: uppercase; }
+    .essay-studio-actions { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .essay-studio-actions p { margin: 0; color: var(--grey); font-size: 9px; line-height: 1.5; text-transform: uppercase; }
+    .essay-editor-form { border-top: 1px solid var(--ink); padding-top: 20px; }
+    .essay-editor-topline { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+    .essay-editor-topline .panel-title { margin: 0; }
+    .essay-meta-grid { display: grid; grid-template-columns: 1fr minmax(180px, .32fr); gap: 0 16px; }
+    .essay-meta-grid .essay-excerpt-field { grid-column: 1 / -1; }
+    .essay-compose-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr); gap: 22px; align-items: start; margin-top: 8px; }
+    .essay-compose-panel, .essay-preview-panel { min-width: 0; border: 1px solid var(--ink); background: rgba(255,255,255,.14); }
+    .essay-compose-panel { padding: 12px; }
+    .essay-preview-panel { position: sticky; top: 120px; max-height: calc(100vh - 146px); overflow: auto; }
+    .essay-preview-label { position: sticky; top: 0; z-index: 2; display: block; padding: 9px 12px; border-bottom: 1px solid var(--ink); color: var(--white); background: var(--black); font-size: 9px; text-transform: uppercase; }
+    .essay-editor-toolbar { position: sticky; top: 108px; z-index: 4; display: flex; flex-wrap: wrap; gap: 4px; margin: -12px -12px 12px; padding: 8px 12px; border-bottom: 1px solid var(--ink); background: var(--paper); }
+    .essay-tool-button { min-width: 36px; height: 34px; border: 1px solid var(--ink); padding: 0 9px; color: var(--ink); background: transparent; font: 800 11px/1 Arial, Helvetica, sans-serif; cursor: pointer; }
+    .essay-tool-button:hover, .essay-tool-button:focus-visible { color: var(--white); background: var(--black); }
+    .essay-block-editor { display: grid; gap: 10px; }
+    .essay-edit-block { border: 1px solid var(--line); background: rgba(255,255,255,.28); }
+    .essay-edit-block:focus-within { border-color: var(--ink); }
+    .essay-edit-block-head { display: flex; align-items: center; gap: 4px; min-height: 32px; padding: 4px 5px 4px 9px; border-bottom: 1px solid var(--line); }
+    .essay-edit-block-kind { margin-right: auto; color: var(--grey); font-size: 8px; text-transform: uppercase; }
+    .essay-block-control { width: 28px; height: 24px; border: 0; color: var(--ink); background: transparent; font-size: 13px; cursor: pointer; }
+    .essay-block-control:hover { color: var(--white); background: var(--black); }
+    .essay-rich-input { min-height: 360px; padding: 22px; background: var(--white); font-size: 14px; line-height: 1.8; outline: 0; overflow-wrap: anywhere; }
+    .essay-rich-input:empty::before { content: attr(data-placeholder); color: #888; pointer-events: none; }
+    .essay-edit-image { padding: 10px; }
+    .essay-edit-image img { display: block; width: 100%; max-height: 520px; object-fit: contain; background: #d8d8d4; }
+    .essay-image-caption { width: 100%; margin-top: 8px; border: 1px solid var(--ink); border-radius: 0; padding: 9px; color: var(--ink); background: var(--white); font-size: 11px; }
+    .essay-block-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
+    .essay-image-add { position: relative; overflow: hidden; cursor: pointer; }
+    .essay-image-add input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .essay-image-status { min-height: 18px; margin: 9px 0 0; color: var(--grey); font-size: 9px; line-height: 1.45; text-transform: uppercase; }
+    .essay-import-field { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--line); }
+    .essay-live-preview { width: 100%; padding: 40px 26px 70px; }
+    .essay-live-preview .essay-reader-title { margin-bottom: 28px; font-size: clamp(34px, 5vw, 70px); }
+    .essay-live-preview .essay-reader-body { font-size: 13px; }
+    .essay-list-card { margin-top: 30px; }
+    .publish-update-card { grid-column: 1 / -1; }
+    .publish-baseline-status { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--grey); font-size: 9px; line-height: 1.55; text-transform: uppercase; }
     .status { min-height: 18px; margin: 12px 0 0; color: var(--signal); font-size: 10px; text-transform: uppercase; }
 
     .toast { position: fixed; right: 14px; bottom: 14px; z-index: 1200; max-width: min(360px, calc(100vw - 28px)); padding: 12px 14px; color: var(--white); background: var(--black); border-left: 4px solid var(--signal); font-size: 11px; line-height: 1.4; transform: translateY(140%); transition: transform .25s ease; }
@@ -341,6 +549,7 @@
       .hero-bottom { display: block; }
       .hero-intro { width: 100%; margin-bottom: 18px; }
       .enter-link { font-size: 22px; }
+      .site-loader-trail { width: 130px; margin-top: 22px; }
       .trail-frame { width: 130px; }
       .trail-frame.is-touch { width: clamp(108px, 31vw, 132px); opacity: .8; }
       .section-header { display: block; }
@@ -395,6 +604,14 @@
       .manager-thumb { width: 64px; }
       .manager-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
       .essay-manager-item { grid-template-columns: 1fr; }
+      .essay-studio-actions, .essay-editor-topline { align-items: flex-start; flex-direction: column; }
+      .essay-meta-grid, .essay-compose-grid { display: block; }
+      .essay-compose-panel { padding: 9px; }
+      .essay-preview-panel { position: static; max-height: none; margin-top: 18px; }
+      .essay-editor-toolbar { top: 108px; margin: -9px -9px 10px; padding: 7px 9px; }
+      .essay-rich-input { min-height: 300px; padding: 16px 13px; }
+      .essay-live-preview { padding: 32px 14px 54px; }
+      .essay-reader-media { margin: 34px 0; }
       .panel + .panel { margin-top: 42px; }
       .manager-item { grid-template-columns: 62px 1fr; }
       .manager-thumb { width: 62px; }
@@ -411,12 +628,20 @@
       .hero { cursor: auto; }
       .trail-layer { display: none; }
       .project-media img { transition: none; }
-      .site-header, .site-header::after, .hero-title { transition: none; }
+      .site-header, .site-header::after, .hero-title, .site-loader, .site-loader-wipe, .hero-name-track { transition: none; }
+      .site-loader-word { width: 86px; opacity: 1; animation: none; }
+      .hero-name-track { transform: translateY(0); }
+      .hero.is-edge-bouncing .hero-copy, .hero.is-edge-bouncing .trail-layer { animation: none; }
+      .butterfly-cursor { display: none !important; }
     }
   </style>
-</head>
-<body class="has-scrolled" style="">
+<script src="file:///D:/A-GUET/ObsidianVault/humorpoppy-website/butterfly-fallback.js" async=""></script></head>
+<body class="butterfly-cursor-enabled record-entered has-scrolled" style="">
   <div class="grain" aria-hidden="true"></div>
+  <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(302.5px, 124px, 0px);"><img src="assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+  </div>
+  
   <header class="site-header">
     <div class="header-actions">
       <button class="music-toggle is-playing" id="musicToggle" type="button" aria-label="暂停背景音乐" title="暂停背景音乐"><span id="musicToggleIcon">Ⅱ</span></button>
@@ -430,7 +655,7 @@
       <div class="trail-layer" id="trailLayer" aria-hidden="true"></div>
       <div class="hero-copy">
         <div class="hero-kicker"><span id="heroDescriptor">a humor poppy</span></div>
-        <h1 class="hero-title" id="heroName">HUMORPOPPY</h1>
+        <h1 class="hero-title is-name-rolling" id="heroName" aria-label="HUMORPOPPY"><span class="hero-name-roll" aria-hidden="true"><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0s;"><span class="hero-name-glyph">H</span><span class="hero-name-glyph">H</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.055s;"><span class="hero-name-glyph">U</span><span class="hero-name-glyph">U</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.11s;"><span class="hero-name-glyph">M</span><span class="hero-name-glyph">M</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.165s;"><span class="hero-name-glyph">O</span><span class="hero-name-glyph">O</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.22s;"><span class="hero-name-glyph">R</span><span class="hero-name-glyph">R</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.275s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.33s;"><span class="hero-name-glyph">O</span><span class="hero-name-glyph">O</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.385s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.44s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.495s;"><span class="hero-name-glyph">Y</span><span class="hero-name-glyph">Y</span></span></span></span></h1>
         <div class="hero-bottom">
           <p class="hero-intro" id="heroIntro"></p>
           <a class="enter-link" href="#archive">記録</a>
@@ -440,20 +665,20 @@
 
     <section class="archive" id="archive">
       <div class="section-header">
-        <h2>Record</h2>
+        <h2>記録</h2>
         <p class="section-intro" id="archiveIntro"></p>
       </div>
       <div class="archive-meta"><span id="projectCount">05 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/5bccb70c-03b7-4ed1-a277-05ad41559dab" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
-          <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record Tsingtao night">
-          <div class="project-media"><img src="blob:null/d597b96a-6900-445b-b248-1644ea767fff" alt="Tsingtao night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>Tsingtao night</span></div></div>
-          <div class="project-info"><h3 class="project-title">Tsingtao night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record warm sea">
-          <div class="project-media"><img src="blob:null/027d0c07-cfa1-4f08-bdc9-253d3ecacdf2" alt="warm sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>warm sea</span></div></div>
-          <div class="project-info"><h3 class="project-title">warm sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record Last ice">
-          <div class="project-media"><img src="blob:null/8c5a7ab1-8125-46c1-baec-eb43ed8957de" alt="Last ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>Last ice</span></div></div>
-          <div class="project-info"><h3 class="project-title">Last ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/e47800a2-7248-4daf-a3ac-e98f3e50d36b" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/a20a2c9d-d727-4860-9542-3fc9e1f542ce" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
+          <div class="project-media"><img src="blob:null/1aca2ef7-431f-44c2-a063-044abeeb511c" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
+          <div class="project-media"><img src="blob:null/b73bbf1e-77e6-4326-b16f-af3300a764d1" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
+          <div class="project-media"><img src="blob:null/98cde440-100b-43f0-8bbf-b352c246a336" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
+          <div class="project-media"><img src="blob:null/aad49477-d446-4225-81ef-ae46812ba7cf" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -467,30 +692,30 @@
   </main>
 
   <section class="project-view" id="projectView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-    <div class="overlay-bar"><h2 class="overlay-title" id="detailBarTitle">warm sea</h2><button class="icon-button" id="closeProject" type="button" aria-label="关闭 Record">×</button></div>
+    <div class="overlay-bar"><h2 class="overlay-title" id="detailBarTitle">Record</h2><button class="icon-button" id="closeProject" type="button" aria-label="关闭 Record">×</button></div>
     <div class="project-view-head">
-      <h2 class="detail-heading" id="detailTitle">warm sea</h2>
-      <div class="detail-copy"><div class="detail-meta" id="detailMeta">2024 / Fragments</div><p class="detail-description" id="detailDescription">人与海鸥</p></div>
+      <h2 class="detail-heading" id="detailTitle">Record</h2>
+      <div class="detail-copy"><div class="detail-meta" id="detailMeta"></div><p class="detail-description" id="detailDescription"></p></div>
     </div>
     <div class="detail-gallery" id="detailGallery">
       <div class="detail-stage" id="detailStage">
         <button class="detail-nav" id="prevImage" type="button" aria-label="上一张图片">←</button>
         <figure class="detail-figure">
-          <div class="detail-image-shell" id="detailImageShell"><img id="detailImage" src="blob:null/4241ec12-9cbb-4391-a9db-8ef91e75bbaf" alt="warm sea 3"></div>
-          <figcaption><span id="detailCounter">03 / 03</span></figcaption>
+          <div class="detail-image-shell" id="detailImageShell"><img id="detailImage" src="" alt=""></div>
+          <figcaption><span id="detailCounter"></span></figcaption>
         </figure>
         <button class="detail-nav" id="nextImage" type="button" aria-label="下一张图片">→</button>
       </div>
-      <div class="detail-thumbs" id="detailThumbs" aria-label="Record 图片缩略图"><button class="detail-thumb" type="button" aria-label="查看第 1 张图片" aria-current="false"><img src="blob:null/0879d14b-c858-491a-9738-f4aec1662dda" alt=""></button><button class="detail-thumb" type="button" aria-label="查看第 2 张图片" aria-current="false"><img src="blob:null/7f8f7fd2-a423-448d-891a-bc7873f576fe" alt=""></button><button class="detail-thumb is-active" type="button" aria-label="查看第 3 张图片" aria-current="true"><img src="blob:null/4241ec12-9cbb-4391-a9db-8ef91e75bbaf" alt=""></button></div>
+      <div class="detail-thumbs" id="detailThumbs" aria-label="Record 图片缩略图"></div>
     </div>
   </section>
 
   <section class="image-lightbox" id="imageLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="放大查看图片">
     <button class="image-lightbox-close" id="closeLightbox" type="button" aria-label="关闭放大图片">×</button>
-    <span class="image-lightbox-counter" id="lightboxCounter" aria-live="polite">03 / 03</span>
+    <span class="image-lightbox-counter" id="lightboxCounter" aria-live="polite"></span>
     <div class="image-lightbox-stage" id="lightboxStage">
       <button class="image-lightbox-nav is-prev" id="lightboxPrev" type="button" aria-label="上一张放大图片">←</button>
-      <div class="image-lightbox-image-wrap" id="lightboxImageWrap"><img id="lightboxImage" alt="warm sea 3"></div>
+      <div class="image-lightbox-image-wrap" id="lightboxImageWrap"><img id="lightboxImage" src="" alt=""></div>
       <button class="image-lightbox-nav is-next" id="lightboxNext" type="button" aria-label="下一张放大图片">→</button>
     </div>
   </section>
@@ -501,7 +726,8 @@
       <div class="studio-lead"><div><span class="field-label">Local Portfolio Editor</span><h2 id="studioTitle">网站管理</h2></div><p>所有文字、Record、文章和音乐都保存在当前浏览器。修改完成后生成新的 GitHub 发布包，访客只能查看，不能进入管理界面。</p></div>
       <div class="studio-toolbar">
         <button class="action-button primary" id="saveProfile" type="button">保存全部页面文字</button>
-        <button class="action-button primary" id="buildPublish" type="button">生成 GitHub 发布包</button>
+        <button class="action-button primary" id="buildPublish" type="button">生成 GitHub 完整包</button>
+        <button class="action-button" id="buildUpdatePublish" type="button">生成 GitHub 更新包</button>
         <span class="studio-toolbar-note">Record 与 Essays 请在各自编辑表单中单独保存</span>
       </div>
       <div class="studio-layout">
@@ -523,11 +749,12 @@
               </div>
               <div class="field"><label for="profileIntro">首页简介</label><textarea id="profileIntro" maxlength="280"></textarea></div>
               <div class="field"><label for="profileArchiveIntro">Record 页面简介</label><textarea id="profileArchiveIntro" maxlength="500"></textarea></div>
+              <label class="check-field" for="butterflyCursorEnabled"><input id="butterflyCursorEnabled" type="checkbox" checked=""><span><strong>蝴蝶鼠标效果</strong><br>电脑端显示即时圆点与延迟飞行的黑白蝴蝶；手机端和减少动态效果模式会自动隐藏。</span></label>
             </div>
           </section>
 
           <section class="studio-section" data-studio-section="record">
-            <div class="studio-section-head"><h3>Record</h3><p>创建、编辑、排序和删除摄影 Record。图片可以分多次选择，后选图片会继续追加。</p></div>
+            <div class="studio-section-head"><h3>Record</h3><p>创建、编辑、排序和删除摄影 Record。图片可以分多次追加，并可指定一张封面用于 Record 预览、首页拖尾与 Loading。</p></div>
             <div class="studio-card compression-card">
               <label class="check-field" for="imageCompressionEnabled"><input id="imageCompressionEnabled" type="checkbox" checked=""><span><strong>上传时自动压缩</strong><br>只在你的浏览器本地处理，不上传原图。</span></label>
               <div class="field"><label for="imageCompressionTarget">每张图片目标大小</label><select id="imageCompressionTarget"><option value="400">约 400 KB</option><option value="700">约 700 KB</option><option value="900" selected="">约 900 KB</option><option value="1200">约 1.2 MB</option></select></div>
@@ -553,16 +780,17 @@
                       <div class="record-drop-copy">
                         <strong>拖拽照片到这里</strong>
                         <span>或点击此区域选择一张或多张图片，可分多次继续追加</span>
-                        <span class="record-drop-formats">JPEG / PNG / WebP 自动压缩 · GIF / SVG 保留原文件</span>
+                        <span class="record-drop-formats">JPEG / PNG / WebP 自动压缩并生成拖尾缩略图 · GIF / SVG 保留原文件</span>
                       </div>
                     </div>
                   </div>
                   <div class="existing-images" id="existingImages"></div>
+                  <p class="existing-images-help">每个 Record 只使用一张封面参与首页拖尾与 Loading；详情页仍保留全部图片。</p>
                   <div class="form-actions"><button class="action-button primary" type="submit">保存 Record</button><button class="action-button" id="cancelProject" type="button">取消</button></div>
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/b4da5a67-b505-4aa2-921a-d6842fefcf70" alt="">
+          <img class="manager-thumb" src="blob:null/a20a2c9d-d727-4860-9542-3fc9e1f542ce" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -570,31 +798,31 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/e88cc7bb-7d3c-4c70-bd1f-f8393d627ffa" alt="">
-          <div><h4 class="manager-name">Tsingtao night</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
+          <img class="manager-thumb" src="blob:null/1aca2ef7-431f-44c2-a063-044abeeb511c" alt="">
+          <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/7dd7aa86-a020-4998-b846-deb0465b6234" alt="">
-          <div><h4 class="manager-name">warm sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
+          <img class="manager-thumb" src="blob:null/b73bbf1e-77e6-4326-b16f-af3300a764d1" alt="">
+          <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/ed15cc02-181f-4433-8779-0d96799bb45e" alt="">
-          <div><h4 class="manager-name">Last ice</h4><span class="manager-sub">2024 / 4 IMAGES</span></div>
+          <img class="manager-thumb" src="blob:null/98cde440-100b-43f0-8bbf-b352c246a336" alt="">
+          <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 4 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/a94252f8-bce3-4acb-b331-0d3b6702a408" alt="">
+          <img class="manager-thumb" src="blob:null/aad49477-d446-4225-81ef-ae46812ba7cf" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -606,30 +834,57 @@
           </section>
 
           <section class="studio-section" data-studio-section="essays">
-            <div class="studio-section-head"><h3>Essays</h3><p>在这里直接写文章，或导入 TXT / Markdown 文本。文章会随备份和 GitHub 发布包一起保存。</p></div>
-            <div class="studio-editor-grid">
-              <div class="studio-card">
-                <button class="action-button primary" id="newEssay" type="button">＋ 新建文章</button>
-                <form id="essayForm" hidden="">
-                  <h3 class="panel-title" id="essayFormTitle">新建文章</h3>
-                  <input id="editingEssayId" type="hidden">
-                  <div class="field"><label for="essayTitleInput">文章标题 *</label><input id="essayTitleInput" required="" maxlength="220"></div>
-                  <div class="field"><label for="essayDateInput">日期</label><input id="essayDateInput" maxlength="40" placeholder="14.08.2026"></div>
-                  <div class="field"><label for="essayExcerptInput">列表摘要</label><textarea id="essayExcerptInput" maxlength="600"></textarea></div>
-                  <div class="field"><label for="essayBodyInput">文章正文 *</label><textarea id="essayBodyInput" required="" maxlength="100000"></textarea></div>
-                  <div class="field"><label for="essayTextFile">从 TXT / Markdown 导入正文</label><input id="essayTextFile" type="file" accept=".txt,.md,text/plain,text/markdown"><span class="field-label">导入只会填入编辑框，仍需点击“保存文章”。</span></div>
-                  <div class="form-actions"><button class="action-button primary" type="submit">保存文章</button><button class="action-button" id="cancelEssay" type="button">取消</button></div>
-                </form>
+            <div class="studio-section-head"><h3>Essays</h3><p>用正文与图片区块组织长文章。编辑时可直接查看最终阅读页效果，内容会随备份和 GitHub 发布包一起保存。</p></div>
+            <div class="essay-studio-actions">
+              <button class="action-button primary" id="newEssay" type="button">＋ 新建文章</button>
+              <p>支持段落、标题、粗体、斜体、引用、列表、图片和 TXT / Markdown 导入</p>
+            </div>
+            <form class="essay-editor-form" id="essayForm" hidden="">
+              <div class="essay-editor-topline"><h3 class="panel-title" id="essayFormTitle">新建文章</h3><span class="field-label">编辑内容时，右侧预览会同步更新</span></div>
+              <input id="editingEssayId" type="hidden">
+              <div class="essay-meta-grid">
+                <div class="field"><label for="essayTitleInput">文章标题 *</label><input id="essayTitleInput" required="" maxlength="220"></div>
+                <div class="field"><label for="essayDateInput">日期</label><input id="essayDateInput" maxlength="40" placeholder="14.08.2026"></div>
+                <div class="field essay-excerpt-field"><label for="essayExcerptInput">列表摘要</label><textarea id="essayExcerptInput" maxlength="600" placeholder="显示在 Essays 文章列表中，不会出现在正文内。"></textarea></div>
               </div>
-              <div class="studio-card"><h4 class="studio-card-title">文章列表与顺序</h4><div class="manager-list" id="essayManagerList"><article class="manager-item essay-manager-item">
-          <div><h4 class="manager-name">时间如水</h4><span class="manager-sub">14.08.2026</span><p class="essay-manager-excerpt">流水落花春去也，天上人间。</p></div>
+              <div class="essay-compose-grid">
+                <section class="essay-compose-panel" aria-label="文章内容编辑器">
+                  <div class="essay-editor-toolbar" role="toolbar" aria-label="文字格式">
+                    <button class="essay-tool-button" type="button" data-essay-command="formatBlock" data-essay-value="p" title="正文段落">P</button>
+                    <button class="essay-tool-button" type="button" data-essay-command="formatBlock" data-essay-value="h2" title="小标题">H2</button>
+                    <button class="essay-tool-button" type="button" data-essay-command="bold" title="粗体"><strong>B</strong></button>
+                    <button class="essay-tool-button" type="button" data-essay-command="italic" title="斜体"><em>I</em></button>
+                    <button class="essay-tool-button" type="button" data-essay-command="formatBlock" data-essay-value="blockquote" title="引用">“”</button>
+                    <button class="essay-tool-button" type="button" data-essay-command="insertUnorderedList" title="无序列表">• List</button>
+                    <button class="essay-tool-button" type="button" data-essay-command="insertOrderedList" title="有序列表">1. List</button>
+                  </div>
+                  <div class="essay-block-editor" id="essayBlockEditor"></div>
+                  <div class="essay-block-actions">
+                    <button class="action-button" id="addEssayTextBlock" type="button">＋ 添加正文区块</button>
+                    <label class="action-button essay-image-add">＋ 添加图片<input id="essayImageFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple=""></label>
+                  </div>
+                  <p class="essay-image-status" id="essayImageStatus">图片会使用 Record 中设置的压缩规格在本地自动处理。</p>
+                  <div class="field essay-import-field"><label for="essayTextFile">从 TXT / Markdown 导入正文</label><input id="essayTextFile" type="file" accept=".txt,.md,text/plain,text/markdown"><span class="field-label">导入会替换当前第一个正文区块，仍需点击“保存文章”。</span></div>
+                </section>
+                <aside class="essay-preview-panel" aria-label="文章实时预览">
+                  <span class="essay-preview-label">最终阅读页预览</span>
+                  <article class="essay-reader-inner essay-live-preview">
+                    <p class="essay-reader-date" id="essayPreviewDate"></p>
+                    <h2 class="essay-reader-title" id="essayPreviewTitle">文章标题</h2>
+                    <div class="essay-reader-body" id="essayPreviewBody"></div>
+                  </article>
+                </aside>
+              </div>
+              <div class="form-actions"><button class="action-button primary" type="submit">保存文章</button><button class="action-button" id="cancelEssay" type="button">取消</button></div>
+            </form>
+            <div class="studio-card essay-list-card"><h4 class="studio-card-title">文章列表与顺序</h4><div class="manager-list" id="essayManagerList"><article class="manager-item essay-manager-item">
+          <div><h4 class="manager-name">test</h4><span class="manager-sub">14.08.2023</span><p class="essay-manager-excerpt">流水落花春去也，天上人间。</p></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动文章" disabled="">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动文章" disabled="">↓</button>
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑文章">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除文章">×</button>
           </div></article></div></div>
-            </div>
           </section>
 
           <section class="studio-section" data-studio-section="pages">
@@ -659,19 +914,19 @@
           </section>
 
           <section class="studio-section" data-studio-section="publish">
-            <div class="studio-section-head"><h3>音乐与发布</h3><p>更换背景音乐、生成 GitHub 发布包，并在重要修改后导出完整备份。</p></div>
+            <div class="studio-section-head"><h3>音乐与发布</h3><p>完整包用于首次上线；更新包只包含新 index.html 与发生变化的资源，适合后续更新。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
             <div class="studio-two-column">
               <div class="studio-card music-settings">
                 <h4 class="studio-card-title">背景音乐</h4>
                 <div class="field"><label for="musicFile">上传或替换音乐</label><input id="musicFile" type="file" accept="audio/mpeg,.mp3,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac"><span class="field-label">上传 MP3 时可自动重新编码并减小体积。建议在电脑端操作。</span></div>
-                <p class="music-current" id="musicCurrent">Sound Horizon - 美しきもの-web.mp3 / 4.50 MB</p>
+                <p class="music-current" id="musicCurrent">Sound Horizon - 美しきもの-web.mp3 / 2.63 MB</p>
                 <div class="music-compression-options">
                   <label class="check-field" for="musicCompressionEnabled"><input id="musicCompressionEnabled" type="checkbox" checked=""><span><strong>MP3 上传后自动压缩</strong><br>已在目标大小以内的文件不会重复压缩。</span></label>
                   <div class="field"><label for="musicCompressionTarget">目标文件大小</label><select id="musicCompressionTarget"><option value="3">约 3 MB</option><option value="5" selected="">约 5 MB</option><option value="8">约 8 MB</option></select></div>
-                  <p class="music-compression-status" id="musicCompressionStatus">MP3 自动压缩已开启：目标约 5 MB。</p>
+                  <p class="music-compression-status" id="musicCompressionStatus">MP3 自动压缩已开启：目标约 3 MB。</p>
                   <span class="field-label">使用 lamejs / LAME（LGPL）在本地编码；lame.min.js 必须与 index.html 放在同一文件夹。</span>
                 </div>
-                <label class="check-field" for="musicAutoStart"><input id="musicAutoStart" type="checkbox" checked=""><span>访客首次点击或触摸页面后自动播放</span></label>
+                <label class="check-field" for="musicAutoStart"><input id="musicAutoStart" type="checkbox" checked=""><span><strong>首次互动后自动播放</strong><br>浏览器不允许网页刚打开就有声音；访客第一次点击或触摸页面后才会开始播放。</span></label>
                 <div class="music-actions"><button class="action-button" id="previewMusic" type="button">试听 / 暂停</button><button class="action-button danger" id="removeMusic" type="button">移除音乐</button></div>
               </div>
               <div class="studio-card">
@@ -680,11 +935,17 @@
                 <div class="form-actions"><button class="action-button" id="exportData" type="button">导出完整备份</button><button class="action-button" id="importData" type="button">导入备份</button><button class="action-button danger" id="removeDemo" type="button">移除示例 Record</button></div>
                 <input id="importFile" type="file" accept="application/json" hidden="">
               </div>
+              <div class="studio-card publish-update-card">
+                <h4 class="studio-card-title">GitHub 增量更新</h4>
+                <p class="field-label">更新包不会重复放入未变化的旧图片和音乐。第一次使用时，如果管理页面内容与当前线上网站完全一致，请先建立线上基准；如果不一致，请先生成并上传一次完整包。</p>
+                <div class="form-actions"><button class="action-button" id="markPublishBaseline" type="button">确认当前内容已上线并更新基准</button><button class="action-button primary" id="buildUpdatePublishSecondary" type="button">生成更新包</button></div>
+                <p class="publish-baseline-status" id="publishBaselineStatus">尚未建立更新基准。生成更新包前请先建立基准，或生成并上传一次完整包。</p>
+              </div>
             </div>
           </section>
         </div>
       </div>
-      <p class="status" id="statusText" role="status" style="color: var(--ink);">正在整理 GitHub 发布包，请不要关闭页面……</p>
+      <p class="status" id="statusText" role="status" style="color: var(--ink);">正在核对资源 22 / 22……</p>
     </div>
   </section>
 
@@ -693,27 +954,27 @@
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
   <script>
-    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","essaysTitle":"Essays","essaysIntro":"Notes on photography, memory, walking, and the unstable life of images.","contactTitle":"Start a conversation.","contactBody":"For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.","menuCredit":"website by humorpoppy.","imageCompressionEnabled":true,"imageCompressionTargetKb":1200,"imageCompressionMaxEdge":3000,"musicCompressionEnabled":true,"musicCompressionTargetMb":5,"email":"1976904825@qq.com"},"essays":[{"id":"eeec8415-0f0b-4cad-a84d-efe6864d5640","date":"14.08.2026","title":"时间如水","excerpt":"流水落花春去也，天上人间。","body":"帘外雨潺潺，春意阑珊。罗衾不耐五更寒，梦里不知身是客，一晌贪欢。\n独自莫凭栏，无限江山，别时容易见时难。流水落花春去也，天上人间。"}],"music":{"name":"Sound Horizon - 美しきもの-web.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"wanglaoji","year":"2025","category":"Street","description":"飞鱼一夜。","images":[{"name":"鸡.png","url":"assets/images/project-1-1.png"},{"name":"R0002159.webp","url":"assets/images/project-1-2.webp"},{"name":"R0002161.webp","url":"assets/images/project-1-3.webp"}]},{"id":"demo-2","order":1,"title":"Tsingtao night","year":"2024","category":"Urban","description":"夜晚在海边","images":[{"name":"未知.png","url":"assets/images/project-2-1.png"},{"name":"R0001865.webp","url":"assets/images/project-2-2.webp"},{"name":"R0001887.webp","url":"assets/images/project-2-3.webp"}]},{"id":"demo-3","order":2,"title":"warm sea","year":"2024","category":"Fragments","description":"人与海鸥","images":[{"name":"warmm.png","url":"assets/images/project-3-1.png"},{"name":"R0001563.webp","url":"assets/images/project-3-2.webp"},{"name":"R0001366.webp","url":"assets/images/project-3-3.webp"}]},{"id":"demo-4","order":3,"title":"Last ice","year":"2024","category":"ice","description":"冰冷冰块","images":[{"name":"seaa.png","url":"assets/images/project-4-1.png"},{"name":"R0001639.webp","url":"assets/images/project-4-2.webp"},{"name":"R0001645.webp","url":"assets/images/project-4-3.webp"},{"name":"R0001511.webp","url":"assets/images/project-4-4.webp"}]},{"id":"6fe68e03-95d4-43c7-b8c3-3b789e34fdd8","order":4,"title":"几分之几","year":"","category":"","description":"几分之几。","images":[{"name":"R0001325.webp","url":"assets/images/project-5-1.webp"}]}]};
+    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","essaysTitle":"Essays","essaysIntro":"Notes on photography, memory, walking, and the unstable life of images.","contactTitle":"Start a conversation.","contactBody":"For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.","menuCredit":"website by humorpoppy.","imageCompressionEnabled":true,"imageCompressionTargetKb":1200,"imageCompressionMaxEdge":3000,"musicCompressionEnabled":true,"musicCompressionTargetMb":3,"butterflyCursorEnabled":true,"email":"1976904825@qq.com"},"essays":[{"id":"eeec8415-0f0b-4cad-a84d-efe6864d5640","date":"14.08.2023","title":"test","excerpt":"流水落花春去也，天上人间。","body":"帘外雨潺潺，春意阑珊。罗衾不耐五更寒，梦里不知身是客，一晌贪欢。独自莫凭栏，无限江山，别时容易见时难。\n\n测试\n\n流水落花春去也，天上人间。","blocks":[{"id":"text-1cef9eaf-1aca-4b63-887b-351b85e26d5d","type":"text","html":"<p>帘外雨潺潺，春意阑珊。</p><p>罗衾不耐五更寒，梦里不知身是客，一晌贪欢。</p><p>独自莫凭栏，无限江山，别时容易见时难。</p>"},{"id":"image-ce09e7e7-f4fc-4141-932b-1edaf3648466","type":"image","name":"R0001107.webp","mimeType":"image/webp","url":"assets/essays/essay-1-image-1.webp","caption":"测试"},{"id":"text-07ba604c-870f-47f0-8318-ce481c7df044","type":"text","html":"<p><strong>流水落花春去也，天上人间。</strong></p>"}]}],"music":{"name":"Sound Horizon - 美しきもの-web.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"wanglaoji","year":"2025","category":"Street","description":"飞鱼一夜，与王牢鸡。","coverIndex":0,"images":[{"name":"鸡.png","url":"assets/images/project-1-1.png","trailUrl":"assets/trails/project-1-1.webp"},{"name":"R0002159.webp","url":"assets/images/project-1-2.webp"},{"name":"R0002161.webp","url":"assets/images/project-1-3.webp"}]},{"id":"demo-2","order":1,"title":"night","year":"2024","category":"Urban","description":"夜晚","coverIndex":0,"images":[{"name":"未知.png","url":"assets/images/project-2-1.png","trailUrl":"assets/trails/project-2-1.webp"},{"name":"R0001865.webp","url":"assets/images/project-2-2.webp"},{"name":"R0001887.webp","url":"assets/images/project-2-3.webp"}]},{"id":"demo-3","order":2,"title":"sea","year":"2024","category":"Fragments","description":"人与海鸥","coverIndex":0,"images":[{"name":"warmm.png","url":"assets/images/project-3-1.png","trailUrl":"assets/trails/project-3-1.webp"},{"name":"R0001563.webp","url":"assets/images/project-3-2.webp"},{"name":"R0001366.webp","url":"assets/images/project-3-3.webp"}]},{"id":"demo-4","order":3,"title":"ice","year":"2024","category":"ice","description":"xia pai.","coverIndex":0,"images":[{"name":"seaa.png","url":"assets/images/project-4-1.png","trailUrl":"assets/trails/project-4-1.webp"},{"name":"R0001639.webp","url":"assets/images/project-4-2.webp"},{"name":"R0001645.webp","url":"assets/images/project-4-3.webp"},{"name":"R0001511.webp","url":"assets/images/project-4-4.webp"}]},{"id":"6fe68e03-95d4-43c7-b8c3-3b789e34fdd8","order":4,"title":"几分之几","year":"","category":"","description":"几分之几。","coverIndex":0,"images":[{"name":"R0001325.webp","url":"assets/images/project-5-1.webp","trailUrl":"assets/trails/project-5-1.webp"}]}]};
     const PUBLIC_MODE = true;
     const DEMO_PROJECTS = [
       {
-        id: "demo-1", order: 0, demo: true, title: "Night Crossing", year: "2026", category: "Street / Study",
+        id: "demo-1", order: 0, coverIndex: 0, demo: true, title: "Night Crossing", year: "2026", category: "Street / Study",
         description: "示例 Record。上传你的作品后，可以在管理界面移除全部示例。",
         images: [{ url: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1600&q=85", name: "night-crossing.jpg" }]
       },
       {
-        id: "demo-2", order: 1, demo: true, title: "Concrete Memory", year: "2025", category: "Urban / Archive",
+        id: "demo-2", order: 1, coverIndex: 0, demo: true, title: "Concrete Memory", year: "2025", category: "Urban / Archive",
         description: "高反差黑白处理只应用在网站展示层，不会修改你上传的原始文件。",
         images: [{ url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1600&q=85", name: "concrete-memory.jpg" }]
       },
       {
-        id: "demo-3", order: 2, demo: true, title: "Stray Light", year: "2024", category: "Fragments",
+        id: "demo-3", order: 2, coverIndex: 0, demo: true, title: "Stray Light", year: "2024", category: "Fragments",
         description: "Record 可以包含多张图片，点击卡片后会进入独立的观看页面。",
         images: [{ url: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=1600&q=85", name: "stray-light.jpg" }]
       },
       {
-        id: "demo-4", order: 3, demo: true, title: "Last Train", year: "2023", category: "Night / Transit",
-        description: "首页的图片轨迹会自动从当前所有 Record 中抽取图片。",
+        id: "demo-4", order: 3, coverIndex: 0, demo: true, title: "Last Train", year: "2023", category: "Night / Transit",
+        description: "首页图片轨迹只使用每个 Record 指定的封面图片。",
         images: [{ url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1600&q=85", name: "last-train.jpg" }]
       }
     ];
@@ -735,6 +996,7 @@
       imageCompressionMaxEdge: 2400,
       musicCompressionEnabled: true,
       musicCompressionTargetMb: 5,
+      butterflyCursorEnabled: true,
       email: "hello@example.com"
     };
 
@@ -746,22 +1008,36 @@
 
     const DB_NAME = "nocturne-portfolio";
     const DB_VERSION = 1;
+    const TRAIL_TONE_CLASSES = ["tone-standard", "tone-hard", "tone-inverted"];
+    const TRAIL_THUMBNAIL_VERSION = 2;
+    const SITE_LOADER_MIN_MS = 4000;
+    const SITE_LOADER_MAX_MS = 8000;
+    const BUTTERFLY_FALLBACK_SCRIPT = "butterfly-fallback.js";
     let db;
     let projects = [];
     let profile = { ...DEFAULT_PROFILE };
     let essays = [...DEFAULT_ESSAYS];
     let music = { name: "", type: "", blob: null, url: "", autoStart: true };
+    let publishManifest = null;
     let objectUrls = [];
+    let objectUrlCache = new WeakMap();
     let musicObjectUrl = "";
     let mp3EncoderLoadPromise = null;
+    let butterflyFallbackLoadPromise = null;
     let musicAutoStartAttempted = false;
+    let musicUserPaused = false;
+    let musicRecoveryTimer = null;
     let trailSources = [];
+    let preloadedTrailImages = [];
     let trailIndex = 0;
     let trailZ = 20;
     let lastTrailTime = 0;
     let lastTrailX = 0;
     let lastTrailY = 0;
     let editingImages = [];
+    let editingCoverIndex = 0;
+    let editingEssayBlocks = [];
+    let activeEssayTextBlockId = "";
     let currentDetailProject = null;
     let currentDetailIndex = 0;
     let detailSwipeStartX = null;
@@ -770,6 +1046,22 @@
     let lightboxSwipeStartX = null;
     let lightboxSwipeStartY = null;
     let lightboxSwipeMoved = false;
+    let siteLoaderStarted = false;
+    let siteLoaderFinished = false;
+    let siteLoaderHideScheduled = false;
+    let siteLoaderTimer = null;
+    const siteLoaderStartedAt = Date.now();
+    let pendingHeroName = "";
+    let heroNameRollStarted = false;
+    let recordPageUnlocked = false;
+    let homeBounceTimer = null;
+    let homeTouchStartY = null;
+    let homeTouchBounced = false;
+    let butterflyCursorFrame = 0;
+    let butterflyCursorHistory = [];
+    let butterflyCursorLastMoveAt = 0;
+    const butterflyCursorMedia = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 851px)");
+    const reducedMotionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -779,6 +1071,55 @@
       status: $("#statusText"), existingImages: $("#existingImages"), audio: $("#backgroundMusic"),
       essayManager: $("#essayManagerList"), essayForm: $("#essayForm")
     };
+
+    function butterflyCursorIsAvailable() {
+      return profile.butterflyCursorEnabled !== false && butterflyCursorMedia.matches && !reducedMotionMedia.matches;
+    }
+
+    function hideButterflyCursor() {
+      $("#butterflyCursor")?.classList.remove("is-visible");
+      butterflyCursorHistory = [];
+      if (butterflyCursorFrame) cancelAnimationFrame(butterflyCursorFrame);
+      butterflyCursorFrame = 0;
+    }
+
+    function applyButterflyCursorSetting() {
+      const enabled = butterflyCursorIsAvailable();
+      document.body.classList.toggle("butterfly-cursor-enabled", enabled);
+      if (!enabled) hideButterflyCursor();
+      const input = $("#butterflyCursorEnabled");
+      if (input) input.checked = profile.butterflyCursorEnabled !== false;
+    }
+
+    function renderButterflyCursor() {
+      butterflyCursorFrame = 0;
+      if (!butterflyCursorIsAvailable() || !butterflyCursorHistory.length) return;
+      const cutoff = performance.now() - 200;
+      while (butterflyCursorHistory.length > 2 && butterflyCursorHistory[1].time <= cutoff) butterflyCursorHistory.shift();
+      const from = butterflyCursorHistory[0];
+      const to = butterflyCursorHistory[1] || from;
+      const span = Math.max(1, to.time - from.time);
+      const amount = Math.max(0, Math.min(1, (cutoff - from.time) / span));
+      const x = from.x + (to.x - from.x) * amount;
+      const y = from.y + (to.y - from.y) * amount;
+      $("#butterflyCursorMark").style.transform = `translate3d(${x + 12.5}px, ${y - 110}px, 0)`;
+      if (performance.now() - butterflyCursorLastMoveAt > 260) {
+        butterflyCursorHistory = [butterflyCursorHistory[butterflyCursorHistory.length - 1]];
+        return;
+      }
+      butterflyCursorFrame = requestAnimationFrame(renderButterflyCursor);
+    }
+
+    function moveButterflyCursor(event) {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      if (!butterflyCursorIsAvailable()) return;
+      const now = performance.now();
+      butterflyCursorLastMoveAt = now;
+      $("#butterflyCursor")?.classList.add("is-visible");
+      butterflyCursorHistory.push({ x: event.clientX, y: event.clientY, time: now });
+      if (butterflyCursorHistory.length > 60) butterflyCursorHistory.splice(0, butterflyCursorHistory.length - 60);
+      if (!butterflyCursorFrame) butterflyCursorFrame = requestAnimationFrame(renderButterflyCursor);
+    }
 
     function openDatabase() {
       return new Promise((resolve, reject) => {
@@ -813,6 +1154,8 @@
     const getMusic = () => storeRequest("settings", "readonly", (store) => store.get("music"));
     const putMusic = (data) => storeRequest("settings", "readwrite", (store) => store.put({ key: "music", value: data }));
     const deleteMusic = () => storeRequest("settings", "readwrite", (store) => store.delete("music"));
+    const getPublishManifest = () => storeRequest("settings", "readonly", (store) => store.get("publishManifest"));
+    const putPublishManifest = (data) => storeRequest("settings", "readwrite", (store) => store.put({ key: "publishManifest", value: data }));
 
     async function initialize() {
       if (PUBLIC_MODE && PUBLISHED_DATA) {
@@ -828,30 +1171,190 @@
         const savedProfile = await getProfile();
         const savedEssays = await getEssays();
         const savedMusic = await getMusic();
+        const savedPublishManifest = await getPublishManifest();
         if (savedProfile?.value) profile = { ...DEFAULT_PROFILE, ...savedProfile.value };
         if (Array.isArray(savedEssays?.value)) essays = savedEssays.value;
         if (savedMusic?.value) music = { ...music, ...savedMusic.value };
+        if (savedPublishManifest?.value) publishManifest = savedPublishManifest.value;
         if (!projects.length) {
           for (const project of DEMO_PROJECTS) await putProject(project);
           projects = [...DEMO_PROJECTS];
         }
       }
+      applyButterflyCursorSetting();
+      if (!PUBLIC_MODE) await ensureLocalTrailThumbnails(false);
       renderAll();
     }
 
-    function imageSource(image) {
+    function imageSource(image, variant = "main") {
+      if (!image) return "";
+      if (variant === "trail") {
+        if (image.trailUrl) return image.trailUrl;
+        if (image.trailBlob) {
+          const cachedTrailUrl = objectUrlCache.get(image.trailBlob);
+          if (cachedTrailUrl) return cachedTrailUrl;
+          const trailUrl = URL.createObjectURL(image.trailBlob);
+          objectUrls.push(trailUrl);
+          objectUrlCache.set(image.trailBlob, trailUrl);
+          return trailUrl;
+        }
+      }
       if (image.url) return image.url;
       if (image.blob) {
+        const cachedUrl = objectUrlCache.get(image.blob);
+        if (cachedUrl) return cachedUrl;
         const url = URL.createObjectURL(image.blob);
         objectUrls.push(url);
+        objectUrlCache.set(image.blob, url);
         return url;
       }
       return "";
     }
 
+    function projectCoverIndex(project) {
+      const imageCount = Array.isArray(project?.images) ? project.images.length : 0;
+      if (!imageCount) return 0;
+      const index = Number(project.coverIndex);
+      return Number.isInteger(index) && index >= 0 && index < imageCount ? index : 0;
+    }
+
+    function projectCoverImage(project) {
+      if (!Array.isArray(project?.images) || !project.images.length) return null;
+      return project.images[projectCoverIndex(project)] || project.images[0];
+    }
+
     function clearObjectUrls() {
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
       objectUrls = [];
+      objectUrlCache = new WeakMap();
+    }
+
+    function finishSiteLoader() {
+      if (siteLoaderFinished || siteLoaderHideScheduled) return;
+      siteLoaderHideScheduled = true;
+      if (siteLoaderTimer) window.clearTimeout(siteLoaderTimer);
+      const loader = $("#siteLoader");
+      if (!loader) return;
+      const minimumRemaining = Math.max(0, SITE_LOADER_MIN_MS - (Date.now() - siteLoaderStartedAt));
+      window.setTimeout(() => {
+        loader.classList.add("is-wiping");
+        window.setTimeout(() => {
+          siteLoaderFinished = true;
+          loader.classList.add("is-ready");
+          loader.setAttribute("aria-busy", "false");
+          document.body.classList.remove("is-loading");
+          startHeroNameRoll(pendingHeroName || $("#heroName")?.getAttribute("aria-label") || "");
+          window.setTimeout(() => loader.remove(), 900);
+        }, 820);
+      }, minimumRemaining);
+    }
+
+    function renderHeroName(value) {
+      const title = $("#heroName");
+      if (!title) return;
+      title.classList.remove("is-name-rolling");
+      title.setAttribute("aria-label", value);
+      const row = document.createElement("span");
+      row.className = "hero-name-roll";
+      row.setAttribute("aria-hidden", "true");
+      [...value].forEach((character, index) => {
+        const letter = document.createElement("span");
+        letter.className = `hero-name-letter${character === " " ? " is-space" : ""}`;
+        const track = document.createElement("span");
+        track.className = "hero-name-track";
+        track.style.transitionDelay = `${Math.min(index * 0.055, .88)}s`;
+        for (let copy = 0; copy < 2; copy += 1) {
+          const glyph = document.createElement("span");
+          glyph.className = "hero-name-glyph";
+          glyph.textContent = character === " " ? "\u00a0" : character;
+          track.append(glyph);
+        }
+        letter.append(track);
+        row.append(letter);
+      });
+      title.replaceChildren(row);
+    }
+
+    function startHeroNameRoll(value) {
+      if (heroNameRollStarted || !value) return;
+      const title = $("#heroName");
+      if (!title) return;
+      if (!title.querySelector(".hero-name-roll")) renderHeroName(value);
+      heroNameRollStarted = true;
+      title.getBoundingClientRect();
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => title.classList.add("is-name-rolling"));
+      });
+    }
+
+    async function waitForDecodedImage(image) {
+      if (!image) return false;
+      if (!image.complete) {
+        const loaded = await new Promise((resolve) => {
+          image.addEventListener("load", () => resolve(true), { once: true });
+          image.addEventListener("error", () => resolve(false), { once: true });
+        });
+        if (!loaded) return false;
+      }
+      if (!image.naturalWidth) return false;
+      if (typeof image.decode === "function") {
+        try { await image.decode(); } catch (error) { /* A loaded image can still be rendered if decode rejects. */ }
+      }
+      return image.naturalWidth > 0;
+    }
+
+    async function loadAndDecodeTrailImage(source, element = null, priority = "auto") {
+      const image = element || new Image();
+      image.alt = "";
+      image.decoding = "async";
+      if ("fetchPriority" in image) image.fetchPriority = priority;
+      if (!element || image.getAttribute("src") !== source) image.src = source;
+      const ready = await waitForDecodedImage(image);
+      if (ready && !element) preloadedTrailImages.push(image);
+      return ready;
+    }
+
+    async function preloadTrailQueue(sources, previewSource, previewImage) {
+      const remainingSources = sources.filter((source) => source !== previewSource);
+      const previewTask = previewSource && previewImage
+        ? loadAndDecodeTrailImage(previewSource, previewImage, "high").then((ready) => {
+            const preview = $("#siteLoaderTrail");
+            if (ready) preview?.classList.add("is-visible");
+            else preview?.remove();
+            return ready;
+          })
+        : Promise.resolve(true);
+      let nextIndex = 0;
+      const worker = async () => {
+        while (nextIndex < remainingSources.length) {
+          const source = remainingSources[nextIndex];
+          nextIndex += 1;
+          await loadAndDecodeTrailImage(source);
+        }
+      };
+      const workerCount = Math.min(4, remainingSources.length);
+      await Promise.all([previewTask, ...Array.from({ length: workerCount }, () => worker())]);
+    }
+
+    async function prepareSiteLoader() {
+      if (siteLoaderStarted || siteLoaderFinished) return;
+      siteLoaderStarted = true;
+      const sources = [...new Set(trailSources)];
+      const loaderTrailImage = $("#siteLoaderTrailImage");
+      const randomSource = sources.length ? sources[Math.floor(Math.random() * sources.length)] : "";
+      preloadedTrailImages = [];
+      if (siteLoaderTimer) window.clearTimeout(siteLoaderTimer);
+      const maximumRemaining = Math.max(0, SITE_LOADER_MAX_MS - (Date.now() - siteLoaderStartedAt));
+      siteLoaderTimer = window.setTimeout(finishSiteLoader, maximumRemaining);
+      try {
+        await Promise.all([
+          waitForDecodedImage($("#butterflyCursorMark img")),
+          preloadTrailQueue(sources, randomSource, loaderTrailImage)
+        ]);
+      } catch (error) {
+        console.warn("Critical homepage preload did not complete cleanly; the timeout fallback remains active.", error);
+      }
+      finishSiteLoader();
     }
 
     function renderAll() {
@@ -862,12 +1365,15 @@
       renderManager();
       renderEssayManager();
       renderEssays();
+      renderPublishBaselineStatus();
+      if (elements.essayForm && !elements.essayForm.hidden && editingEssayBlocks.length) renderEssayBlockEditor();
       updateTrailSources();
     }
 
     function applyProfile() {
       document.title = `${profile.name} / Photography Archive`;
-      $("#heroName").textContent = profile.name;
+      renderHeroName(profile.name);
+      pendingHeroName = profile.name;
       $("#heroDescriptor").textContent = profile.descriptor;
       $("#heroIntro").textContent = profile.intro;
       $("#archiveIntro").textContent = profile.archiveIntro;
@@ -901,6 +1407,7 @@
       $("#musicCompressionStatus").textContent = profile.musicCompressionEnabled !== false
         ? `MP3 自动压缩已开启：目标约 ${profile.musicCompressionTargetMb || 5} MB。`
         : "MP3 自动压缩已关闭，上传后保留原文件。";
+      applyButterflyCursorSetting();
       $("#profileEmail").value = profile.email;
     }
 
@@ -915,11 +1422,16 @@
       const source = getMusicSource();
       const currentName = music.name ? `${music.name}${music.blob?.size ? ` / ${formatFileSize(music.blob.size)}` : ""}` : "尚未添加背景音乐";
       $("#musicCurrent").textContent = currentName;
+      if (!PUBLIC_MODE && music.blob && /-web\.mp3$/i.test(music.name || "") && music.encoderVersion !== 2) {
+        $("#musicCompressionStatus").textContent = "检测到旧版压缩音乐：旧编码器可能生成有时长但实际静音的 MP3。请重新选择原始 MP3 压缩一次。";
+      }
       $("#musicAutoStart").checked = music.autoStart !== false;
       $("#previewMusic").disabled = !source;
       $("#removeMusic").disabled = !source;
       $("#musicToggle").hidden = !source;
       if (!source) {
+        musicAutoStartAttempted = false;
+        musicUserPaused = false;
         elements.audio.pause();
         elements.audio.removeAttribute("src");
         elements.audio.load();
@@ -944,23 +1456,42 @@
     async function toggleMusic() {
       if (!elements.audio.src) return;
       if (elements.audio.paused) {
+        musicUserPaused = false;
         try {
           await elements.audio.play();
+          musicAutoStartAttempted = true;
         } catch (error) {
+          musicAutoStartAttempted = false;
           showToast("浏览器阻止了自动播放，请再次点击播放按钮");
         }
       } else {
+        musicUserPaused = true;
         elements.audio.pause();
       }
       updateMusicButton();
     }
 
     async function maybeAutoStartMusic(event) {
-      if (musicAutoStartAttempted || music.autoStart === false || !elements.audio.src) return;
+      if (event.type === "keydown" && !["Enter", " ", "Spacebar"].includes(event.key)) return;
+      if (music.autoStart === false || musicUserPaused || !elements.audio.src || !elements.audio.paused) return;
       if (event.target.closest?.("#musicToggle")) return;
-      musicAutoStartAttempted = true;
-      try { await elements.audio.play(); } catch (error) { /* The play button remains available. */ }
+      try {
+        await elements.audio.play();
+        musicAutoStartAttempted = true;
+      } catch (error) {
+        musicAutoStartAttempted = false;
+      }
       updateMusicButton();
+    }
+
+    function scheduleMusicRecovery() {
+      if (!musicAutoStartAttempted || musicUserPaused || music.autoStart === false || !elements.audio.src || document.visibilityState !== "visible") return;
+      window.clearTimeout(musicRecoveryTimer);
+      musicRecoveryTimer = window.setTimeout(async () => {
+        if (!elements.audio.paused || musicUserPaused || document.visibilityState !== "visible") return;
+        try { await elements.audio.play(); } catch (error) { musicAutoStartAttempted = false; }
+        updateMusicButton();
+      }, 350);
     }
 
     function renderProjects() {
@@ -971,7 +1502,7 @@
         return;
       }
       projects.forEach((project, index) => {
-        const cover = imageSource(project.images[0]);
+        const cover = imageSource(projectCoverImage(project));
         const card = document.createElement("button");
         card.className = "project-card";
         card.type = "button";
@@ -997,10 +1528,11 @@
         return;
       }
       projects.forEach((project, index) => {
+        const cover = projectCoverImage(project);
         const item = document.createElement("article");
         item.className = "manager-item";
         item.innerHTML = `
-          <img class="manager-thumb" src="${imageSource(project.images[0])}" alt="">
+          <img class="manager-thumb" src="${imageSource(cover)}" alt="">
           <div><h4 class="manager-name">${escapeHtml(project.title)}</h4><span class="manager-sub">${escapeHtml(project.year || "UNDATED")} / ${project.images.length} IMAGE${project.images.length === 1 ? "" : "S"}${project.demo ? " / DEMO" : ""}</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -1018,6 +1550,110 @@
       });
     }
 
+    function essayBlockId(prefix = "block") {
+      return crypto.randomUUID ? `${prefix}-${crypto.randomUUID()}` : `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function plainTextToEssayHtml(value) {
+      const text = String(value || "").replace(/\r\n?/g, "\n").trim();
+      if (!text) return "<p><br></p>";
+      return text.split(/\n{2,}/).map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`).join("");
+    }
+
+    function sanitizeEssayHtml(value) {
+      const template = document.createElement("template");
+      template.innerHTML = String(value || "");
+      const output = document.createElement("div");
+      const allowed = new Set(["p", "br", "strong", "em", "h2", "blockquote", "ul", "ol", "li", "a"]);
+      const blocked = new Set(["script", "style", "iframe", "object", "embed", "svg", "math"]);
+
+      const appendClean = (node, parent) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          parent.append(document.createTextNode(node.textContent || ""));
+          return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        let tag = node.tagName.toLowerCase();
+        if (blocked.has(tag)) return;
+        if (tag === "div") tag = "p";
+        if (/^h[1-6]$/.test(tag)) tag = "h2";
+        if (tag === "b") tag = "strong";
+        if (tag === "i") tag = "em";
+        if (!allowed.has(tag)) {
+          [...node.childNodes].forEach((child) => appendClean(child, parent));
+          return;
+        }
+        const clean = document.createElement(tag);
+        if (tag === "a") {
+          const href = String(node.getAttribute("href") || "").trim();
+          if (/^(https?:|mailto:)/i.test(href)) {
+            clean.href = href;
+            clean.target = "_blank";
+            clean.rel = "noopener noreferrer";
+          }
+        }
+        [...node.childNodes].forEach((child) => appendClean(child, clean));
+        parent.append(clean);
+      };
+
+      [...template.content.childNodes].forEach((node) => appendClean(node, output));
+      return output.innerHTML || "<p><br></p>";
+    }
+
+    function essayBlocksFor(essay) {
+      if (Array.isArray(essay?.blocks) && essay.blocks.length) {
+        return essay.blocks.map((block) => block?.type === "image"
+          ? {
+              id: block.id || essayBlockId("image"), type: "image", name: block.name || "essay-image",
+              mimeType: block.mimeType || block.blob?.type || "image/jpeg", blob: block.blob || null,
+              url: block.url || "", caption: block.caption || ""
+            }
+          : { id: block?.id || essayBlockId("text"), type: "text", html: sanitizeEssayHtml(block?.html || plainTextToEssayHtml(block?.text || "")) });
+      }
+      return [{ id: essayBlockId("text"), type: "text", html: plainTextToEssayHtml(essay?.body || "") }];
+    }
+
+    function essayPlainText(source) {
+      const blocks = Array.isArray(source) ? source : essayBlocksFor(source);
+      return blocks.map((block) => {
+        if (block.type === "image") return block.caption || "";
+        const holder = document.createElement("div");
+        holder.innerHTML = sanitizeEssayHtml(block.html || "");
+        return holder.innerText.trim();
+      }).filter(Boolean).join("\n\n");
+    }
+
+    function renderEssayContent(container, source) {
+      if (!container) return;
+      const blocks = Array.isArray(source) ? source : essayBlocksFor(source);
+      container.innerHTML = "";
+      blocks.forEach((block) => {
+        if (block.type === "image") {
+          const sourceUrl = imageSource(block);
+          if (!sourceUrl) return;
+          const figure = document.createElement("figure");
+          figure.className = "essay-reader-media";
+          const image = document.createElement("img");
+          image.src = sourceUrl;
+          image.alt = block.caption || "";
+          image.loading = "lazy";
+          image.decoding = "async";
+          figure.append(image);
+          if (block.caption) {
+            const caption = document.createElement("figcaption");
+            caption.textContent = block.caption;
+            figure.append(caption);
+          }
+          container.append(figure);
+          return;
+        }
+        const text = document.createElement("div");
+        text.className = "essay-rich-text";
+        text.innerHTML = sanitizeEssayHtml(block.html || "");
+        container.append(text);
+      });
+    }
+
     function renderEssayManager() {
       if (!elements.essayManager) return;
       elements.essayManager.innerHTML = "";
@@ -1029,7 +1665,7 @@
         const item = document.createElement("article");
         item.className = "manager-item essay-manager-item";
         item.innerHTML = `
-          <div><h4 class="manager-name">${escapeHtml(essay.title)}</h4><span class="manager-sub">${escapeHtml(essay.date || "UNDATED")}</span><p class="essay-manager-excerpt">${escapeHtml(essay.excerpt || essay.body.slice(0, 120))}</p></div>
+          <div><h4 class="manager-name">${escapeHtml(essay.title)}</h4><span class="manager-sub">${escapeHtml(essay.date || "UNDATED")}</span><p class="essay-manager-excerpt">${escapeHtml(essay.excerpt || essayPlainText(essay).slice(0, 120))}</p></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动文章">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动文章">↓</button>
@@ -1047,15 +1683,17 @@
     }
 
     function updateTrailSources() {
-      trailSources = projects.flatMap((project) => project.images.map(imageSource)).filter(Boolean);
+      trailSources = projects.map((project) => projectCoverImage(project)).filter(Boolean).map((image) => imageSource(image, "trail")).filter(Boolean);
       trailIndex = 0;
       elements.trail.innerHTML = "";
+      prepareSiteLoader();
     }
 
     function createTrailImage(x, y, touchMode = false) {
       if (!trailSources.length) return;
       const frame = document.createElement("div");
       frame.className = `trail-frame${touchMode ? " is-touch" : ""}`;
+      frame.classList.add(TRAIL_TONE_CLASSES[trailIndex % TRAIL_TONE_CLASSES.length]);
       frame.style.zIndex = trailZ++;
       const image = document.createElement("img");
       image.src = trailSources[trailIndex % trailSources.length];
@@ -1107,13 +1745,24 @@
     elements.hero.addEventListener("touchstart", (event) => {
       const touch = event.touches[0];
       if (!touch) return;
+      homeTouchStartY = touch.clientY;
+      homeTouchBounced = false;
       exposeTrailAt(touch.clientX, touch.clientY, true, true);
     }, { passive: true });
 
     elements.hero.addEventListener("touchmove", (event) => {
       const touch = event.touches[0];
       if (!touch) return;
+      if (!recordPageUnlocked && !homeTouchBounced && homeTouchStartY !== null && homeTouchStartY - touch.clientY > 24) {
+        homeTouchBounced = true;
+        triggerHomeEdgeBounce();
+      }
       exposeTrailAt(touch.clientX, touch.clientY, true);
+    }, { passive: true });
+
+    elements.hero.addEventListener("touchend", () => {
+      homeTouchStartY = null;
+      homeTouchBounced = false;
     }, { passive: true });
 
     function openProject(id) {
@@ -1123,13 +1772,13 @@
         ...project,
         displayImages: project.images.map((image) => ({ ...image, displayUrl: imageSource(image) }))
       };
-      currentDetailIndex = 0;
+      currentDetailIndex = projectCoverIndex(project);
       $("#detailBarTitle").textContent = project.title;
       $("#detailTitle").textContent = project.title;
       $("#detailMeta").textContent = [project.year, project.category].filter(Boolean).join(" / ");
       $("#detailDescription").textContent = project.description || "";
       renderDetailThumbs();
-      showDetailImage(0);
+      showDetailImage(currentDetailIndex);
       elements.projectView.classList.add("is-open");
       elements.projectView.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -1241,6 +1890,7 @@
       $("#editingId").value = "";
       $("#projectFormTitle").textContent = "新建 Record";
       editingImages = [];
+      editingCoverIndex = 0;
       renderExistingImages();
       elements.form.hidden = true;
     }
@@ -1262,6 +1912,7 @@
       $("#projectDescription").value = project.description || "";
       $("#projectImages").value = "";
       editingImages = [...project.images];
+      editingCoverIndex = projectCoverIndex(project);
       renderExistingImages();
       elements.form.hidden = false;
       elements.form.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1271,12 +1922,21 @@
       elements.existingImages.innerHTML = "";
       editingImages.forEach((image, index) => {
         const item = document.createElement("div");
-        item.className = "existing-image";
+        item.className = `existing-image${index === editingCoverIndex ? " is-cover" : ""}`;
         const size = image.blob?.size || 0;
         item.title = [image.name, size ? formatFileSize(size) : ""].filter(Boolean).join(" / ");
-        item.innerHTML = `<img src="${imageSource(image)}" alt=""><span class="existing-image-size">${size ? formatFileSize(size) : "REMOTE"}</span><button type="button" aria-label="移除这张图片">×</button>`;
-        item.querySelector("button").addEventListener("click", () => {
+        item.innerHTML = `<img src="${imageSource(image)}" alt=""><span class="existing-image-size">${size ? formatFileSize(size) : "REMOTE"}</span><button class="existing-image-remove" type="button" aria-label="移除这张图片">×</button><button class="existing-image-cover" type="button">${index === editingCoverIndex ? "当前封面" : "设为封面"}</button>`;
+        item.querySelector(".existing-image-cover").addEventListener("click", () => {
+          editingCoverIndex = index;
+          renderExistingImages();
+          setStatus(`已选择第 ${index + 1} 张图片作为 Record 封面。`, false);
+        });
+        item.querySelector(".existing-image-remove").addEventListener("click", () => {
+          const removedCover = index === editingCoverIndex;
           editingImages.splice(index, 1);
+          if (!editingImages.length) editingCoverIndex = 0;
+          else if (removedCover) editingCoverIndex = Math.min(index, editingImages.length - 1);
+          else if (index < editingCoverIndex) editingCoverIndex -= 1;
           renderExistingImages();
         });
         elements.existingImages.append(item);
@@ -1372,6 +2032,59 @@
       }
     }
 
+    async function createRecordTrailThumbnail(blob) {
+      if (!blob) return null;
+      const type = (blob.type || "").toLowerCase();
+      if (!["image/jpeg", "image/png", "image/webp"].includes(type)) return null;
+      const loaded = await loadCompressionSource(blob);
+      try {
+        const maxEdge = 320;
+        const sourceMaxEdge = Math.max(loaded.width, loaded.height);
+        const scale = Math.min(1, maxEdge / sourceMaxEdge);
+        if (scale === 1 && blob.size <= 100 * 1024) return blob;
+        const width = Math.max(1, Math.round(loaded.width * scale));
+        const height = Math.max(1, Math.round(loaded.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d", { alpha: true });
+        if (!context) throw new Error("Canvas unavailable");
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "medium";
+        context.drawImage(loaded.source, 0, 0, width, height);
+        const thumbnail = await canvasToBlob(canvas, "image/webp", .5);
+        canvas.width = 1;
+        canvas.height = 1;
+        return thumbnail?.size < blob.size ? thumbnail : blob;
+      } finally {
+        loaded.cleanup();
+      }
+    }
+
+    async function ensureLocalTrailThumbnails(refreshSources = true) {
+      if (PUBLIC_MODE) return;
+      let changed = false;
+      for (const project of projects) {
+        let projectChanged = false;
+        const image = projectCoverImage(project);
+        if (image?.blob && !image.trailUrl && (!image.trailBlob || image.trailThumbnailVersion !== TRAIL_THUMBNAIL_VERSION)) {
+          try {
+            const trailBlob = await createRecordTrailThumbnail(image.blob);
+            if (trailBlob) {
+              image.trailBlob = trailBlob;
+              image.trailThumbnailVersion = TRAIL_THUMBNAIL_VERSION;
+              projectChanged = true;
+              changed = true;
+            }
+          } catch (error) {
+            console.warn("Trail thumbnail generation failed; main image retained.", error);
+          }
+        }
+        if (projectChanged) await putProject(project);
+      }
+      if (changed && refreshSources) updateTrailSources();
+    }
+
     const projectImagesInput = $("#projectImages");
     const recordDropZone = $("#recordDropZone");
     const supportedRecordImageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"]);
@@ -1411,7 +2124,8 @@
             if (image.compressed) compressedCount += 1;
           } catch (error) {
             console.warn("Image compression failed; original file retained.", error);
-            addedImages.push({ name: file.name, type: file.type, blob: file, originalSize: file.size, compressed: false });
+            const fallbackImage = { name: file.name, type: file.type, blob: file, originalSize: file.size, compressed: false };
+            addedImages.push(fallbackImage);
             finalBytes += file.size;
             failedCount += 1;
           }
@@ -1478,6 +2192,16 @@
         setStatus("请至少选择一张图片。", true);
         return;
       }
+      const coverIndex = Math.min(Math.max(0, editingCoverIndex), images.length - 1);
+      const coverImage = images[coverIndex];
+      if (coverImage?.blob && !coverImage.trailUrl && (!coverImage.trailBlob || coverImage.trailThumbnailVersion !== TRAIL_THUMBNAIL_VERSION)) {
+        try {
+          coverImage.trailBlob = await createRecordTrailThumbnail(coverImage.blob);
+          coverImage.trailThumbnailVersion = TRAIL_THUMBNAIL_VERSION;
+        } catch (error) {
+          console.warn("Cover trail thumbnail generation failed; main image retained.", error);
+        }
+      }
       const editingId = $("#editingId").value;
       const existing = projects.find((item) => item.id === editingId);
       const project = {
@@ -1487,6 +2211,7 @@
         year: $("#projectYear").value.trim(),
         category: $("#projectCategory").value.trim(),
         description: $("#projectDescription").value.trim(),
+        coverIndex,
         images,
         demo: false
       };
@@ -1529,14 +2254,157 @@
       elements.essayForm.reset();
       $("#editingEssayId").value = "";
       $("#essayFormTitle").textContent = "新建文章";
+      editingEssayBlocks = [];
+      activeEssayTextBlockId = "";
+      $("#essayBlockEditor").innerHTML = "";
+      $("#essayPreviewDate").textContent = "";
+      $("#essayPreviewTitle").textContent = "文章标题";
+      $("#essayPreviewBody").innerHTML = "";
+      $("#essayImageStatus").textContent = "图片会使用 Record 中设置的压缩规格在本地自动处理。";
       elements.essayForm.hidden = true;
+    }
+
+    function renderEssayPreview() {
+      $("#essayPreviewDate").textContent = $("#essayDateInput").value.trim();
+      $("#essayPreviewTitle").textContent = $("#essayTitleInput").value.trim() || "文章标题";
+      renderEssayContent($("#essayPreviewBody"), editingEssayBlocks);
+    }
+
+    function moveEssayBlock(index, direction) {
+      const target = index + direction;
+      if (target < 0 || target >= editingEssayBlocks.length) return;
+      [editingEssayBlocks[index], editingEssayBlocks[target]] = [editingEssayBlocks[target], editingEssayBlocks[index]];
+      renderEssayBlockEditor(editingEssayBlocks[target].id);
+    }
+
+    function removeEssayBlock(index) {
+      const block = editingEssayBlocks[index];
+      if (!block) return;
+      if (editingEssayBlocks.length === 1) {
+        editingEssayBlocks = [{ id: essayBlockId("text"), type: "text", html: "<p><br></p>" }];
+      } else {
+        editingEssayBlocks.splice(index, 1);
+      }
+      if (activeEssayTextBlockId === block.id) activeEssayTextBlockId = "";
+      renderEssayBlockEditor();
+    }
+
+    function renderEssayBlockEditor(focusId = "") {
+      const container = $("#essayBlockEditor");
+      if (!editingEssayBlocks.length) editingEssayBlocks = [{ id: essayBlockId("text"), type: "text", html: "<p><br></p>" }];
+      container.innerHTML = "";
+      editingEssayBlocks.forEach((block, index) => {
+        const wrapper = document.createElement("section");
+        wrapper.className = "essay-edit-block";
+        wrapper.dataset.blockId = block.id;
+        const head = document.createElement("div");
+        head.className = "essay-edit-block-head";
+        head.innerHTML = `<span class="essay-edit-block-kind">${block.type === "image" ? "图片区块" : "正文区块"} / ${String(index + 1).padStart(2, "0")}</span>`;
+        const controls = [
+          { label: "↑", title: "向上移动", action: () => moveEssayBlock(index, -1), disabled: index === 0 },
+          { label: "↓", title: "向下移动", action: () => moveEssayBlock(index, 1), disabled: index === editingEssayBlocks.length - 1 },
+          { label: "×", title: "删除区块", action: () => removeEssayBlock(index), disabled: false }
+        ];
+        controls.forEach((control) => {
+          const button = document.createElement("button");
+          button.className = "essay-block-control";
+          button.type = "button";
+          button.textContent = control.label;
+          button.title = control.title;
+          button.setAttribute("aria-label", control.title);
+          button.disabled = control.disabled;
+          button.addEventListener("click", control.action);
+          head.append(button);
+        });
+        wrapper.append(head);
+
+        if (block.type === "image") {
+          const imageWrap = document.createElement("div");
+          imageWrap.className = "essay-edit-image";
+          const image = document.createElement("img");
+          image.src = imageSource(block);
+          image.alt = block.caption || "文章图片";
+          const caption = document.createElement("input");
+          caption.className = "essay-image-caption";
+          caption.type = "text";
+          caption.maxLength = 300;
+          caption.placeholder = "图片说明（可选）";
+          caption.value = block.caption || "";
+          caption.addEventListener("input", () => {
+            block.caption = caption.value;
+            image.alt = caption.value || "文章图片";
+            renderEssayPreview();
+          });
+          imageWrap.append(image, caption);
+          wrapper.append(imageWrap);
+        } else {
+          const editor = document.createElement("div");
+          editor.className = "essay-rich-input essay-rich-text";
+          editor.contentEditable = "true";
+          editor.spellcheck = true;
+          editor.dataset.placeholder = "从这里开始写作。按 Enter 创建新段落，也可以选中文字后使用上方格式按钮。";
+          editor.innerHTML = sanitizeEssayHtml(block.html || "");
+          editor.addEventListener("focus", () => { activeEssayTextBlockId = block.id; });
+          editor.addEventListener("input", () => {
+            block.html = editor.innerHTML;
+            activeEssayTextBlockId = block.id;
+            renderEssayPreview();
+          });
+          wrapper.append(editor);
+          if (focusId === block.id) window.setTimeout(() => editor.focus(), 0);
+        }
+        container.append(wrapper);
+      });
+      renderEssayPreview();
+    }
+
+    function addEssayTextBlock() {
+      const block = { id: essayBlockId("text"), type: "text", html: "<p><br></p>" };
+      const activeIndex = editingEssayBlocks.findIndex((item) => item.id === activeEssayTextBlockId);
+      if (activeIndex >= 0) editingEssayBlocks.splice(activeIndex + 1, 0, block);
+      else editingEssayBlocks.push(block);
+      activeEssayTextBlockId = block.id;
+      renderEssayBlockEditor(block.id);
+    }
+
+    async function addEssayImageFiles(fileList) {
+      const files = [...fileList].filter((file) => /^(image\/jpeg|image\/png|image\/webp|image\/gif)$/i.test(file.type) || /\.(?:jpe?g|png|webp|gif)$/i.test(file.name));
+      if (!files.length) {
+        $("#essayImageStatus").textContent = "没有发现可用的 JPEG、PNG、WebP 或 GIF 图片。";
+        return;
+      }
+      $("#essayImageStatus").textContent = `正在处理 0 / ${files.length} 张图片……`;
+      const newBlocks = [];
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        $("#essayImageStatus").textContent = `正在处理 ${index + 1} / ${files.length}：${file.name}`;
+        try {
+          const processed = await compressRecordImage(file);
+          newBlocks.push({
+            id: essayBlockId("image"), type: "image", name: processed.name || file.name,
+            mimeType: processed.type || processed.blob?.type || file.type, blob: processed.blob || file,
+            url: "", caption: ""
+          });
+        } catch (error) {
+          console.warn("Essay image processing failed; original file retained.", error);
+          newBlocks.push({ id: essayBlockId("image"), type: "image", name: file.name, mimeType: file.type, blob: file, url: "", caption: "" });
+        }
+      }
+      const activeIndex = editingEssayBlocks.findIndex((block) => block.id === activeEssayTextBlockId);
+      const insertionIndex = activeIndex >= 0 ? activeIndex + 1 : editingEssayBlocks.length;
+      editingEssayBlocks.splice(insertionIndex, 0, ...newBlocks);
+      renderEssayBlockEditor(newBlocks[0]?.id || "");
+      $("#essayImageStatus").textContent = `已添加 ${newBlocks.length} 张图片。可用区块右上方箭头调整它们在文章中的位置。`;
+      $("#essayImageFiles").value = "";
     }
 
     function startNewEssay() {
       resetEssayForm();
       elements.essayForm.hidden = false;
+      editingEssayBlocks = [{ id: essayBlockId("text"), type: "text", html: "<p><br></p>" }];
       const now = new Date();
       $("#essayDateInput").value = `${String(now.getDate()).padStart(2, "0")}.${String(now.getMonth() + 1).padStart(2, "0")}.${now.getFullYear()}`;
+      renderEssayBlockEditor(editingEssayBlocks[0].id);
       $("#essayTitleInput").focus();
     }
 
@@ -1548,9 +2416,11 @@
       $("#essayTitleInput").value = essay.title;
       $("#essayDateInput").value = essay.date || "";
       $("#essayExcerptInput").value = essay.excerpt || "";
-      $("#essayBodyInput").value = essay.body || "";
       $("#essayTextFile").value = "";
+      editingEssayBlocks = essayBlocksFor(essay);
+      activeEssayTextBlockId = editingEssayBlocks.find((block) => block.type === "text")?.id || "";
       elements.essayForm.hidden = false;
+      renderEssayBlockEditor();
       elements.essayForm.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -1580,19 +2450,43 @@
       const file = event.target.files[0];
       if (!file) return;
       try {
-        $("#essayBodyInput").value = await file.text();
+        const textBlock = editingEssayBlocks.find((block) => block.type === "text");
+        const html = plainTextToEssayHtml(await file.text());
+        if (textBlock) textBlock.html = html;
+        else editingEssayBlocks.unshift({ id: essayBlockId("text"), type: "text", html });
         if (!$("#essayTitleInput").value.trim()) $("#essayTitleInput").value = file.name.replace(/\.(txt|md)$/i, "");
+        renderEssayBlockEditor(textBlock?.id || editingEssayBlocks[0].id);
         setStatus(`已读取 ${file.name}，请检查内容后保存文章。`, false);
       } catch (error) {
         setStatus("无法读取这个文本文件。", true);
       }
     });
 
+    $("#addEssayTextBlock").addEventListener("click", addEssayTextBlock);
+    $("#essayImageFiles").addEventListener("change", (event) => addEssayImageFiles(event.target.files));
+    ["#essayTitleInput", "#essayDateInput"].forEach((selector) => $(selector).addEventListener("input", renderEssayPreview));
+    $$("[data-essay-command]").forEach((button) => {
+      button.addEventListener("mousedown", (event) => event.preventDefault());
+      button.addEventListener("click", () => {
+        const blockId = activeEssayTextBlockId || editingEssayBlocks.find((block) => block.type === "text")?.id;
+        const editor = blockId ? $(`.essay-edit-block[data-block-id="${blockId}"] .essay-rich-input`) : null;
+        if (!editor) return;
+        editor.focus();
+        document.execCommand(button.dataset.essayCommand, false, button.dataset.essayValue || null);
+        const block = editingEssayBlocks.find((item) => item.id === blockId);
+        if (block) block.html = editor.innerHTML;
+        renderEssayPreview();
+      });
+    });
+
     elements.essayForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const title = $("#essayTitleInput").value.trim();
-      const body = $("#essayBodyInput").value.trim();
-      if (!title || !body) {
+      const blocks = editingEssayBlocks.map((block) => block.type === "image"
+        ? { id: block.id, type: "image", name: block.name, mimeType: block.mimeType, blob: block.blob || null, url: block.url || "", caption: block.caption?.trim() || "" }
+        : { id: block.id, type: "text", html: sanitizeEssayHtml(block.html || "") });
+      const hasContent = blocks.some((block) => block.type === "image" ? Boolean(block.blob || block.url) : Boolean(essayPlainText([block])));
+      if (!title || !hasContent) {
         setStatus("文章标题和正文不能为空。", true);
         return;
       }
@@ -1603,7 +2497,8 @@
         date: $("#essayDateInput").value.trim(),
         title,
         excerpt: $("#essayExcerptInput").value.trim(),
-        body
+        body: essayPlainText(blocks),
+        blocks
       };
       if (existingIndex >= 0) essays[existingIndex] = essay;
       else essays.push(essay);
@@ -1631,6 +2526,7 @@
         imageCompressionMaxEdge: Number($("#imageCompressionMaxEdge").value) || 2400,
         musicCompressionEnabled: $("#musicCompressionEnabled").checked,
         musicCompressionTargetMb: Number($("#musicCompressionTarget").value) || 5,
+        butterflyCursorEnabled: $("#butterflyCursorEnabled").checked,
         email: $("#profileEmail").value.trim()
       };
       await putProfile(profile);
@@ -1653,6 +2549,13 @@
         : "自动压缩已关闭，新加入的图片会保留原文件。";
       $("#imageCompressionStatus").textContent = message;
       showToast("图片压缩设置已保存");
+    }
+
+    async function saveButterflyCursorPreference() {
+      profile = { ...profile, butterflyCursorEnabled: $("#butterflyCursorEnabled").checked };
+      if (db) await putProfile(profile);
+      applyButterflyCursorSetting();
+      showToast(profile.butterflyCursorEnabled ? "蝴蝶鼠标效果已开启" : "蝴蝶鼠标效果已关闭");
     }
 
     async function saveMusicCompressionPreferences() {
@@ -1705,6 +2608,21 @@
       }
     }
 
+    function sampledAudioRms(audioBuffer) {
+      let sum = 0;
+      let count = 0;
+      const stride = Math.max(1, Math.floor(audioBuffer.length / 180000));
+      for (let channelIndex = 0; channelIndex < audioBuffer.numberOfChannels; channelIndex++) {
+        const channel = audioBuffer.getChannelData(channelIndex);
+        for (let index = 0; index < channel.length; index += stride) {
+          const sample = channel[index] || 0;
+          sum += sample * sample;
+          count += 1;
+        }
+      }
+      return Math.sqrt(sum / Math.max(1, count));
+    }
+
     async function compressMp3File(file) {
       const targetMegabytes = Number($("#musicCompressionTarget").value) || 5;
       const targetBytes = targetMegabytes * 1024 * 1024;
@@ -1728,7 +2646,10 @@
       const encoder = new lame.Mp3Encoder(channels, sampleRate, bitrate);
       const leftSource = audioBuffer.getChannelData(0);
       const rightSource = channels > 1 ? audioBuffer.getChannelData(1) : null;
-      const blockSize = 1152;
+      // lamejs can produce an almost completely silent low-bitrate stereo MP3
+      // when fed 1152-sample stereo blocks. 576-sample blocks remain valid at
+      // 56 KBPS and also work for the higher target sizes.
+      const blockSize = 576;
       const leftPcm = new Int16Array(blockSize);
       const rightPcm = channels > 1 ? new Int16Array(blockSize) : null;
       const encodedParts = [];
@@ -1756,6 +2677,19 @@
       if (flushed.length) encodedParts.push(new Int8Array(flushed));
       const blob = new Blob(encodedParts, { type: "audio/mpeg" });
       if (!blob.size || blob.size >= file.size) return { blob: file, name: file.name, bitrate: null, compressed: false };
+      $("#musicCompressionStatus").textContent = "正在验证压缩后的声音……";
+      const verificationContext = new AudioContextClass();
+      try {
+        const verificationBuffer = await verificationContext.decodeAudioData(await blob.arrayBuffer());
+        const sourceRms = sampledAudioRms(audioBuffer);
+        const compressedRms = sampledAudioRms(verificationBuffer);
+        const durationDifference = Math.abs(verificationBuffer.duration - audioBuffer.duration);
+        if (durationDifference > 2 || compressedRms < Math.max(0.00005, sourceRms * 0.03)) {
+          throw new Error("压缩结果未通过声音验证，已拒绝保存静音文件");
+        }
+      } finally {
+        await verificationContext.close().catch(() => {});
+      }
       const baseName = file.name.replace(/\.mp3$/i, "") || "background-music";
       return { blob, name: `${baseName}-web.mp3`, bitrate, compressed: true };
     }
@@ -1772,6 +2706,8 @@
       }
 
       input.disabled = true;
+      musicAutoStartAttempted = false;
+      musicUserPaused = false;
       elements.audio.pause();
       try {
         let prepared = { blob: file, name: file.name, bitrate: null, compressed: false };
@@ -1796,14 +2732,15 @@
           type: prepared.blob.type || file.type,
           blob: prepared.blob,
           url: "",
-          autoStart: $("#musicAutoStart").checked
+          autoStart: $("#musicAutoStart").checked,
+          encoderVersion: prepared.compressed ? 2 : 0
         };
         await putMusic(music);
         musicAutoStartAttempted = false;
         applyMusic();
         if (prepared.compressed) {
           const reduction = Math.max(0, Math.round((1 - prepared.blob.size / file.size) * 100));
-          $("#musicCompressionStatus").textContent = `压缩完成：${formatFileSize(file.size)} → ${formatFileSize(prepared.blob.size)}，${prepared.bitrate} KBPS，节省 ${reduction}%。`;
+          $("#musicCompressionStatus").textContent = `压缩完成并已保存：${formatFileSize(file.size)} → ${formatFileSize(prepared.blob.size)}，${prepared.bitrate} KBPS，节省 ${reduction}%。请点击“试听 / 暂停”检查声音；重新打开网页后需先点击或触摸页面，浏览器才允许播放。`;
           showToast("MP3 已压缩并保存");
         } else {
           if (prepared.alreadySmall) {
@@ -1858,6 +2795,29 @@
       return new Blob([array], { type: mime });
     }
 
+    async function serializeEssaysForBackup() {
+      const exported = [];
+      for (const essay of essays) {
+        const blocks = [];
+        for (const block of essayBlocksFor(essay)) {
+          if (block.type !== "image") {
+            blocks.push({ id: block.id, type: "text", html: sanitizeEssayHtml(block.html || "") });
+            continue;
+          }
+          if (block.blob) {
+            blocks.push({
+              id: block.id, type: "image", name: block.name, mimeType: block.mimeType || block.blob.type,
+              dataUrl: await blobToDataUrl(block.blob), caption: block.caption || ""
+            });
+          } else {
+            blocks.push({ id: block.id, type: "image", name: block.name, mimeType: block.mimeType, url: block.url || "", caption: block.caption || "" });
+          }
+        }
+        exported.push({ ...essay, blocks });
+      }
+      return exported;
+    }
+
     async function exportBackup() {
       setStatus("正在生成备份，请稍候……", false);
       const exportedProjects = [];
@@ -1871,7 +2831,8 @@
       const exportedMusic = music.blob
         ? { name: music.name, type: music.type, autoStart: music.autoStart, dataUrl: await blobToDataUrl(music.blob) }
         : { name: music.name, type: music.type, autoStart: music.autoStart, url: music.url };
-      const payload = { version: 2, exportedAt: new Date().toISOString(), profile, essays, music: exportedMusic, projects: exportedProjects };
+      const exportedEssays = await serializeEssaysForBackup();
+      const payload = { version: 3, exportedAt: new Date().toISOString(), profile, essays: exportedEssays, music: exportedMusic, projects: exportedProjects, publishManifest };
       const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -1967,19 +2928,35 @@
       const publishedProjects = [];
       for (let projectIndex = 0; projectIndex < projects.length; projectIndex++) {
         const project = projects[projectIndex];
+        const coverIndex = projectCoverIndex(project);
         const images = [];
         for (let imageIndex = 0; imageIndex < project.images.length; imageIndex++) {
           const image = project.images[imageIndex];
+          const isCover = imageIndex === coverIndex;
           let url = image.url;
+          let trailUrl = isCover ? image.trailUrl : "";
           if (image.blob) {
             const extension = assetExtension(image.name, image.type || image.blob.type, "jpg");
             url = `assets/images/project-${projectIndex + 1}-${imageIndex + 1}.${extension}`;
             assets.push({ name: url, data: image.blob });
+            if (isCover && (!image.trailBlob || image.trailThumbnailVersion !== TRAIL_THUMBNAIL_VERSION)) {
+              try {
+                image.trailBlob = await createRecordTrailThumbnail(image.blob);
+                image.trailThumbnailVersion = TRAIL_THUMBNAIL_VERSION;
+              } catch (error) {
+                console.warn("Trail thumbnail generation failed during publish; main image retained.", error);
+              }
+            }
+            if (isCover && image.trailBlob && image.trailBlob !== image.blob) {
+              trailUrl = `assets/trails/project-${projectIndex + 1}-${imageIndex + 1}.webp`;
+              assets.push({ name: trailUrl, data: image.trailBlob });
+            } else if (isCover) {
+              trailUrl = url;
+            }
           }
-          images.push({
-            name: image.name,
-            url
-          });
+          const publishedImage = { name: image.name, url };
+          if (isCover) publishedImage.trailUrl = trailUrl || url;
+          images.push(publishedImage);
         }
         publishedProjects.push({
           id: project.id,
@@ -1988,60 +2965,212 @@
           year: project.year,
           category: project.category,
           description: project.description,
+          coverIndex,
           images
         });
       }
       return publishedProjects;
     }
 
-    async function buildPublishVersion() {
+    async function serializeEssaysForPublish(assets) {
+      const publishedEssays = [];
+      for (let essayIndex = 0; essayIndex < essays.length; essayIndex++) {
+        const essay = essays[essayIndex];
+        const blocks = [];
+        let imageIndex = 0;
+        for (const block of essayBlocksFor(essay)) {
+          if (block.type !== "image") {
+            blocks.push({ id: block.id, type: "text", html: sanitizeEssayHtml(block.html || "") });
+            continue;
+          }
+          imageIndex += 1;
+          let url = block.url || "";
+          if (block.blob) {
+            const extension = assetExtension(block.name, block.mimeType || block.blob.type, "jpg");
+            url = `assets/essays/essay-${essayIndex + 1}-image-${imageIndex}.${extension}`;
+            assets.push({ name: url, data: block.blob });
+          }
+          blocks.push({
+            id: block.id, type: "image", name: block.name, mimeType: block.mimeType || block.blob?.type || "image/jpeg",
+            url, caption: block.caption || ""
+          });
+        }
+        publishedEssays.push({ ...essay, body: essayPlainText(blocks), blocks });
+      }
+      return publishedEssays;
+    }
+
+    function loadButterflyFallbackAsset() {
+      const existing = window.__HUMORPOPPY_BUTTERFLY_DATA_URL__;
+      if (existing) return Promise.resolve(dataUrlToBlob(existing));
+      if (butterflyFallbackLoadPromise) return butterflyFallbackLoadPromise;
+      butterflyFallbackLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = new URL(BUTTERFLY_FALLBACK_SCRIPT, document.baseURI).href;
+        script.async = true;
+        script.onload = () => {
+          const dataUrl = window.__HUMORPOPPY_BUTTERFLY_DATA_URL__;
+          dataUrl ? resolve(dataUrlToBlob(dataUrl)) : reject(new Error(`${BUTTERFLY_FALLBACK_SCRIPT} 中没有蝴蝶动画数据`));
+        };
+        script.onerror = () => reject(new Error(`无法读取 ${BUTTERFLY_FALLBACK_SCRIPT}`));
+        document.head.append(script);
+      }).catch((error) => {
+        butterflyFallbackLoadPromise = null;
+        throw error;
+      });
+      return butterflyFallbackLoadPromise;
+    }
+
+    async function collectPublishData() {
+      const assets = [];
+      const butterflyAssetName = "assets/cursor/butterfly.webp";
+      const butterflyAssetUrl = new URL(butterflyAssetName, document.baseURI).href;
+      let butterflyAsset = null;
+      try {
+        const response = await fetch(butterflyAssetUrl);
+        if (response.ok) butterflyAsset = await response.blob();
+      } catch (error) {
+        console.warn("Unable to read butterfly asset with fetch; trying a local file request.", error);
+      }
+      if (!butterflyAsset) {
+        try {
+          butterflyAsset = await new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.open("GET", butterflyAssetUrl, true);
+            request.responseType = "blob";
+            request.onload = () => request.response?.size ? resolve(request.response) : reject(new Error("蝴蝶动画文件为空"));
+            request.onerror = () => reject(new Error("浏览器阻止了直接读取蝴蝶动画文件"));
+            request.send();
+          });
+        } catch (error) {
+          console.warn("Unable to read butterfly asset with a local request; loading the packaged fallback.", error);
+        }
+      }
+      if (!butterflyAsset) {
+        setStatus("正在读取文件夹打开模式所需的蝴蝶动画备份……", false);
+        butterflyAsset = await loadButterflyFallbackAsset();
+      }
+      assets.push({ name: butterflyAssetName, data: butterflyAsset });
+      const publishedProjects = await serializeProjectsForPublish(assets);
+      const publishedEssays = await serializeEssaysForPublish(assets);
+      let publishedMusic = { name: music.name, type: music.type, autoStart: music.autoStart, url: music.url };
+      if (music.blob) {
+        const extension = assetExtension(music.name, music.type || music.blob.type, "mp3");
+        const musicUrl = `assets/audio/background.${extension}`;
+        assets.push({ name: musicUrl, data: music.blob });
+        publishedMusic = { name: music.name, type: music.type || music.blob.type, autoStart: music.autoStart, url: musicUrl };
+      }
+      return { assets, payload: { profile, essays: publishedEssays, music: publishedMusic, projects: publishedProjects } };
+    }
+
+    async function assetFingerprint(blob) {
+      const buffer = await blob.arrayBuffer();
+      if (crypto.subtle?.digest) {
+        const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", buffer));
+        return [...digest].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+      let hash = 2166136261;
+      const bytes = new Uint8Array(buffer);
+      for (const byte of bytes) hash = Math.imul(hash ^ byte, 16777619);
+      return `fnv1a-${(hash >>> 0).toString(16).padStart(8, "0")}-${blob.size}`;
+    }
+
+    async function createPublishManifest(assets) {
+      const manifest = { createdAt: new Date().toISOString(), assets: {} };
+      for (let index = 0; index < assets.length; index++) {
+        setStatus(`正在核对资源 ${index + 1} / ${assets.length}……`, false);
+        manifest.assets[assets[index].name] = await assetFingerprint(assets[index].data);
+      }
+      return manifest;
+    }
+
+    async function savePublishManifest(manifest) {
+      publishManifest = manifest;
+      if (db) await putPublishManifest(manifest);
+      renderPublishBaselineStatus();
+    }
+
+    function createPublishedHtml(payload) {
+      const safePayload = JSON.stringify(payload).replace(/<\/script/gi, "<\\/script");
+      const publishedDocument = document.documentElement.cloneNode(true);
+      publishedDocument.querySelector("body").style.overflow = "";
+      publishedDocument.querySelector("#openStudio").hidden = true;
+      publishedDocument.querySelector("#studio").hidden = true;
+      publishedDocument.querySelector("#studio").classList.remove("is-open");
+      publishedDocument.querySelector("#projectView").classList.remove("is-open");
+      publishedDocument.querySelector("#projectView").setAttribute("aria-hidden", "true");
+      ["#menuPanel", "#essaysView", "#essayReader", "#aboutView", "#contactView", "#imageLightbox"].forEach((selector) => {
+        const overlay = publishedDocument.querySelector(selector);
+        if (!overlay) return;
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+      });
+      publishedDocument.querySelector("#trailLayer").innerHTML = "";
+      publishedDocument.querySelector("#toast").classList.remove("is-visible");
+      publishedDocument.querySelector("#backgroundMusic").pause?.();
+      publishedDocument.querySelector("#backgroundMusic").removeAttribute("src");
+      let html = "<!doctype html>\n" + publishedDocument.outerHTML;
+      html = html.replace("const PUBLISHED_DATA = null;", `const PUBLISHED_DATA = ${safePayload};`);
+      return html.replace("const PUBLIC_MODE = false;", "const PUBLIC_MODE = true;");
+    }
+
+    async function markCurrentAsPublishBaseline() {
       if (!projects.length) {
         setStatus("请先添加至少一个 Record。", true);
         return;
       }
-      setStatus("正在整理 GitHub 发布包，请不要关闭页面……", false);
+      setStatus("正在建立 GitHub 线上资源基准……", false);
       try {
-        const assets = [];
-        const publishedProjects = await serializeProjectsForPublish(assets);
-        let publishedMusic = { name: music.name, type: music.type, autoStart: music.autoStart, url: music.url };
-        if (music.blob) {
-          const extension = assetExtension(music.name, music.type || music.blob.type, "mp3");
-          const musicUrl = `assets/audio/background.${extension}`;
-          assets.push({ name: musicUrl, data: music.blob });
-          publishedMusic = { name: music.name, type: music.type || music.blob.type, autoStart: music.autoStart, url: musicUrl };
-        }
-        const payload = { profile, essays, music: publishedMusic, projects: publishedProjects };
-        const safePayload = JSON.stringify(payload).replace(/<\/script/gi, "<\\/script");
-        const publishedDocument = document.documentElement.cloneNode(true);
-        publishedDocument.querySelector("body").style.overflow = "";
-        publishedDocument.querySelector("#openStudio").hidden = true;
-        publishedDocument.querySelector("#studio").hidden = true;
-        publishedDocument.querySelector("#studio").classList.remove("is-open");
-        publishedDocument.querySelector("#projectView").classList.remove("is-open");
-        publishedDocument.querySelector("#projectView").setAttribute("aria-hidden", "true");
-        ["#menuPanel", "#essaysView", "#essayReader", "#aboutView", "#contactView", "#imageLightbox"].forEach((selector) => {
-          const overlay = publishedDocument.querySelector(selector);
-          if (!overlay) return;
-          overlay.classList.remove("is-open");
-          overlay.setAttribute("aria-hidden", "true");
-        });
-        publishedDocument.querySelector("#trailLayer").innerHTML = "";
-        publishedDocument.querySelector("#toast").classList.remove("is-visible");
-        publishedDocument.querySelector("#backgroundMusic").pause?.();
-        publishedDocument.querySelector("#backgroundMusic").removeAttribute("src");
-        let html = "<!doctype html>\n" + publishedDocument.outerHTML;
-        html = html.replace("const PUBLISHED_DATA = null;", `const PUBLISHED_DATA = ${safePayload};`);
-        html = html.replace("const PUBLIC_MODE = false;", "const PUBLIC_MODE = true;");
-        const instructions = [
-          "GitHub Pages 上传说明", "", "1. 解压这个 ZIP。", "2. 打开 GitHub 仓库，选择 Add file > Upload files。",
+        const { assets } = await collectPublishData();
+        await savePublishManifest(await createPublishManifest(assets));
+        setStatus("已将当前内容设为线上基准。之后修改内容即可生成增量更新包。", false);
+        showToast("更新基准已建立");
+      } catch (error) {
+        console.error(error);
+        setStatus("无法建立更新基准，请刷新页面后重试。", true);
+      }
+    }
+
+    async function buildPublishVersion(mode = "full") {
+      if (!projects.length) {
+        setStatus("请先添加至少一个 Record。", true);
+        return;
+      }
+      const updateOnly = mode === "update";
+      if (updateOnly && !publishManifest?.createdAt) {
+        setStatus("尚未建立更新基准。请先在“音乐与发布”中建立线上基准，或先生成并上传一次完整包。", true);
+        activateStudioSection("publish");
+        return;
+      }
+      setStatus(`正在整理 GitHub ${updateOnly ? "更新" : "完整"}包，请不要关闭页面……`, false);
+      try {
+        const { assets, payload } = await collectPublishData();
+        const nextManifest = await createPublishManifest(assets);
+        const selectedAssets = updateOnly
+          ? assets.filter((entry) => publishManifest.assets?.[entry.name] !== nextManifest.assets[entry.name])
+          : assets;
+        const removedAssets = updateOnly
+          ? Object.keys(publishManifest.assets || {}).filter((name) => !(name in nextManifest.assets))
+          : [];
+        const html = createPublishedHtml(payload);
+        const instructions = updateOnly ? [
+          "GitHub Pages 增量更新说明", "", "1. 解压这个 ZIP。", "2. 打开 GitHub 仓库，选择 Add file > Upload files。",
+          "3. 把解压后的 index.html、.nojekyll 以及存在的 assets 文件夹一起拖入上传区域。",
+          "4. GitHub 提示同名文件时直接覆盖，然后点击 Commit changes。", "5. 更新包没有包含未变化的旧资源，请不要删除 GitHub 上原有的 assets 文件夹。",
+          removedAssets.length ? "6. REMOVED-ASSETS.txt 中列出的是已不再使用的旧资源；不删除也不影响网站。" : "6. 本次没有需要清理的旧资源。",
+          "7. 确认网站更新成功后，回到本地管理界面点击“确认当前内容已上线并更新基准”。"
+        ] : [
+          "GitHub Pages 完整上传说明", "", "1. 解压这个 ZIP。", "2. 打开 GitHub 仓库，选择 Add file > Upload files。",
           "3. 把解压后的 index.html、assets 文件夹和 .nojekyll 一起拖入上传区域。", "4. 点击 Commit changes。",
-          "5. 不要修改 assets 文件夹名称或其中的文件路径。"
-        ].join("\r\n");
+          "5. 不要直接上传 ZIP，也不要修改 assets 文件夹名称或其中的文件路径。",
+          "6. 确认网站上线成功后，回到本地管理界面点击“确认当前内容已上线并更新基准”。"
+        ];
         const packageEntries = [
           { name: "index.html", data: new Blob([html], { type: "text/html;charset=utf-8" }) },
           { name: ".nojekyll", data: new Blob([]) },
-          { name: "UPLOAD-INSTRUCTIONS.txt", data: new Blob([instructions], { type: "text/plain;charset=utf-8" }) },
-          ...assets
+          { name: "UPLOAD-INSTRUCTIONS.txt", data: new Blob([instructions.join("\r\n")], { type: "text/plain;charset=utf-8" }) },
+          ...(removedAssets.length ? [{ name: "REMOVED-ASSETS.txt", data: new Blob([removedAssets.join("\r\n")], { type: "text/plain;charset=utf-8" }) }] : []),
+          ...selectedAssets
         ];
         const oversized = packageEntries.filter((entry) => entry.data.size > 25 * 1024 * 1024);
         if (oversized.length) {
@@ -2053,21 +3182,23 @@
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = "github-pages-package.zip";
+        link.download = updateOnly ? "github-pages-update.zip" : "github-pages-package.zip";
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 5000);
-        setStatus(`GitHub 发布包已生成（${sizeMb.toFixed(1)} MB），请先解压再上传里面的文件。`, false);
-        showToast("GitHub 发布包已生成");
+        const summary = updateOnly ? `包含 ${selectedAssets.length} 个变化资源` : `包含全部 ${selectedAssets.length} 个资源`;
+        setStatus(`GitHub ${updateOnly ? "更新" : "完整"}包已生成（${sizeMb.toFixed(1)} MB，${summary}）。上传成功后请确认当前内容已上线并更新基准。`, false);
+        showToast(`GitHub ${updateOnly ? "更新" : "完整"}包已生成`);
       } catch (error) {
         console.error(error);
-        setStatus("生成失败，请先导出备份并刷新页面后重试。", true);
+        const reason = error?.message ? `：${error.message}` : "";
+        setStatus(`生成失败${reason}。请确认 index.html、assets 文件夹、lame.min.js 与 butterfly-fallback.js 都在网站文件夹中。`, true);
       }
     }
 
     async function importBackup(file) {
       try {
         const payload = JSON.parse(await file.text());
-        if (![1, 2].includes(payload.version) || !Array.isArray(payload.projects)) throw new Error("Invalid backup");
+        if (![1, 2, 3].includes(payload.version) || !Array.isArray(payload.projects)) throw new Error("Invalid backup");
         if (!window.confirm("导入会替换当前浏览器中的所有 Record、文章和页面设置，确定继续吗？")) return;
         const transaction = db.transaction(["projects", "settings"], "readwrite");
         transaction.objectStore("projects").clear();
@@ -2079,7 +3210,19 @@
         }
         profile = { ...DEFAULT_PROFILE, ...(payload.profile || {}) };
         await putProfile(profile);
-        essays = Array.isArray(payload.essays) ? payload.essays : [...DEFAULT_ESSAYS];
+        publishManifest = payload.publishManifest?.assets ? payload.publishManifest : null;
+        if (publishManifest) await putPublishManifest(publishManifest);
+        essays = Array.isArray(payload.essays) ? payload.essays.map((essay) => ({
+          ...essay,
+          ...(Array.isArray(essay.blocks) ? {
+            blocks: essay.blocks.map((block) => {
+              if (block.type !== "image" || !block.dataUrl) return block;
+              const { dataUrl, ...imageBlock } = block;
+              const blob = dataUrlToBlob(dataUrl);
+              return { ...imageBlock, mimeType: imageBlock.mimeType || blob.type, blob, url: "" };
+            })
+          } : {})
+        })) : [...DEFAULT_ESSAYS];
         await putEssays(essays);
         if (payload.music?.dataUrl) {
           music = {
@@ -2114,6 +3257,19 @@
     function setStatus(message, isError) {
       elements.status.textContent = message;
       elements.status.style.color = isError ? "var(--signal)" : "var(--ink)";
+    }
+
+    function renderPublishBaselineStatus() {
+      const status = $("#publishBaselineStatus");
+      if (!status) return;
+      const assetCount = Object.keys(publishManifest?.assets || {}).length;
+      if (!publishManifest?.createdAt) {
+        status.textContent = "尚未建立更新基准。生成更新包前请先建立基准，或生成并上传一次完整包。";
+        return;
+      }
+      const date = new Date(publishManifest.createdAt);
+      const label = Number.isNaN(date.getTime()) ? publishManifest.createdAt : date.toLocaleString("zh-CN", { hour12: false });
+      status.textContent = `当前基准：${label} / ${assetCount} 个资源文件。GitHub 上传成功后，请点击“确认当前内容已上线并更新基准”。`;
     }
 
     let toastTimer;
@@ -2187,7 +3343,7 @@
         menuTrigger.setAttribute("role", "button");
       }
       $(".enter-link").textContent = "記録";
-      $(".section-header h2").textContent = "Record";
+      $(".section-header h2").textContent = "記録";
       $("#detailBarTitle").textContent = "Record";
       $("#detailTitle").textContent = "Record";
       $("#menuCredit").textContent = profile.menuCredit;
@@ -2331,7 +3487,7 @@
       if (!essay) return;
       $("#essayReaderDate").textContent = essay.date;
       $("#essayReaderTitle").textContent = essay.title;
-      $("#essayReaderBody").textContent = essay.body;
+      renderEssayContent($("#essayReaderBody"), essay);
       elements.essayReader.classList.add("is-open");
       elements.essayReader.setAttribute("aria-hidden", "false");
       syncOverlayScroll();
@@ -2345,15 +3501,54 @@
       syncOverlayScroll();
     }
 
+    function triggerHomeEdgeBounce() {
+      if (recordPageUnlocked || document.body.classList.contains("is-loading")) return;
+      const overlayOpen = [elements.menu, elements.essays, elements.about, elements.contact, elements.essayReader, elements.projectView, elements.studio, $("#imageLightbox")]
+        .some((item) => item?.classList.contains("is-open"));
+      if (overlayOpen) return;
+      window.clearTimeout(homeBounceTimer);
+      elements.hero.classList.remove("is-edge-bouncing");
+      elements.hero.getBoundingClientRect();
+      elements.hero.classList.add("is-edge-bouncing");
+      homeBounceTimer = window.setTimeout(() => elements.hero.classList.remove("is-edge-bouncing"), 620);
+    }
+
+    function enterRecordPage(event) {
+      event?.preventDefault();
+      recordPageUnlocked = true;
+      window.clearTimeout(homeBounceTimer);
+      elements.hero.classList.remove("is-edge-bouncing");
+      document.body.classList.remove("home-gated");
+      document.body.classList.add("record-entered");
+      requestAnimationFrame(() => $("#archive")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    }
+
     function updateScrollState() {
+      if (!recordPageUnlocked && document.body.classList.contains("home-gated") && window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+        return;
+      }
       const scrollY = window.scrollY;
       document.body.classList.toggle("has-scrolled", scrollY > 36);
     }
 
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
     window.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("wheel", (event) => {
+      if (recordPageUnlocked) return;
+      event.preventDefault();
+      if (event.deltaY > 4) triggerHomeEdgeBounce();
+    }, { passive: false });
+    window.addEventListener("keydown", (event) => {
+      if (recordPageUnlocked || !["ArrowDown", "PageDown", "End", " "].includes(event.key)) return;
+      event.preventDefault();
+      triggerHomeEdgeBounce();
+    });
     updateScrollState();
 
     setupMenuAndEssays();
+    $(".enter-link").addEventListener("click", enterRecordPage);
     $("#openStudio").addEventListener("click", openStudio);
     $("#openMenu").addEventListener("click", (event) => { event.preventDefault(); openMenu(); });
     $("#closeMenu").addEventListener("click", closeMenu);
@@ -2375,6 +3570,10 @@
       // the full-screen overlays have been removed.
       if (href.startsWith("#")) {
         event.preventDefault();
+        if (href === "#archive") {
+          enterRecordPage(event);
+          return;
+        }
         const target = document.querySelector(href);
         requestAnimationFrame(() => target?.scrollIntoView({ behavior: "smooth", block: "start" }));
       }
@@ -2477,6 +3676,7 @@
     $("#imageCompressionEnabled").addEventListener("change", saveCompressionPreferences);
     $("#imageCompressionTarget").addEventListener("change", saveCompressionPreferences);
     $("#imageCompressionMaxEdge").addEventListener("change", saveCompressionPreferences);
+    $("#butterflyCursorEnabled").addEventListener("change", saveButterflyCursorPreference);
     $("#musicCompressionEnabled").addEventListener("change", saveMusicCompressionPreferences);
     $("#musicCompressionTarget").addEventListener("change", saveMusicCompressionPreferences);
     $("#saveProfile").addEventListener("click", saveProfile);
@@ -2485,10 +3685,29 @@
     $("#previewMusic").addEventListener("click", toggleMusic);
     $("#removeMusic").addEventListener("click", removeBackgroundMusic);
     $("#musicToggle").addEventListener("click", toggleMusic);
-    elements.audio.addEventListener("play", updateMusicButton);
-    elements.audio.addEventListener("pause", updateMusicButton);
+    elements.audio.addEventListener("play", () => {
+      musicAutoStartAttempted = true;
+      updateMusicButton();
+    });
+    elements.audio.addEventListener("pause", () => {
+      updateMusicButton();
+      scheduleMusicRecovery();
+    });
+    elements.audio.addEventListener("stalled", scheduleMusicRecovery);
+    elements.audio.addEventListener("abort", scheduleMusicRecovery);
+    document.addEventListener("pointerdown", maybeAutoStartMusic, { passive: true });
     document.addEventListener("click", maybeAutoStartMusic);
-    $("#buildPublish").addEventListener("click", buildPublishVersion);
+    document.addEventListener("keydown", maybeAutoStartMusic);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") scheduleMusicRecovery(); });
+    document.addEventListener("pointermove", moveButterflyCursor, { passive: true });
+    window.addEventListener("mouseout", (event) => { if (!event.relatedTarget) hideButterflyCursor(); });
+    window.addEventListener("blur", hideButterflyCursor);
+    butterflyCursorMedia.addEventListener?.("change", applyButterflyCursorSetting);
+    reducedMotionMedia.addEventListener?.("change", applyButterflyCursorSetting);
+    $("#buildPublish").addEventListener("click", () => buildPublishVersion("full"));
+    $("#buildUpdatePublish").addEventListener("click", () => buildPublishVersion("update"));
+    $("#buildUpdatePublishSecondary").addEventListener("click", () => buildPublishVersion("update"));
+    $("#markPublishBaseline").addEventListener("click", markCurrentAsPublishBaseline);
     $("#removeDemo").addEventListener("click", removeDemoProjects);
     $("#exportData").addEventListener("click", exportBackup);
     $("#importData").addEventListener("click", () => $("#importFile").click());
@@ -2530,6 +3749,7 @@
       }
     });
 
+    siteLoaderTimer = window.setTimeout(finishSiteLoader, SITE_LOADER_MAX_MS);
     initialize().catch((error) => {
       console.error(error);
       elements.grid.innerHTML = `<div class="empty-state"><h3>无法打开本地存储</h3><p>请使用现代浏览器打开此页面，并允许网站保存本地数据。</p></div>`;
@@ -2548,7 +3768,7 @@
           <section class="essays-view" id="essaysView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="essaysTitle">
             <div class="overlay-bar"><h2 class="overlay-title" id="essaysTitle">Essays</h2><button class="icon-button" id="closeEssays" type="button" aria-label="Close essays">×</button></div>
             <div class="essays-intro" id="essaysIntro">Notes on photography, memory, walking, and the unstable life of images.</div>
-            <div class="essay-list" id="essayList"><button class="essay-entry" type="button" aria-label="Read essay 时间如水"><span class="essay-date">14.08.2026</span><span class="essay-entry-copy"><span class="essay-entry-title">时间如水</span><span class="essay-entry-excerpt">流水落花春去也，天上人间。</span></span></button></div>
+            <div class="essay-list" id="essayList"><button class="essay-entry" type="button" aria-label="Read essay test"><span class="essay-date">14.08.2023</span><span class="essay-entry-copy"><span class="essay-entry-title">test</span><span class="essay-entry-excerpt">流水落花春去也，天上人间。</span></span></button></div>
           </section>
           <section class="about-view" id="aboutView" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aboutViewTitle">
             <div class="overlay-bar"><h2 class="overlay-title" id="aboutViewTitle">About</h2><button class="icon-button" id="closeAbout" type="button" aria-label="Close about">×</button></div>
