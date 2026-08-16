@@ -636,12 +636,18 @@
     }
   </style>
 <script src="file:///D:/A-GUET/ObsidianVault/humorpoppy-website/butterfly-fallback.js" async=""></script></head>
-<body class="butterfly-cursor-enabled record-entered has-scrolled" style="">
+<body class="butterfly-cursor-enabled is-loading home-gated" style="">
   <div class="grain" aria-hidden="true"></div>
   <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
-    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(302.5px, 124px, 0px);"><img src="assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(312.975px, 128px, 0px);"><img src="assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
   </div>
-  
+  <section class="site-loader" id="siteLoader" aria-live="polite" aria-busy="true" aria-label="Loading website">
+    <div class="site-loader-wipe" aria-hidden="true"></div>
+    <div class="site-loader-content">
+      <div class="site-loader-text"><span>[</span><span class="site-loader-word">LOADING ...</span><span>]</span></div>
+      <figure class="site-loader-trail" id="siteLoaderTrail" aria-hidden="true"><img id="siteLoaderTrailImage" alt="" decoding="async" fetchpriority="high"></figure>
+    </div>
+  </section>
   <header class="site-header">
     <div class="header-actions">
       <button class="music-toggle is-playing" id="musicToggle" type="button" aria-label="暂停背景音乐" title="暂停背景音乐"><span id="musicToggleIcon">Ⅱ</span></button>
@@ -670,15 +676,15 @@
       </div>
       <div class="archive-meta"><span id="projectCount">05 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/a20a2c9d-d727-4860-9542-3fc9e1f542ce" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-media"><img src="blob:null/56bebe52-f32a-41a3-b950-3f7697def0a3" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
           <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
-          <div class="project-media"><img src="blob:null/1aca2ef7-431f-44c2-a063-044abeeb511c" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-media"><img src="blob:null/ff3afc9c-d57e-4126-9592-5fc8078c50b9" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
           <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
-          <div class="project-media"><img src="blob:null/b73bbf1e-77e6-4326-b16f-af3300a764d1" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-media"><img src="blob:null/e8164492-393e-45a0-af08-5d46df0b1f2a" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
           <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
-          <div class="project-media"><img src="blob:null/98cde440-100b-43f0-8bbf-b352c246a336" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-media"><img src="blob:null/ac2f8ac7-b800-427c-b675-f77e0153ea8a" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
           <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/aad49477-d446-4225-81ef-ae46812ba7cf" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/fcf2b205-908a-4cfb-ac95-6e7cc58c3edb" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -732,15 +738,15 @@
       </div>
       <div class="studio-layout">
         <nav class="studio-tabs" aria-label="管理页面分类">
-          <button class="studio-tab is-active" type="button" data-studio-tab="overview">基本资料</button>
+          <button class="studio-tab" type="button" data-studio-tab="overview">基本资料</button>
           <button class="studio-tab" type="button" data-studio-tab="record">Record</button>
           <button class="studio-tab" type="button" data-studio-tab="essays">Essays</button>
           <button class="studio-tab" type="button" data-studio-tab="pages">页面设置</button>
-          <button class="studio-tab" type="button" data-studio-tab="publish">音乐与发布</button>
+          <button class="studio-tab is-active" type="button" data-studio-tab="publish">音乐与发布</button>
         </nav>
 
         <div class="studio-content">
-          <section class="studio-section is-active" data-studio-section="overview">
+          <section class="studio-section" data-studio-section="overview">
             <div class="studio-section-head"><h3>基本资料</h3><p>控制首页姓名、身份说明、首页简介与 Record 列表上方的说明文字。</p></div>
             <div class="studio-card">
               <div class="studio-two-column">
@@ -790,7 +796,7 @@
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/a20a2c9d-d727-4860-9542-3fc9e1f542ce" alt="">
+          <img class="manager-thumb" src="blob:null/56bebe52-f32a-41a3-b950-3f7697def0a3" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -798,7 +804,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/1aca2ef7-431f-44c2-a063-044abeeb511c" alt="">
+          <img class="manager-thumb" src="blob:null/ff3afc9c-d57e-4126-9592-5fc8078c50b9" alt="">
           <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -806,7 +812,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/b73bbf1e-77e6-4326-b16f-af3300a764d1" alt="">
+          <img class="manager-thumb" src="blob:null/e8164492-393e-45a0-af08-5d46df0b1f2a" alt="">
           <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -814,7 +820,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/98cde440-100b-43f0-8bbf-b352c246a336" alt="">
+          <img class="manager-thumb" src="blob:null/ac2f8ac7-b800-427c-b675-f77e0153ea8a" alt="">
           <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 4 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -822,7 +828,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/aad49477-d446-4225-81ef-ae46812ba7cf" alt="">
+          <img class="manager-thumb" src="blob:null/fcf2b205-908a-4cfb-ac95-6e7cc58c3edb" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -913,7 +919,7 @@
             </div>
           </section>
 
-          <section class="studio-section" data-studio-section="publish">
+          <section class="studio-section is-active" data-studio-section="publish">
             <div class="studio-section-head"><h3>音乐与发布</h3><p>完整包用于首次上线；更新包只包含新 index.html 与发生变化的资源，适合后续更新。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
             <div class="studio-two-column">
               <div class="studio-card music-settings">
@@ -939,7 +945,7 @@
                 <h4 class="studio-card-title">GitHub 增量更新</h4>
                 <p class="field-label">更新包不会重复放入未变化的旧图片和音乐。第一次使用时，如果管理页面内容与当前线上网站完全一致，请先建立线上基准；如果不一致，请先生成并上传一次完整包。</p>
                 <div class="form-actions"><button class="action-button" id="markPublishBaseline" type="button">确认当前内容已上线并更新基准</button><button class="action-button primary" id="buildUpdatePublishSecondary" type="button">生成更新包</button></div>
-                <p class="publish-baseline-status" id="publishBaselineStatus">尚未建立更新基准。生成更新包前请先建立基准，或生成并上传一次完整包。</p>
+                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/8/16 23:52:06 / 22 个资源文件。GitHub 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
               </div>
             </div>
           </section>
@@ -949,7 +955,7 @@
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status"></div>
+  <div class="toast" id="toast" role="status">GitHub 更新包已生成</div>
   <audio id="backgroundMusic" loop="" preload="metadata"></audio>
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
@@ -1237,15 +1243,14 @@
       if (!loader) return;
       const minimumRemaining = Math.max(0, SITE_LOADER_MIN_MS - (Date.now() - siteLoaderStartedAt));
       window.setTimeout(() => {
-        loader.classList.add("is-wiping");
-        window.setTimeout(() => {
-          siteLoaderFinished = true;
-          loader.classList.add("is-ready");
-          loader.setAttribute("aria-busy", "false");
-          document.body.classList.remove("is-loading");
-          startHeroNameRoll(pendingHeroName || $("#heroName")?.getAttribute("aria-label") || "");
-          window.setTimeout(() => loader.remove(), 900);
-        }, 820);
+          loader.classList.add("is-wiping");
+          window.setTimeout(() => {
+            siteLoaderFinished = true;
+            loader.classList.add("is-ready");
+            loader.setAttribute("aria-busy", "false");
+            document.body.classList.remove("is-loading");
+            startHeroNameRoll(pendingHeroName || $("#heroName")?.getAttribute("aria-label") || "");
+          }, 820);
       }, minimumRemaining);
     }
 
@@ -3093,7 +3098,19 @@
     function createPublishedHtml(payload) {
       const safePayload = JSON.stringify(payload).replace(/<\/script/gi, "<\\/script");
       const publishedDocument = document.documentElement.cloneNode(true);
-      publishedDocument.querySelector("body").style.overflow = "";
+      const publishedBody = publishedDocument.querySelector("body");
+      publishedBody.style.overflow = "";
+      publishedBody.classList.remove("record-entered", "has-scrolled", "home-bounced", "home-touch-bounce");
+      publishedBody.classList.add("is-loading", "home-gated");
+      const publishedLoader = publishedDocument.querySelector("#siteLoader");
+      if (publishedLoader) {
+        publishedLoader.classList.remove("is-ready", "is-wiping");
+        publishedLoader.setAttribute("aria-busy", "true");
+        const loaderPreview = publishedLoader.querySelector("#siteLoaderTrail");
+        const loaderPreviewImage = publishedLoader.querySelector("#siteLoaderTrailImage");
+        loaderPreview?.classList.remove("is-visible");
+        loaderPreviewImage?.removeAttribute("src");
+      }
       publishedDocument.querySelector("#openStudio").hidden = true;
       publishedDocument.querySelector("#studio").hidden = true;
       publishedDocument.querySelector("#studio").classList.remove("is-open");
