@@ -73,6 +73,11 @@
       body.butterfly-cursor-enabled .butterfly-cursor { display: block; }
     }
 
+    @media (hover: none), (pointer: coarse) {
+      body.butterfly-touch-enabled .butterfly-cursor { display: block; }
+      body.butterfly-touch-enabled .butterfly-cursor-mark { width: 76px; height: 76px; transition: opacity .3s ease; }
+    }
+
     .site-loader {
       position: fixed;
       inset: 0;
@@ -544,8 +549,9 @@
       .hero { min-height: 600px; }
       .hero-copy { padding: 14px 10px 10px; }
       .hero-kicker span:last-child { display: none; }
-      .hero-title { font-size: clamp(46px, 14vw, 68px); line-height: 1; }
-      body.has-scrolled .hero-title { left: 10px; top: 8px; transform: none; font-size: 16px; line-height: 1.1; padding-bottom: 3px; }
+      .hero-title { left: 10px; width: calc(100vw - 20px); max-width: calc(100vw - 20px); font-size: clamp(34px, 11.5vw, 62px); line-height: 1; letter-spacing: -.035em; }
+      .hero-name-roll { max-width: 100%; }
+      body.has-scrolled .hero-title { left: 10px; top: 8px; width: calc(100vw - 20px); max-width: calc(100vw - 20px); transform: none; font-size: 16px; line-height: 1.1; letter-spacing: -.02em; padding-bottom: 3px; }
       .hero-bottom { display: block; }
       .hero-intro { width: 100%; margin-bottom: 18px; }
       .enter-link { font-size: 22px; }
@@ -639,7 +645,7 @@
 <body class="butterfly-cursor-enabled is-loading home-gated" style="">
   <div class="grain" aria-hidden="true"></div>
   <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
-    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(305.5px, 131px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(388.5px, 128.192px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
   </div>
   <section class="site-loader" id="siteLoader" aria-live="polite" aria-busy="true" aria-label="Loading website">
     <div class="site-loader-wipe" aria-hidden="true"></div>
@@ -676,15 +682,15 @@
       </div>
       <div class="archive-meta"><span id="projectCount">05 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/4be56399-5bb0-450e-83fb-2322211304f0" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-media"><img src="blob:null/53748000-560d-4dce-9068-f06fc8c9a01b" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
           <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
-          <div class="project-media"><img src="blob:null/334ada22-eb64-4da0-82fa-590c97f63944" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-media"><img src="blob:null/bf56a7f3-4189-49cd-a9de-559d99598390" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
           <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
-          <div class="project-media"><img src="blob:null/8fffb197-b73e-4cd8-9fa0-02f0e19e6d25" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-media"><img src="blob:null/abb0be79-f058-4fc7-8c2d-eaf57abc6bd1" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
           <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
-          <div class="project-media"><img src="blob:null/fa5f8e7f-4111-41ef-93bc-3ff8f7f981f7" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-media"><img src="blob:null/9db8933b-b73d-4c7d-abd9-88d1685c0eaf" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
           <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/2e6a4711-3e1f-4396-b873-05763f7fbcf6" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/3d10d1f9-d7d2-42be-975a-4971fe1c4522" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -729,24 +735,24 @@
   <section class="studio" id="studio" aria-hidden="false" role="dialog" aria-modal="true" aria-labelledby="studioTitle" hidden="">
     <div class="overlay-bar"><h2 class="overlay-title">Local Portfolio Studio</h2><button class="icon-button" id="closeStudio" type="button" aria-label="关闭管理界面">×</button></div>
     <div class="studio-shell">
-      <div class="studio-lead"><div><span class="field-label">Local Portfolio Editor</span><h2 id="studioTitle">网站管理</h2></div><p>所有文字、Record、文章和音乐都保存在当前浏览器。修改完成后生成新的 GitHub 发布包，访客只能查看，不能进入管理界面。</p></div>
+      <div class="studio-lead"><div><span class="field-label">Local Portfolio Editor</span><h2 id="studioTitle">网站管理</h2></div><p>所有文字、Record、文章和音乐都保存在当前浏览器。修改完成后生成 GitHub + COS 发布包，访客只能查看，不能进入管理界面。</p></div>
       <div class="studio-toolbar">
         <button class="action-button primary" id="saveProfile" type="button">保存全部页面文字</button>
-        <button class="action-button primary" id="buildPublish" type="button">生成 GitHub 完整包</button>
-        <button class="action-button" id="buildUpdatePublish" type="button">生成 GitHub 更新包</button>
+        <button class="action-button primary" id="buildPublish" type="button">生成发布完整包</button>
+        <button class="action-button" id="buildUpdatePublish" type="button">生成发布更新包</button>
         <span class="studio-toolbar-note">Record 与 Essays 请在各自编辑表单中单独保存</span>
       </div>
       <div class="studio-layout">
         <nav class="studio-tabs" aria-label="管理页面分类">
-          <button class="studio-tab is-active" type="button" data-studio-tab="overview">基本资料</button>
+          <button class="studio-tab" type="button" data-studio-tab="overview">基本资料</button>
           <button class="studio-tab" type="button" data-studio-tab="record">Record</button>
           <button class="studio-tab" type="button" data-studio-tab="essays">Essays</button>
           <button class="studio-tab" type="button" data-studio-tab="pages">页面设置</button>
-          <button class="studio-tab" type="button" data-studio-tab="publish">音乐与发布</button>
+          <button class="studio-tab is-active" type="button" data-studio-tab="publish">音乐与发布</button>
         </nav>
 
         <div class="studio-content">
-          <section class="studio-section is-active" data-studio-section="overview">
+          <section class="studio-section" data-studio-section="overview">
             <div class="studio-section-head"><h3>基本资料</h3><p>控制首页姓名、身份说明、首页简介与 Record 列表上方的说明文字。</p></div>
             <div class="studio-card">
               <div class="studio-two-column">
@@ -755,7 +761,7 @@
               </div>
               <div class="field"><label for="profileIntro">首页简介</label><textarea id="profileIntro" maxlength="280"></textarea></div>
               <div class="field"><label for="profileArchiveIntro">Record 页面简介</label><textarea id="profileArchiveIntro" maxlength="500"></textarea></div>
-              <label class="check-field" for="butterflyCursorEnabled"><input id="butterflyCursorEnabled" type="checkbox" checked=""><span><strong>蝴蝶鼠标效果</strong><br>电脑端显示即时圆点与延迟飞行的黑白蝴蝶；手机端和减少动态效果模式会自动隐藏。</span></label>
+              <label class="check-field" for="butterflyCursorEnabled"><input id="butterflyCursorEnabled" type="checkbox" checked=""><span><strong>蝴蝶指针效果</strong><br>电脑端跟随鼠标延迟飞行；手机端在触摸和滑动时跟随手指，松手后自动渐隐。减少动态效果模式会自动隐藏。</span></label>
             </div>
           </section>
 
@@ -796,7 +802,7 @@
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/4be56399-5bb0-450e-83fb-2322211304f0" alt="">
+          <img class="manager-thumb" src="blob:null/53748000-560d-4dce-9068-f06fc8c9a01b" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -804,7 +810,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/334ada22-eb64-4da0-82fa-590c97f63944" alt="">
+          <img class="manager-thumb" src="blob:null/bf56a7f3-4189-49cd-a9de-559d99598390" alt="">
           <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -812,7 +818,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/8fffb197-b73e-4cd8-9fa0-02f0e19e6d25" alt="">
+          <img class="manager-thumb" src="blob:null/abb0be79-f058-4fc7-8c2d-eaf57abc6bd1" alt="">
           <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -820,7 +826,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/fa5f8e7f-4111-41ef-93bc-3ff8f7f981f7" alt="">
+          <img class="manager-thumb" src="blob:null/9db8933b-b73d-4c7d-abd9-88d1685c0eaf" alt="">
           <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 4 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -828,7 +834,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/2e6a4711-3e1f-4396-b873-05763f7fbcf6" alt="">
+          <img class="manager-thumb" src="blob:null/3d10d1f9-d7d2-42be-975a-4971fe1c4522" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -919,8 +925,8 @@
             </div>
           </section>
 
-          <section class="studio-section" data-studio-section="publish">
-            <div class="studio-section-head"><h3>音乐与发布</h3><p>完整包用于首次上线；更新包只包含新 index.html 与发生变化的资源，适合后续更新。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
+          <section class="studio-section is-active" data-studio-section="publish">
+            <div class="studio-section-head"><h3>音乐与发布</h3><p>网页代码发布到 GitHub，图片、拖尾、文章图片和音乐发布到腾讯云 COS。完整包用于首次上线；更新包只包含新 index.html 与发生变化的媒体资源。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
             <div class="studio-two-column">
               <div class="studio-card music-settings">
                 <h4 class="studio-card-title">背景音乐</h4>
@@ -942,10 +948,10 @@
                 <input id="importFile" type="file" accept="application/json" hidden="">
               </div>
               <div class="studio-card publish-update-card">
-                <h4 class="studio-card-title">GitHub 增量更新</h4>
-                <p class="field-label">更新包不会重复放入未变化的旧图片和音乐。第一次使用时，如果管理页面内容与当前线上网站完全一致，请先建立线上基准；如果不一致，请先生成并上传一次完整包。</p>
+                <h4 class="studio-card-title">GitHub + COS 增量更新</h4>
+                <p class="field-label">更新包不会重复放入未变化的旧图片和音乐。将 index.html 上传到 GitHub；更新包里的 assets 文件夹上传到 COS 的同名路径。第一次使用时，如果管理页面内容与当前线上网站完全一致，请先建立线上基准；如果不一致，请先生成并上传一次完整包。</p>
                 <div class="form-actions"><button class="action-button" id="markPublishBaseline" type="button">确认当前内容已上线并更新基准</button><button class="action-button primary" id="buildUpdatePublishSecondary" type="button">生成更新包</button></div>
-                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/8/16 23:52:06 / 22 个资源文件。GitHub 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
+                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/8/16 23:52:06 / 22 个 COS 资源文件。GitHub 和 COS 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
               </div>
             </div>
           </section>
@@ -1070,7 +1076,10 @@
     let butterflyCursorFrame = 0;
     let butterflyCursorHistory = [];
     let butterflyCursorLastMoveAt = 0;
+    let butterflyCursorHideTimer = null;
+    let butterflyCursorMode = "mouse";
     const butterflyCursorMedia = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 851px)");
+    const butterflyTouchMedia = window.matchMedia("(hover: none), (pointer: coarse)");
     const reducedMotionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     function resolvePublishedAssetUrl(value) {
@@ -1087,11 +1096,14 @@
       essayManager: $("#essayManagerList"), essayForm: $("#essayForm")
     };
 
-    function butterflyCursorIsAvailable() {
-      return profile.butterflyCursorEnabled !== false && butterflyCursorMedia.matches && !reducedMotionMedia.matches;
+    function butterflyCursorIsAvailable(mode = butterflyCursorMode) {
+      if (profile.butterflyCursorEnabled === false || reducedMotionMedia.matches) return false;
+      return mode === "touch" ? butterflyTouchMedia.matches : butterflyCursorMedia.matches;
     }
 
     function hideButterflyCursor() {
+      window.clearTimeout(butterflyCursorHideTimer);
+      butterflyCursorHideTimer = null;
       $("#butterflyCursor")?.classList.remove("is-visible");
       butterflyCursorHistory = [];
       if (butterflyCursorFrame) cancelAnimationFrame(butterflyCursorFrame);
@@ -1099,9 +1111,11 @@
     }
 
     function applyButterflyCursorSetting() {
-      const enabled = butterflyCursorIsAvailable();
-      document.body.classList.toggle("butterfly-cursor-enabled", enabled);
-      if (!enabled) hideButterflyCursor();
+      const mouseEnabled = butterflyCursorIsAvailable("mouse");
+      const touchEnabled = butterflyCursorIsAvailable("touch");
+      document.body.classList.toggle("butterfly-cursor-enabled", mouseEnabled);
+      document.body.classList.toggle("butterfly-touch-enabled", touchEnabled);
+      if (!mouseEnabled && !touchEnabled) hideButterflyCursor();
       const input = $("#butterflyCursorEnabled");
       if (input) input.checked = profile.butterflyCursorEnabled !== false;
     }
@@ -1109,7 +1123,8 @@
     function renderButterflyCursor() {
       butterflyCursorFrame = 0;
       if (!butterflyCursorIsAvailable() || !butterflyCursorHistory.length) return;
-      const cutoff = performance.now() - 200;
+      const touchMode = butterflyCursorMode === "touch";
+      const cutoff = performance.now() - (touchMode ? 90 : 200);
       while (butterflyCursorHistory.length > 2 && butterflyCursorHistory[1].time <= cutoff) butterflyCursorHistory.shift();
       const from = butterflyCursorHistory[0];
       const to = butterflyCursorHistory[1] || from;
@@ -1117,23 +1132,47 @@
       const amount = Math.max(0, Math.min(1, (cutoff - from.time) / span));
       const x = from.x + (to.x - from.x) * amount;
       const y = from.y + (to.y - from.y) * amount;
-      $("#butterflyCursorMark").style.transform = `translate3d(${x + 12.5}px, ${y - 110}px, 0)`;
-      if (performance.now() - butterflyCursorLastMoveAt > 260) {
+      const offsetX = touchMode ? -38 : 12.5;
+      const offsetY = touchMode ? -104 : -110;
+      $("#butterflyCursorMark").style.transform = `translate3d(${x + offsetX}px, ${y + offsetY}px, 0)`;
+      if (performance.now() - butterflyCursorLastMoveAt > (touchMode ? 180 : 260)) {
         butterflyCursorHistory = [butterflyCursorHistory[butterflyCursorHistory.length - 1]];
         return;
       }
       butterflyCursorFrame = requestAnimationFrame(renderButterflyCursor);
     }
 
-    function moveButterflyCursor(event) {
-      if (event.pointerType && event.pointerType !== "mouse") return;
-      if (!butterflyCursorIsAvailable()) return;
+    function queueButterflyCursor(clientX, clientY, mode) {
+      if (!butterflyCursorIsAvailable(mode)) return;
+      if (butterflyCursorMode !== mode) {
+        butterflyCursorHistory = [];
+        butterflyCursorMode = mode;
+      }
+      window.clearTimeout(butterflyCursorHideTimer);
+      butterflyCursorHideTimer = null;
       const now = performance.now();
       butterflyCursorLastMoveAt = now;
       $("#butterflyCursor")?.classList.add("is-visible");
-      butterflyCursorHistory.push({ x: event.clientX, y: event.clientY, time: now });
+      butterflyCursorHistory.push({ x: clientX, y: clientY, time: now });
       if (butterflyCursorHistory.length > 60) butterflyCursorHistory.splice(0, butterflyCursorHistory.length - 60);
       if (!butterflyCursorFrame) butterflyCursorFrame = requestAnimationFrame(renderButterflyCursor);
+    }
+
+    function moveButterflyCursor(event) {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      queueButterflyCursor(event.clientX, event.clientY, "mouse");
+    }
+
+    function moveTouchButterflyCursor(event) {
+      const touch = event.touches?.[0];
+      if (!touch) return;
+      queueButterflyCursor(touch.clientX, touch.clientY, "touch");
+    }
+
+    function scheduleTouchButterflyHide() {
+      if (butterflyCursorMode !== "touch") return;
+      window.clearTimeout(butterflyCursorHideTimer);
+      butterflyCursorHideTimer = window.setTimeout(hideButterflyCursor, 560);
     }
 
     function openDatabase() {
@@ -1263,6 +1302,29 @@
       }, minimumRemaining);
     }
 
+    function fitHeroTitleToViewport() {
+      const title = $("#heroName");
+      const row = title?.querySelector(".hero-name-roll");
+      if (!title || !row) return;
+      const isMobile = window.matchMedia("(max-width: 760px)").matches;
+      if (!isMobile || document.body.classList.contains("has-scrolled")) {
+        title.style.removeProperty("font-size");
+        return;
+      }
+      const availableWidth = Math.max(160, window.innerWidth - 20);
+      const previousWidth = title.style.width;
+      const previousMaxWidth = title.style.maxWidth;
+      title.style.width = "max-content";
+      title.style.maxWidth = "none";
+      const naturalWidth = Math.max(row.scrollWidth, row.getBoundingClientRect().width);
+      title.style.width = previousWidth;
+      title.style.maxWidth = previousMaxWidth;
+      if (!naturalWidth) return;
+      const currentSize = parseFloat(getComputedStyle(title).fontSize) || 48;
+      const fittedSize = Math.max(30, Math.min(currentSize, currentSize * (availableWidth / naturalWidth) * .94));
+      title.style.fontSize = `${fittedSize.toFixed(2)}px`;
+    }
+
     function renderHeroName(value) {
       const title = $("#heroName");
       if (!title) return;
@@ -1287,6 +1349,7 @@
         row.append(letter);
       });
       title.replaceChildren(row);
+      fitHeroTitleToViewport();
     }
 
     function startHeroNameRoll(value) {
@@ -3151,11 +3214,11 @@
         setStatus("请先添加至少一个 Record。", true);
         return;
       }
-      setStatus("正在建立 GitHub 线上资源基准……", false);
+      setStatus("正在建立 GitHub + COS 线上资源基准……", false);
       try {
         const { assets } = await collectPublishData();
         await savePublishManifest(await createPublishManifest(assets));
-        setStatus("已将当前内容设为线上基准。之后修改内容即可生成增量更新包。", false);
+        setStatus("已将当前内容设为 GitHub + COS 线上基准。之后修改内容即可生成增量更新包。", false);
         showToast("更新基准已建立");
       } catch (error) {
         console.error(error);
@@ -3170,11 +3233,11 @@
       }
       const updateOnly = mode === "update";
       if (updateOnly && !publishManifest?.createdAt) {
-        setStatus("尚未建立更新基准。请先在“音乐与发布”中建立线上基准，或先生成并上传一次完整包。", true);
+        setStatus("尚未建立更新基准。请先在“音乐与发布”中建立 GitHub + COS 线上基准，或先生成并上传一次完整包。", true);
         activateStudioSection("publish");
         return;
       }
-      setStatus(`正在整理 GitHub ${updateOnly ? "更新" : "完整"}包，请不要关闭页面……`, false);
+      setStatus(`正在整理 GitHub + COS ${updateOnly ? "更新" : "完整"}包，请不要关闭页面……`, false);
       try {
         const { assets, payload } = await collectPublishData();
         const nextManifest = await createPublishManifest(assets);
@@ -3186,16 +3249,16 @@
           : [];
         const html = createPublishedHtml(payload);
         const instructions = updateOnly ? [
-          "GitHub Pages 增量更新说明", "", "1. 解压这个 ZIP。", "2. 打开 GitHub 仓库，选择 Add file > Upload files。",
-          "3. 把解压后的 index.html、.nojekyll 以及存在的 assets 文件夹一起拖入上传区域。",
-          "4. GitHub 提示同名文件时直接覆盖，然后点击 Commit changes。", "5. 更新包没有包含未变化的旧资源，请不要删除 GitHub 上原有的 assets 文件夹。",
-          removedAssets.length ? "6. REMOVED-ASSETS.txt 中列出的是已不再使用的旧资源；不删除也不影响网站。" : "6. 本次没有需要清理的旧资源。",
-          "7. 确认网站更新成功后，回到本地管理界面点击“确认当前内容已上线并更新基准”。"
+          "GitHub + COS 增量更新说明", "", "1. 解压这个 ZIP。", "2. 将 index.html 和 .nojekyll 上传到 GitHub Pages 仓库并覆盖旧文件。",
+          "3. 如果 ZIP 中有 assets 文件夹，把其中发生变化的文件上传到 COS 存储桶的同名路径；不要把这些 assets 再上传到 GitHub。",
+          "4. 不要删除 COS 中未变化的旧资源，也不要修改 assets 文件夹名称或文件路径。",
+          removedAssets.length ? "5. REMOVED-ASSETS.txt 中列出的是本地记录中已移除的旧资源；确认不再使用后，再从 COS 手动删除。" : "5. 本次没有需要清理的旧资源。",
+          "6. 确认网站更新成功后，回到本地管理界面点击“确认当前内容已上线并更新基准”。"
         ] : [
-          "GitHub Pages 完整上传说明", "", "1. 解压这个 ZIP。", "2. 打开 GitHub 仓库，选择 Add file > Upload files。",
-          "3. 把解压后的 index.html、assets 文件夹和 .nojekyll 一起拖入上传区域。", "4. 点击 Commit changes。",
-          "5. 不要直接上传 ZIP，也不要修改 assets 文件夹名称或其中的文件路径。",
-          "6. 确认网站上线成功后，回到本地管理界面点击“确认当前内容已上线并更新基准”。"
+          "GitHub + COS 完整上传说明", "", "1. 解压这个 ZIP。", "2. 将 index.html 和 .nojekyll 上传到 GitHub Pages 仓库。",
+          "3. 将 assets 文件夹中的图片、拖尾、文章图片、音乐和蝴蝶文件上传到 COS 存储桶，保持原有路径。",
+          "4. 不要把 assets 文件夹上传到 GitHub；不要直接上传 ZIP，也不要修改 assets 文件夹名称或文件路径。",
+          "5. 确认网站上线成功后，回到本地管理界面点击“确认当前内容已上线并更新基准”。"
         ];
         const packageEntries = [
           { name: "index.html", data: new Blob([html], { type: "text/html;charset=utf-8" }) },
@@ -3218,8 +3281,8 @@
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 5000);
         const summary = updateOnly ? `包含 ${selectedAssets.length} 个变化资源` : `包含全部 ${selectedAssets.length} 个资源`;
-        setStatus(`GitHub ${updateOnly ? "更新" : "完整"}包已生成（${sizeMb.toFixed(1)} MB，${summary}）。上传成功后请确认当前内容已上线并更新基准。`, false);
-        showToast(`GitHub ${updateOnly ? "更新" : "完整"}包已生成`);
+        setStatus(`GitHub + COS ${updateOnly ? "更新" : "完整"}包已生成（${sizeMb.toFixed(1)} MB，${summary}）。按包内说明分别上传到 GitHub 和 COS。`, false);
+        showToast(`发布${updateOnly ? "更新" : "完整"}包已生成`);
       } catch (error) {
         console.error(error);
         const reason = error?.message ? `：${error.message}` : "";
@@ -3296,12 +3359,12 @@
       if (!status) return;
       const assetCount = Object.keys(publishManifest?.assets || {}).length;
       if (!publishManifest?.createdAt) {
-        status.textContent = "尚未建立更新基准。生成更新包前请先建立基准，或生成并上传一次完整包。";
+        status.textContent = "尚未建立更新基准。生成更新包前请先建立 GitHub + COS 基准，或生成并上传一次完整包。";
         return;
       }
       const date = new Date(publishManifest.createdAt);
       const label = Number.isNaN(date.getTime()) ? publishManifest.createdAt : date.toLocaleString("zh-CN", { hour12: false });
-      status.textContent = `当前基准：${label} / ${assetCount} 个资源文件。GitHub 上传成功后，请点击“确认当前内容已上线并更新基准”。`;
+      status.textContent = `当前基准：${label} / ${assetCount} 个 COS 资源文件。GitHub 和 COS 上传成功后，请点击“确认当前内容已上线并更新基准”。`;
     }
 
     let toastTimer;
@@ -3562,11 +3625,14 @@
       }
       const scrollY = window.scrollY;
       document.body.classList.toggle("has-scrolled", scrollY > 36);
+      fitHeroTitleToViewport();
     }
 
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
     window.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", fitHeroTitleToViewport, { passive: true });
+    window.addEventListener("orientationchange", () => window.setTimeout(fitHeroTitleToViewport, 80), { passive: true });
     window.addEventListener("wheel", (event) => {
       if (recordPageUnlocked) return;
       event.preventDefault();
@@ -3732,9 +3798,14 @@
     document.addEventListener("keydown", maybeAutoStartMusic);
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") scheduleMusicRecovery(); });
     document.addEventListener("pointermove", moveButterflyCursor, { passive: true });
+    document.addEventListener("touchstart", moveTouchButterflyCursor, { passive: true });
+    document.addEventListener("touchmove", moveTouchButterflyCursor, { passive: true });
+    document.addEventListener("touchend", scheduleTouchButterflyHide, { passive: true });
+    document.addEventListener("touchcancel", scheduleTouchButterflyHide, { passive: true });
     window.addEventListener("mouseout", (event) => { if (!event.relatedTarget) hideButterflyCursor(); });
     window.addEventListener("blur", hideButterflyCursor);
     butterflyCursorMedia.addEventListener?.("change", applyButterflyCursorSetting);
+    butterflyTouchMedia.addEventListener?.("change", applyButterflyCursorSetting);
     reducedMotionMedia.addEventListener?.("change", applyButterflyCursorSetting);
     $("#buildPublish").addEventListener("click", () => buildPublishVersion("full"));
     $("#buildUpdatePublish").addEventListener("click", () => buildPublishVersion("update"));
