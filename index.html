@@ -549,9 +549,29 @@
       .hero { min-height: 600px; }
       .hero-copy { padding: 14px 10px 10px; }
       .hero-kicker span:last-child { display: none; }
-      .hero-title { left: 10px; width: calc(100vw - 20px); max-width: calc(100vw - 20px); font-size: clamp(34px, 11.5vw, 62px); line-height: 1; letter-spacing: -.035em; }
-      .hero-name-roll { max-width: 100%; }
-      body.has-scrolled .hero-title { left: 10px; top: 8px; width: calc(100vw - 20px); max-width: calc(100vw - 20px); transform: none; font-size: 16px; line-height: 1.1; letter-spacing: -.02em; padding-bottom: 3px; }
+      .hero-title {
+        left: 50%;
+        width: max-content;
+        max-width: none;
+        transform: translate(-50%, -50%);
+        font-size: clamp(32px, 10.8vw, 56px);
+        line-height: 1;
+        letter-spacing: -.045em;
+        text-align: center;
+      }
+      .hero-name-roll { width: max-content; max-width: none; }
+      body.has-scrolled .hero-title {
+        left: 10px;
+        top: 8px;
+        width: auto;
+        max-width: calc(100vw - 20px);
+        transform: none;
+        font-size: 16px;
+        line-height: 1.1;
+        letter-spacing: -.02em;
+        padding-bottom: 3px;
+        text-align: left;
+      }
       .hero-bottom { display: block; }
       .hero-intro { width: 100%; margin-bottom: 18px; }
       .enter-link { font-size: 22px; }
@@ -645,7 +665,7 @@
 <body class="butterfly-cursor-enabled is-loading home-gated" style="">
   <div class="grain" aria-hidden="true"></div>
   <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
-    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(388.5px, 128.192px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(287.5px, 120px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
   </div>
   <section class="site-loader" id="siteLoader" aria-live="polite" aria-busy="true" aria-label="Loading website">
     <div class="site-loader-wipe" aria-hidden="true"></div>
@@ -656,7 +676,7 @@
   </section>
   <header class="site-header">
     <div class="header-actions">
-      <button class="music-toggle" id="musicToggle" type="button" aria-label="播放背景音乐" title="播放背景音乐"><span id="musicToggleIcon">▶</span></button>
+      <button class="music-toggle is-playing" id="musicToggle" type="button" aria-label="暂停背景音乐" title="暂停背景音乐"><span id="musicToggleIcon">Ⅱ</span></button>
       <button class="text-button" id="openStudio" type="button" hidden="">管理网站</button>
       <button class="text-button" id="openMenu" type="button">Menu</button>
     </div>
@@ -682,15 +702,15 @@
       </div>
       <div class="archive-meta"><span id="projectCount">05 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/53748000-560d-4dce-9068-f06fc8c9a01b" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-media"><img src="blob:null/8d48e7c6-1d85-46aa-87db-7277e416b0dd" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
           <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
-          <div class="project-media"><img src="blob:null/bf56a7f3-4189-49cd-a9de-559d99598390" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-media"><img src="blob:null/e130d81e-ea0f-4212-8df7-1659e6f7a4f2" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
           <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
-          <div class="project-media"><img src="blob:null/abb0be79-f058-4fc7-8c2d-eaf57abc6bd1" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-media"><img src="blob:null/64bef99a-de45-4444-b32f-84d466527c02" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
           <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
-          <div class="project-media"><img src="blob:null/9db8933b-b73d-4c7d-abd9-88d1685c0eaf" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-media"><img src="blob:null/f15ef5ad-25d1-48c6-916f-cc299e150d80" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
           <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/3d10d1f9-d7d2-42be-975a-4971fe1c4522" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/ec69e854-9358-4bb6-92c2-b4a4fb10a5a1" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -802,7 +822,7 @@
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/53748000-560d-4dce-9068-f06fc8c9a01b" alt="">
+          <img class="manager-thumb" src="blob:null/8d48e7c6-1d85-46aa-87db-7277e416b0dd" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -810,7 +830,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/bf56a7f3-4189-49cd-a9de-559d99598390" alt="">
+          <img class="manager-thumb" src="blob:null/e130d81e-ea0f-4212-8df7-1659e6f7a4f2" alt="">
           <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -818,7 +838,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/abb0be79-f058-4fc7-8c2d-eaf57abc6bd1" alt="">
+          <img class="manager-thumb" src="blob:null/64bef99a-de45-4444-b32f-84d466527c02" alt="">
           <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -826,7 +846,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/9db8933b-b73d-4c7d-abd9-88d1685c0eaf" alt="">
+          <img class="manager-thumb" src="blob:null/f15ef5ad-25d1-48c6-916f-cc299e150d80" alt="">
           <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 4 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -834,7 +854,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/3d10d1f9-d7d2-42be-975a-4971fe1c4522" alt="">
+          <img class="manager-thumb" src="blob:null/ec69e854-9358-4bb6-92c2-b4a4fb10a5a1" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -961,7 +981,7 @@
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status"></div>
+  <div class="toast" id="toast" role="status">发布更新包已生成</div>
   <audio id="backgroundMusic" loop="" preload="metadata"></audio>
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
@@ -1311,18 +1331,24 @@
         title.style.removeProperty("font-size");
         return;
       }
-      const availableWidth = Math.max(160, window.innerWidth - 20);
-      const previousWidth = title.style.width;
-      const previousMaxWidth = title.style.maxWidth;
-      title.style.width = "max-content";
-      title.style.maxWidth = "none";
+      const viewportWidth = Math.min(
+        window.innerWidth,
+        document.documentElement.clientWidth || window.innerWidth,
+        window.visualViewport?.width || window.innerWidth
+      );
+      const availableWidth = Math.max(150, viewportWidth - 40);
+      title.style.removeProperty("font-size");
       const naturalWidth = Math.max(row.scrollWidth, row.getBoundingClientRect().width);
-      title.style.width = previousWidth;
-      title.style.maxWidth = previousMaxWidth;
       if (!naturalWidth) return;
       const currentSize = parseFloat(getComputedStyle(title).fontSize) || 48;
-      const fittedSize = Math.max(30, Math.min(currentSize, currentSize * (availableWidth / naturalWidth) * .94));
+      const fittedSize = Math.max(18, Math.min(currentSize, currentSize * (availableWidth / naturalWidth) * .98));
       title.style.fontSize = `${fittedSize.toFixed(2)}px`;
+
+      const renderedWidth = row.getBoundingClientRect().width;
+      if (renderedWidth > availableWidth) {
+        const correctedSize = Math.max(18, fittedSize * (availableWidth / renderedWidth) * .98);
+        title.style.fontSize = `${correctedSize.toFixed(2)}px`;
+      }
     }
 
     function renderHeroName(value) {
