@@ -394,11 +394,11 @@
     .detail-copy { align-self: end; max-width: 620px; }
     .detail-meta { margin-bottom: 24px; color: var(--signal); font-size: 11px; text-transform: uppercase; }
     .detail-description { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre-line; }
-    .detail-gallery { padding: 70px 16px 120px; }
-    .detail-stage { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 14px; align-items: center; width: min(1180px, 100%); margin: 0 auto; }
+    .detail-gallery { padding: 52px 16px 120px; }
+    .detail-stage { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 14px; align-items: start; width: min(1180px, 100%); margin: 0 auto; }
     .detail-figure { min-width: 0; margin: 0; }
-    .detail-image-shell { display: grid; height: min(72vh, 820px); min-height: 420px; place-items: center; overflow: hidden; background: transparent; touch-action: pan-y; }
-    .detail-figure img { width: 100%; height: 100%; object-fit: contain; }
+    .detail-image-shell { display: flex; width: 100%; height: auto; min-height: 0; max-height: min(68dvh, 760px); align-items: center; justify-content: center; overflow: visible; background: transparent; touch-action: pan-y; }
+    .detail-figure img { display: block; width: auto; height: auto; max-width: 100%; max-height: min(68dvh, 760px); object-fit: contain; }
     .detail-figure figcaption { display: flex; justify-content: flex-end; min-height: 28px; padding-top: 7px; border-top: 1px solid var(--ink); font-size: 9px; text-transform: uppercase; }
     .detail-nav { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid var(--ink); border-radius: 0; color: var(--ink); background: transparent; font-family: Arial, Helvetica, sans-serif; font-size: 25px; cursor: pointer; }
     .detail-nav:hover:not(:disabled) { color: var(--white); background: var(--black); }
@@ -408,6 +408,16 @@
     .detail-thumb img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.3); }
     .detail-thumb.is-active { border-color: var(--signal); }
     .detail-thumb.is-active img, .detail-thumb:hover img { filter: none; }
+    .detail-exhibition { display: none; width: min(1180px, 100%); margin: 0 auto; flex-direction: column; gap: clamp(72px, 9vw, 142px); }
+    .detail-exhibition.is-active { display: flex; }
+    .exhibition-block { width: min(64vw, 760px); margin: 0 auto; }
+    .exhibition-block:nth-child(2) { margin-left: 22%; }
+    .exhibition-block:nth-child(3) { margin-left: 7%; }
+    .exhibition-block:nth-child(4) { margin-left: 29%; }
+    .exhibition-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: clamp(5px, .7vw, 11px); aspect-ratio: 1; }
+    .exhibition-tile { min-width: 0; min-height: 0; border: 0; padding: 0; color: inherit; background: #aaa9a5; cursor: zoom-in; overflow: hidden; }
+    .exhibition-tile img { display: block; width: 100%; height: 100%; object-fit: cover; filter: none; transition: filter .2s linear, transform .3s ease; }
+    .exhibition-tile:hover img, .exhibition-tile:focus-visible img { filter: contrast(1.06) saturate(1.04); transform: scale(1.035); }
 
     .image-lightbox { position: fixed; inset: 0; z-index: 1400; display: none; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; padding: 52px 18px 24px; background: rgba(8,8,8,.96); cursor: zoom-out; }
     .image-lightbox.is-open { display: flex; }
@@ -450,6 +460,7 @@
     .panel-title { margin: 0 0 18px; font-family: Arial, Helvetica, sans-serif; font-size: 22px; text-transform: uppercase; }
     .field { display: grid; gap: 5px; margin-bottom: 13px; }
     .field label, .field-label { font-size: 9px; text-transform: uppercase; }
+    .field-help { margin: 2px 0 0; color: var(--grey); font-size: 9px; line-height: 1.45; }
     .field input, .field textarea, .field select { width: 100%; border: 1px solid var(--ink); border-radius: 0; padding: 10px; color: var(--ink); background: rgba(255,255,255,.2); font-size: 12px; }
     .field textarea { min-height: 105px; resize: vertical; line-height: 1.45; }
     .field input[type=file] { padding: 8px; background: var(--white); }
@@ -603,6 +614,12 @@
       .detail-figure img { display: block; width: 100%; height: auto; max-height: none; object-fit: contain; }
       .detail-figure figcaption { justify-content: center; padding-top: 12px; }
       .detail-nav, .detail-thumbs { display: none; }
+      .detail-exhibition { width: 100%; gap: 58px; }
+      .exhibition-block { width: min(88vw, 390px); max-width: 100%; margin-inline: auto; }
+      .exhibition-block:nth-child(2) { margin-left: auto; margin-right: 3vw; }
+      .exhibition-block:nth-child(3) { margin-left: 1vw; margin-right: auto; }
+      .exhibition-block:nth-child(4) { margin-left: auto; margin-right: 5vw; }
+      .exhibition-grid { gap: 4px; }
       .image-lightbox { padding: 52px 8px 16px; }
       .image-lightbox-image-wrap { padding: 0 34px; }
       .image-lightbox img { width: auto !important; height: auto !important; max-width: calc(100vw - 84px); max-height: calc(100vh - 76px); max-height: calc(100dvh - 76px); margin: auto; }
@@ -665,7 +682,7 @@
 <body class="butterfly-cursor-enabled is-loading home-gated" style="">
   <div class="grain" aria-hidden="true"></div>
   <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
-    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(400.5px, 55.6px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(494.5px, 299.014px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
   </div>
   <section class="site-loader" id="siteLoader" aria-live="polite" aria-busy="true" aria-label="Loading website">
     <div class="site-loader-wipe" aria-hidden="true"></div>
@@ -687,7 +704,7 @@
       <div class="trail-layer" id="trailLayer" aria-hidden="true"></div>
       <div class="hero-copy">
         <div class="hero-kicker"><span id="heroDescriptor">a humor poppy</span></div>
-        <h1 class="hero-title" id="heroName" aria-label="HUMORPOPPY"><span class="hero-name-roll" aria-hidden="true"><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0s;"><span class="hero-name-glyph">H</span><span class="hero-name-glyph">H</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.055s;"><span class="hero-name-glyph">U</span><span class="hero-name-glyph">U</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.11s;"><span class="hero-name-glyph">M</span><span class="hero-name-glyph">M</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.165s;"><span class="hero-name-glyph">O</span><span class="hero-name-glyph">O</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.22s;"><span class="hero-name-glyph">R</span><span class="hero-name-glyph">R</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.275s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.33s;"><span class="hero-name-glyph">O</span><span class="hero-name-glyph">O</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.385s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.44s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.495s;"><span class="hero-name-glyph">Y</span><span class="hero-name-glyph">Y</span></span></span></span></h1>
+        <h1 class="hero-title is-name-rolling" id="heroName" aria-label="HUMORPOPPY"><span class="hero-name-roll" aria-hidden="true"><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0s;"><span class="hero-name-glyph">H</span><span class="hero-name-glyph">H</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.055s;"><span class="hero-name-glyph">U</span><span class="hero-name-glyph">U</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.11s;"><span class="hero-name-glyph">M</span><span class="hero-name-glyph">M</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.165s;"><span class="hero-name-glyph">O</span><span class="hero-name-glyph">O</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.22s;"><span class="hero-name-glyph">R</span><span class="hero-name-glyph">R</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.275s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.33s;"><span class="hero-name-glyph">O</span><span class="hero-name-glyph">O</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.385s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.44s;"><span class="hero-name-glyph">P</span><span class="hero-name-glyph">P</span></span></span><span class="hero-name-letter"><span class="hero-name-track" style="transition-delay: 0.495s;"><span class="hero-name-glyph">Y</span><span class="hero-name-glyph">Y</span></span></span></span></h1>
         <div class="hero-bottom">
           <p class="hero-intro" id="heroIntro"></p>
           <a class="enter-link" href="#archive">記録</a>
@@ -702,17 +719,17 @@
       </div>
       <div class="archive-meta"><span id="projectCount">06 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/d247e72d-57aa-4936-a270-efdd1510d826" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-media"><img src="blob:null/ea98e064-aa52-49c1-a281-0ee06aab5b89" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
           <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
-          <div class="project-media"><img src="blob:null/f68a7bc6-30d1-43cd-be1e-399afc7f59db" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-media"><img src="blob:null/6bc316f3-253a-48b7-8dc2-09fe83392ddb" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
           <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
-          <div class="project-media"><img src="blob:null/31b262bd-c5e2-4a97-8f56-f886ac7e4b3b" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-media"><img src="blob:null/b0b915ff-0af8-4160-ae83-8953d3e3b5eb" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
           <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
-          <div class="project-media"><img src="blob:null/06f2ab2b-f595-4304-92b2-a742870f3a9f" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-media"><img src="blob:null/f033e400-c1b0-4a59-8794-32dec9371c07" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
           <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/cc8f5b3d-8d3d-42bd-a259-af01bfca7a6f" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/3f09e8cd-db9d-4707-907c-fd6f31e71c4f" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button><button class="project-card" type="button" aria-label="打开 Record 1：1">
-          <div class="project-media"><img src="blob:null/8272ec34-b80c-4fb1-a0c1-0b0089dc0425" alt="1：1 封面"><span class="project-index">06</span><div class="project-hover-title"><span>1：1</span></div></div>
+          <div class="project-media"><img src="blob:null/432f2efd-88a3-492c-bea4-7f7a80600817" alt="1：1 封面"><span class="project-index">06</span><div class="project-hover-title"><span>1：1</span></div></div>
           <div class="project-info"><h3 class="project-title">1：1</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -732,6 +749,7 @@
       <div class="detail-copy"><div class="detail-meta" id="detailMeta"></div><p class="detail-description" id="detailDescription"></p></div>
     </div>
     <div class="detail-gallery" id="detailGallery">
+      <div class="detail-exhibition" id="detailExhibition" aria-label="九宫格展览"></div>
       <div class="detail-stage" id="detailStage">
         <button class="detail-nav" id="prevImage" type="button" aria-label="上一张图片">←</button>
         <figure class="detail-figure">
@@ -767,10 +785,10 @@
       <div class="studio-layout">
         <nav class="studio-tabs" aria-label="管理页面分类">
           <button class="studio-tab" type="button" data-studio-tab="overview">基本资料</button>
-          <button class="studio-tab is-active" type="button" data-studio-tab="record">Record</button>
+          <button class="studio-tab" type="button" data-studio-tab="record">Record</button>
           <button class="studio-tab" type="button" data-studio-tab="essays">Essays</button>
           <button class="studio-tab" type="button" data-studio-tab="pages">页面设置</button>
-          <button class="studio-tab" type="button" data-studio-tab="publish">音乐与发布</button>
+          <button class="studio-tab is-active" type="button" data-studio-tab="publish">音乐与发布</button>
         </nav>
 
         <div class="studio-content">
@@ -787,7 +805,7 @@
             </div>
           </section>
 
-          <section class="studio-section is-active" data-studio-section="record">
+          <section class="studio-section" data-studio-section="record">
             <div class="studio-section-head"><h3>Record</h3><p>创建、编辑、排序和删除摄影 Record。图片可以分多次追加，并可指定一张封面用于 Record 预览、首页拖尾与 Loading。</p></div>
             <div class="studio-card compression-card">
               <label class="check-field" for="imageCompressionEnabled"><input id="imageCompressionEnabled" type="checkbox" checked=""><span><strong>上传时自动压缩</strong><br>只在你的浏览器本地处理，不上传原图。</span></label>
@@ -800,13 +818,14 @@
                 <button class="action-button primary" id="newProject" type="button">＋ 新建 Record</button>
                 <form id="projectForm" hidden="">
                   <h3 class="panel-title" id="projectFormTitle">新建 Record</h3>
-                  <input id="editingId" type="hidden" value="">
+                  <input id="editingId" type="hidden">
                   <div class="field"><label for="projectName">Record 名称 *</label><input id="projectName" required="" maxlength="100"></div>
                   <div class="studio-two-column">
                     <div class="field"><label for="projectYear">年份</label><input id="projectYear" maxlength="20" placeholder="2026"></div>
                     <div class="field"><label for="projectCategory">类别</label><input id="projectCategory" maxlength="60" placeholder="Photography / Book"></div>
                   </div>
                   <div class="field"><label for="projectDescription">Record 说明</label><textarea id="projectDescription" maxlength="5000"></textarea></div>
+                  <div class="field"><label for="projectDisplayMode">详情展示方式</label><select id="projectDisplayMode"><option value="standard">标准详情模式</option><option value="exhibition">九宫格展览模式</option></select><p class="field-help">展览模式每 9 张图片组成一个完整 3×3 九宫格；多个九宫格会在页面中错落排列。</p></div>
                   <div class="field">
                     <label for="projectImages">添加图片 *</label>
                     <div class="record-drop-zone" id="recordDropZone">
@@ -824,7 +843,7 @@
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/d247e72d-57aa-4936-a270-efdd1510d826" alt="">
+          <img class="manager-thumb" src="blob:null/ea98e064-aa52-49c1-a281-0ee06aab5b89" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -832,7 +851,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/f68a7bc6-30d1-43cd-be1e-399afc7f59db" alt="">
+          <img class="manager-thumb" src="blob:null/6bc316f3-253a-48b7-8dc2-09fe83392ddb" alt="">
           <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 7 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -840,7 +859,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/31b262bd-c5e2-4a97-8f56-f886ac7e4b3b" alt="">
+          <img class="manager-thumb" src="blob:null/b0b915ff-0af8-4160-ae83-8953d3e3b5eb" alt="">
           <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -848,7 +867,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/06f2ab2b-f595-4304-92b2-a742870f3a9f" alt="">
+          <img class="manager-thumb" src="blob:null/f033e400-c1b0-4a59-8794-32dec9371c07" alt="">
           <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 8 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -856,7 +875,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/cc8f5b3d-8d3d-42bd-a259-af01bfca7a6f" alt="">
+          <img class="manager-thumb" src="blob:null/3f09e8cd-db9d-4707-907c-fd6f31e71c4f" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -864,8 +883,8 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/8272ec34-b80c-4fb1-a0c1-0b0089dc0425" alt="">
-          <div><h4 class="manager-name">1：1</h4><span class="manager-sub">UNDATED / 29 IMAGES</span></div>
+          <img class="manager-thumb" src="blob:null/432f2efd-88a3-492c-bea4-7f7a80600817" alt="">
+          <div><h4 class="manager-name">1：1</h4><span class="manager-sub">UNDATED / 29 IMAGES / 九宫格展览</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动" disabled="">↓</button>
@@ -955,13 +974,13 @@
             </div>
           </section>
 
-          <section class="studio-section" data-studio-section="publish">
+          <section class="studio-section is-active" data-studio-section="publish">
             <div class="studio-section-head"><h3>音乐与发布</h3><p>网页代码发布到 GitHub，图片、拖尾、文章图片和音乐发布到腾讯云 COS。完整包用于首次上线；更新包只包含新 index.html 与发生变化的媒体资源。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
             <div class="studio-two-column">
               <div class="studio-card music-settings">
                 <h4 class="studio-card-title">背景音乐</h4>
                 <div class="field"><label for="musicFile">上传或替换音乐</label><input id="musicFile" type="file" accept="audio/mpeg,.mp3,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac"><span class="field-label">上传 MP3 时可自动重新编码并减小体积。建议在电脑端操作。</span></div>
-                <p class="music-current" id="musicCurrent">やなわらばー - 赤い実.mp3 / 11.2 MB</p>
+                <p class="music-current" id="musicCurrent">ただ声一つ - ロクデナシ_MIMI.mp3 / 6.17 MB</p>
                 <div class="music-compression-options">
                   <label class="check-field" for="musicCompressionEnabled"><input id="musicCompressionEnabled" type="checkbox" checked=""><span><strong>MP3 上传后自动压缩</strong><br>已在目标大小以内的文件不会重复压缩。</span></label>
                   <div class="field"><label for="musicCompressionTarget">目标文件大小</label><select id="musicCompressionTarget"><option value="3">约 3 MB</option><option value="5" selected="">约 5 MB</option><option value="8">约 8 MB</option></select></div>
@@ -981,7 +1000,7 @@
                 <h4 class="studio-card-title">GitHub + COS 增量更新</h4>
                 <p class="field-label">更新包不会重复放入未变化的旧图片和音乐。将 index.html 上传到 GitHub；更新包里的 assets 文件夹上传到 COS 的同名路径。第一次使用时，如果管理页面内容与当前线上网站完全一致，请先建立线上基准；如果不一致，请先生成并上传一次完整包。</p>
                 <div class="form-actions"><button class="action-button" id="markPublishBaseline" type="button">确认当前内容已上线并更新基准</button><button class="action-button primary" id="buildUpdatePublishSecondary" type="button">生成更新包</button></div>
-                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/8/25 17:05:33 / 52 个 COS 资源文件。GitHub 和 COS 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
+                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/9/26 09:59:37 / 60 个 COS 资源文件。GitHub 和 COS 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
               </div>
             </div>
           </section>
@@ -991,12 +1010,12 @@
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status">Record 已保存</div>
+  <div class="toast" id="toast" role="status">背景音乐已保存</div>
   <audio id="backgroundMusic" loop="" preload="metadata"></audio>
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
   <script>
-    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","essaysTitle":"Essays","essaysIntro":"Notes on photography, memory, walking, and the unstable life of images.","contactTitle":"Start a conversation.","contactBody":"For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.","menuCredit":"website by humorpoppy.","imageCompressionEnabled":true,"imageCompressionTargetKb":1200,"imageCompressionMaxEdge":3000,"musicCompressionEnabled":false,"musicCompressionTargetMb":8,"butterflyCursorEnabled":true,"email":"1976904825@qq.com"},"essays":[{"id":"eeec8415-0f0b-4cad-a84d-efe6864d5640","date":"14.08.2023","title":"test","excerpt":"流水落花春去也，天上人间。","body":"帘外雨潺潺，春意阑珊。罗衾不耐五更寒，梦里不知身是客，一晌贪欢。独自莫凭栏，无限江山，别时容易见时难。\n\n测试\n\n流水落花春去也，天上人间。","blocks":[{"id":"text-1cef9eaf-1aca-4b63-887b-351b85e26d5d","type":"text","html":"<p>帘外雨潺潺，春意阑珊。</p><p>罗衾不耐五更寒，梦里不知身是客，一晌贪欢。</p><p>独自莫凭栏，无限江山，别时容易见时难。</p>"},{"id":"image-ce09e7e7-f4fc-4141-932b-1edaf3648466","type":"image","name":"R0001107.webp","mimeType":"image/webp","url":"assets/essays/essay-1-image-1.webp","caption":"测试"},{"id":"text-07ba604c-870f-47f0-8318-ce481c7df044","type":"text","html":"<p><strong>流水落花春去也，天上人间。</strong></p>"}]}],"music":{"name":"やなわらばー - 赤い実.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"wanglaoji","year":"2025","category":"Street","description":"飞鱼一夜，与王牢鸡。","coverIndex":0,"images":[{"name":"鸡.png","url":"assets/images/project-1-1.png","trailUrl":"assets/trails/project-1-1.webp"},{"name":"R0002159.webp","url":"assets/images/project-1-2.webp"},{"name":"R0002161.webp","url":"assets/images/project-1-3.webp"}]},{"id":"demo-2","order":1,"title":"night","year":"2024","category":"Urban","description":"夜晚","coverIndex":0,"images":[{"name":"未知.png","url":"assets/images/project-2-1.png","trailUrl":"assets/trails/project-2-1.webp"},{"name":"R0001865.webp","url":"assets/images/project-2-2.webp"},{"name":"R0001887.webp","url":"assets/images/project-2-3.webp"},{"name":"598325cd1b558c3274cbb954d33a6bc1.png","url":"assets/images/project-2-4.png"},{"name":"R0003384.webp","url":"assets/images/project-2-5.webp"},{"name":"R0003392.webp","url":"assets/images/project-2-6.webp"},{"name":"R0003409.webp","url":"assets/images/project-2-7.webp"}]},{"id":"demo-3","order":2,"title":"sea","year":"2024","category":"Fragments","description":"人与海鸥","coverIndex":0,"images":[{"name":"warmm.png","url":"assets/images/project-3-1.png","trailUrl":"assets/trails/project-3-1.webp"},{"name":"R0001563.webp","url":"assets/images/project-3-2.webp"},{"name":"R0001366.webp","url":"assets/images/project-3-3.webp"}]},{"id":"demo-4","order":3,"title":"ice","year":"2024","category":"ice","description":"xia pai.","coverIndex":0,"images":[{"name":"seaa.png","url":"assets/images/project-4-1.png","trailUrl":"assets/trails/project-4-1.webp"},{"name":"R0001639.webp","url":"assets/images/project-4-2.webp"},{"name":"R0001645.webp","url":"assets/images/project-4-3.webp"},{"name":"R0001511.webp","url":"assets/images/project-4-4.webp"},{"name":"R0003328.webp","url":"assets/images/project-4-5.webp"},{"name":"R0003331.webp","url":"assets/images/project-4-6.webp"},{"name":"R0003409.webp","url":"assets/images/project-4-7.webp"},{"name":"R0003426.webp","url":"assets/images/project-4-8.webp"}]},{"id":"6fe68e03-95d4-43c7-b8c3-3b789e34fdd8","order":4,"title":"几分之几","year":"","category":"","description":"几分之几。","coverIndex":0,"images":[{"name":"R0001325.webp","url":"assets/images/project-5-1.webp","trailUrl":"assets/trails/project-5-1.webp"}]},{"id":"15604ef3-3846-41f9-84d4-8ac9e5ed685c","order":5,"title":"1：1","year":"","category":"","description":"1：1 。杭州。","coverIndex":0,"images":[{"name":"R0002956.webp","url":"assets/images/project-6-1.webp","trailUrl":"assets/trails/project-6-1.webp"},{"name":"R0002973.webp","url":"assets/images/project-6-2.webp"},{"name":"R0003024.webp","url":"assets/images/project-6-3.webp"},{"name":"R0003031.webp","url":"assets/images/project-6-4.webp"},{"name":"R0003038.webp","url":"assets/images/project-6-5.webp"},{"name":"R0003045.webp","url":"assets/images/project-6-6.webp"},{"name":"R0003046.webp","url":"assets/images/project-6-7.webp"},{"name":"R0003053.webp","url":"assets/images/project-6-8.webp"},{"name":"R0003070.webp","url":"assets/images/project-6-9.webp"},{"name":"R0003073.webp","url":"assets/images/project-6-10.webp"},{"name":"R0003086.webp","url":"assets/images/project-6-11.webp"},{"name":"R0003120.webp","url":"assets/images/project-6-12.webp"},{"name":"R0003127.webp","url":"assets/images/project-6-13.webp"},{"name":"R0003129.webp","url":"assets/images/project-6-14.webp"},{"name":"R0003133.webp","url":"assets/images/project-6-15.webp"},{"name":"R0003165.webp","url":"assets/images/project-6-16.webp"},{"name":"R0003166.webp","url":"assets/images/project-6-17.webp"},{"name":"R0003172.webp","url":"assets/images/project-6-18.webp"},{"name":"R0003202.webp","url":"assets/images/project-6-19.webp"},{"name":"R0003205.webp","url":"assets/images/project-6-20.webp"},{"name":"R0003216.webp","url":"assets/images/project-6-21.webp"},{"name":"R0003234.webp","url":"assets/images/project-6-22.webp"},{"name":"R0003245.webp","url":"assets/images/project-6-23.webp"},{"name":"R0003256.webp","url":"assets/images/project-6-24.webp"},{"name":"R0003258.webp","url":"assets/images/project-6-25.webp"},{"name":"R0003269.webp","url":"assets/images/project-6-26.webp"},{"name":"R0003270.webp","url":"assets/images/project-6-27.webp"},{"name":"R0003276.webp","url":"assets/images/project-6-28.webp"},{"name":"R0003138.webp","url":"assets/images/project-6-29.webp"}]}]};
+    const PUBLISHED_DATA = {"profile":{"name":"HUMORPOPPY","descriptor":"a humor poppy","intro":"","archiveIntro":"","statement":"","about":"","essaysTitle":"Essays","essaysIntro":"Notes on photography, memory, walking, and the unstable life of images.","contactTitle":"Start a conversation.","contactBody":"For commissions, exhibitions, publications, or a simple exchange about images, write to the address below.","menuCredit":"website by humorpoppy.","imageCompressionEnabled":true,"imageCompressionTargetKb":1200,"imageCompressionMaxEdge":3000,"musicCompressionEnabled":false,"musicCompressionTargetMb":8,"butterflyCursorEnabled":true,"email":"1976904825@qq.com"},"essays":[{"id":"eeec8415-0f0b-4cad-a84d-efe6864d5640","date":"14.08.2023","title":"test","excerpt":"流水落花春去也，天上人间。","body":"帘外雨潺潺，春意阑珊。罗衾不耐五更寒，梦里不知身是客，一晌贪欢。独自莫凭栏，无限江山，别时容易见时难。\n\n测试\n\n流水落花春去也，天上人间。","blocks":[{"id":"text-1cef9eaf-1aca-4b63-887b-351b85e26d5d","type":"text","html":"<p>帘外雨潺潺，春意阑珊。</p><p>罗衾不耐五更寒，梦里不知身是客，一晌贪欢。</p><p>独自莫凭栏，无限江山，别时容易见时难。</p>"},{"id":"image-ce09e7e7-f4fc-4141-932b-1edaf3648466","type":"image","name":"R0001107.webp","mimeType":"image/webp","url":"assets/essays/essay-1-image-1.webp","caption":"测试"},{"id":"text-07ba604c-870f-47f0-8318-ce481c7df044","type":"text","html":"<p><strong>流水落花春去也，天上人间。</strong></p>"}]}],"music":{"name":"ただ声一つ - ロクデナシ_MIMI.mp3","type":"audio/mpeg","autoStart":true,"url":"assets/audio/background.mp3"},"projects":[{"id":"demo-1","order":0,"title":"wanglaoji","year":"2025","category":"Street","description":"飞鱼一夜，与王牢鸡。","displayMode":"standard","coverIndex":0,"images":[{"name":"鸡.png","url":"assets/images/project-1-1.png","trailUrl":"assets/trails/project-1-1.webp"},{"name":"R0002159.webp","url":"assets/images/project-1-2.webp"},{"name":"R0002161.webp","url":"assets/images/project-1-3.webp"}]},{"id":"demo-2","order":1,"title":"night","year":"2024","category":"Urban","description":"夜晚","displayMode":"standard","coverIndex":0,"images":[{"name":"未知.png","url":"assets/images/project-2-1.png","trailUrl":"assets/trails/project-2-1.webp"},{"name":"R0001865.webp","url":"assets/images/project-2-2.webp"},{"name":"R0001887.webp","url":"assets/images/project-2-3.webp"},{"name":"598325cd1b558c3274cbb954d33a6bc1.png","url":"assets/images/project-2-4.png"},{"name":"R0003384.webp","url":"assets/images/project-2-5.webp"},{"name":"R0003392.webp","url":"assets/images/project-2-6.webp"},{"name":"R0003409.webp","url":"assets/images/project-2-7.webp"}]},{"id":"demo-3","order":2,"title":"sea","year":"2024","category":"Fragments","description":"人与海鸥","displayMode":"standard","coverIndex":0,"images":[{"name":"warmm.png","url":"assets/images/project-3-1.png","trailUrl":"assets/trails/project-3-1.webp"},{"name":"R0001563.webp","url":"assets/images/project-3-2.webp"},{"name":"R0001366.webp","url":"assets/images/project-3-3.webp"}]},{"id":"demo-4","order":3,"title":"ice","year":"2024","category":"ice","description":"xia pai.","displayMode":"standard","coverIndex":0,"images":[{"name":"seaa.png","url":"assets/images/project-4-1.png","trailUrl":"assets/trails/project-4-1.webp"},{"name":"R0001639.webp","url":"assets/images/project-4-2.webp"},{"name":"R0001645.webp","url":"assets/images/project-4-3.webp"},{"name":"R0001511.webp","url":"assets/images/project-4-4.webp"},{"name":"R0003328.webp","url":"assets/images/project-4-5.webp"},{"name":"R0003331.webp","url":"assets/images/project-4-6.webp"},{"name":"R0003409.webp","url":"assets/images/project-4-7.webp"},{"name":"R0003426.webp","url":"assets/images/project-4-8.webp"}]},{"id":"6fe68e03-95d4-43c7-b8c3-3b789e34fdd8","order":4,"title":"几分之几","year":"","category":"","description":"几分之几。","displayMode":"standard","coverIndex":0,"images":[{"name":"R0001325.webp","url":"assets/images/project-5-1.webp","trailUrl":"assets/trails/project-5-1.webp"}]},{"id":"15604ef3-3846-41f9-84d4-8ac9e5ed685c","order":5,"title":"1：1","year":"","category":"","description":"1：1 。杭州。","displayMode":"exhibition","coverIndex":0,"images":[{"name":"R0002956.webp","url":"assets/images/project-6-1.webp","trailUrl":"assets/trails/project-6-1.webp"},{"name":"R0002973.webp","url":"assets/images/project-6-2.webp"},{"name":"R0003024.webp","url":"assets/images/project-6-3.webp"},{"name":"R0003031.webp","url":"assets/images/project-6-4.webp"},{"name":"R0003038.webp","url":"assets/images/project-6-5.webp"},{"name":"R0003045.webp","url":"assets/images/project-6-6.webp"},{"name":"R0003046.webp","url":"assets/images/project-6-7.webp"},{"name":"R0003053.webp","url":"assets/images/project-6-8.webp"},{"name":"R0003070.webp","url":"assets/images/project-6-9.webp"},{"name":"R0003073.webp","url":"assets/images/project-6-10.webp"},{"name":"R0003086.webp","url":"assets/images/project-6-11.webp"},{"name":"R0003120.webp","url":"assets/images/project-6-12.webp"},{"name":"R0003127.webp","url":"assets/images/project-6-13.webp"},{"name":"R0003129.webp","url":"assets/images/project-6-14.webp"},{"name":"R0003133.webp","url":"assets/images/project-6-15.webp"},{"name":"R0003165.webp","url":"assets/images/project-6-16.webp"},{"name":"R0003166.webp","url":"assets/images/project-6-17.webp"},{"name":"R0003172.webp","url":"assets/images/project-6-18.webp"},{"name":"R0003202.webp","url":"assets/images/project-6-19.webp"},{"name":"R0003205.webp","url":"assets/images/project-6-20.webp"},{"name":"R0003216.webp","url":"assets/images/project-6-21.webp"},{"name":"R0003234.webp","url":"assets/images/project-6-22.webp"},{"name":"R0003245.webp","url":"assets/images/project-6-23.webp"},{"name":"R0003256.webp","url":"assets/images/project-6-24.webp"},{"name":"R0003258.webp","url":"assets/images/project-6-25.webp"},{"name":"R0003269.webp","url":"assets/images/project-6-26.webp"},{"name":"R0003270.webp","url":"assets/images/project-6-27.webp"},{"name":"R0003276.webp","url":"assets/images/project-6-28.webp"},{"name":"R0003138.webp","url":"assets/images/project-6-29.webp"}]}]};
     const PUBLIC_MODE = true;
     // Published pages load media from Tencent Cloud COS. The local management
     // page intentionally keeps using its local assets and IndexedDB blobs.
@@ -1646,7 +1665,7 @@
         item.className = "manager-item";
         item.innerHTML = `
           <img class="manager-thumb" src="${imageSource(cover)}" alt="">
-          <div><h4 class="manager-name">${escapeHtml(project.title)}</h4><span class="manager-sub">${escapeHtml(project.year || "UNDATED")} / ${project.images.length} IMAGE${project.images.length === 1 ? "" : "S"}${project.demo ? " / DEMO" : ""}</span></div>
+          <div><h4 class="manager-name">${escapeHtml(project.title)}</h4><span class="manager-sub">${escapeHtml(project.year || "UNDATED")} / ${project.images.length} IMAGE${project.images.length === 1 ? "" : "S"}${project.displayMode === "exhibition" ? " / 九宫格展览" : ""}${project.demo ? " / DEMO" : ""}</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
             <button class="mini-button" type="button" data-action="down" title="向下移动" aria-label="向下移动">↓</button>
@@ -1892,10 +1911,49 @@
       $("#detailDescription").textContent = project.description || "";
       renderDetailThumbs();
       showDetailImage(currentDetailIndex);
+      const exhibitionMode = project.displayMode === "exhibition";
+      if (exhibitionMode) renderDetailExhibition();
+      else $("#detailExhibition").replaceChildren();
+      $("#detailExhibition").classList.toggle("is-active", exhibitionMode);
+      $("#detailStage").hidden = exhibitionMode;
+      $("#detailThumbs").hidden = exhibitionMode || currentDetailProject.displayImages.length <= 1;
       elements.projectView.classList.add("is-open");
       elements.projectView.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
       $("#closeProject").focus();
+    }
+
+    function renderDetailExhibition() {
+      const exhibition = $("#detailExhibition");
+      exhibition.innerHTML = "";
+      if (!currentDetailProject?.displayImages.length) return;
+      for (let start = 0; start < currentDetailProject.displayImages.length; start += 9) {
+        const block = document.createElement("section");
+        block.className = "exhibition-block";
+        block.setAttribute("aria-label", `第 ${Math.floor(start / 9) + 1} 组九宫格`);
+        const grid = document.createElement("div");
+        grid.className = "exhibition-grid";
+        currentDetailProject.displayImages.slice(start, start + 9).forEach((image, offset) => {
+          const index = start + offset;
+          const button = document.createElement("button");
+          button.className = "exhibition-tile";
+          button.type = "button";
+          button.setAttribute("aria-label", `放大查看第 ${index + 1} 张图片`);
+          const picture = document.createElement("img");
+          picture.src = image.displayUrl;
+          picture.alt = "";
+          picture.loading = "lazy";
+          picture.decoding = "async";
+          button.append(picture);
+          button.addEventListener("click", () => {
+            currentDetailIndex = index;
+            openLightbox();
+          });
+          grid.append(button);
+        });
+        block.append(grid);
+        exhibition.append(block);
+      }
     }
 
     function renderDetailThumbs() {
@@ -2023,6 +2081,7 @@
       $("#projectYear").value = project.year || "";
       $("#projectCategory").value = project.category || "";
       $("#projectDescription").value = project.description || "";
+      $("#projectDisplayMode").value = project.displayMode === "exhibition" ? "exhibition" : "standard";
       $("#projectImages").value = "";
       editingImages = [...project.images];
       editingCoverIndex = projectCoverIndex(project);
@@ -2324,6 +2383,7 @@
         year: $("#projectYear").value.trim(),
         category: $("#projectCategory").value.trim(),
         description: $("#projectDescription").value.trim(),
+        displayMode: $("#projectDisplayMode").value === "exhibition" ? "exhibition" : "standard",
         coverIndex,
         images,
         demo: false
@@ -3078,6 +3138,7 @@
           year: project.year,
           category: project.category,
           description: project.description,
+          displayMode: project.displayMode === "exhibition" ? "exhibition" : "standard",
           coverIndex,
           images
         });
