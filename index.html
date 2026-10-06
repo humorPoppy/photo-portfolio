@@ -291,6 +291,9 @@
     .hero-intro { width: min(460px, 70vw); margin: 0; font-size: 12px; line-height: 1.45; text-transform: uppercase; }
     .enter-link { pointer-events: auto; color: var(--white); font-family: Arial, Helvetica, sans-serif; font-size: 28px; font-weight: 800; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
     .enter-link::after { content: " ↓"; color: #9a9a96; }
+    @media (min-width: 761px) {
+      .enter-link { order: -1; margin-right: auto; }
+    }
 
     .trail-layer { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
     .trail-frame { position: absolute; width: clamp(130px, 16vw, 230px); opacity: .74; pointer-events: none; animation: expose .18s steps(2, end) both; }
@@ -418,6 +421,13 @@
     .exhibition-tile { min-width: 0; min-height: 0; border: 0; padding: 0; color: inherit; background: #aaa9a5; cursor: zoom-in; overflow: hidden; }
     .exhibition-tile img { display: block; width: 100%; height: 100%; object-fit: cover; filter: none; transition: filter .2s linear, transform .3s ease; }
     .exhibition-tile:hover img, .exhibition-tile:focus-visible img { filter: contrast(1.06) saturate(1.04); transform: scale(1.035); }
+    .detail-vertical { display: none; width: min(980px, 100%); margin: 0 auto; flex-direction: column; gap: clamp(58px, 8vw, 120px); }
+    .detail-vertical.is-active { display: flex; }
+    .detail-vertical-figure { margin: 0; }
+    .detail-vertical-button { display: block; width: 100%; border: 0; padding: 0; color: inherit; background: transparent; cursor: zoom-in; }
+    .detail-vertical-button img { display: block; width: 100%; height: auto; max-height: min(82dvh, 900px); object-fit: contain; filter: none; transition: transform .3s ease, filter .2s linear; }
+    .detail-vertical-button:hover img, .detail-vertical-button:focus-visible img { filter: contrast(1.05) saturate(1.03); transform: scale(1.012); }
+    .detail-vertical-counter { display: flex; justify-content: flex-end; padding-top: 8px; color: var(--grey); font-size: 9px; letter-spacing: .08em; }
 
     .image-lightbox { position: fixed; inset: 0; z-index: 1400; display: none; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; padding: 52px 18px 24px; background: rgba(8,8,8,.96); cursor: zoom-out; }
     .image-lightbox.is-open { display: flex; }
@@ -620,6 +630,8 @@
       .exhibition-block:nth-child(3) { margin-left: 1vw; margin-right: auto; }
       .exhibition-block:nth-child(4) { margin-left: auto; margin-right: 5vw; }
       .exhibition-grid { gap: 4px; }
+      .detail-vertical { width: 100%; gap: 54px; }
+      .detail-vertical-button img { max-height: none; }
       .image-lightbox { padding: 52px 8px 16px; }
       .image-lightbox-image-wrap { padding: 0 34px; }
       .image-lightbox img { width: auto !important; height: auto !important; max-width: calc(100vw - 84px); max-height: calc(100vh - 76px); max-height: calc(100dvh - 76px); margin: auto; }
@@ -682,7 +694,7 @@
 <body class="butterfly-cursor-enabled is-loading home-gated" style="">
   <div class="grain" aria-hidden="true"></div>
   <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
-    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(494.5px, 299.014px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(294.5px, 122px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
   </div>
   <section class="site-loader" id="siteLoader" aria-live="polite" aria-busy="true" aria-label="Loading website">
     <div class="site-loader-wipe" aria-hidden="true"></div>
@@ -719,17 +731,17 @@
       </div>
       <div class="archive-meta"><span id="projectCount">06 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/ea98e064-aa52-49c1-a281-0ee06aab5b89" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-media"><img src="blob:null/b186d45b-f1ee-43e0-815c-aa83fc544ec3" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
           <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
-          <div class="project-media"><img src="blob:null/6bc316f3-253a-48b7-8dc2-09fe83392ddb" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-media"><img src="blob:null/977102cb-341b-42ec-9e0f-baa74546b18f" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
           <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
-          <div class="project-media"><img src="blob:null/b0b915ff-0af8-4160-ae83-8953d3e3b5eb" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-media"><img src="blob:null/137cf7e8-4c6f-47e4-8068-d9edf6f9f813" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
           <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
-          <div class="project-media"><img src="blob:null/f033e400-c1b0-4a59-8794-32dec9371c07" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-media"><img src="blob:null/1c59141a-1e3d-4384-ba79-22795a7d3d9d" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
           <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/3f09e8cd-db9d-4707-907c-fd6f31e71c4f" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/0536e3aa-6e54-4258-aca2-74eb29225b83" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button><button class="project-card" type="button" aria-label="打开 Record 1：1">
-          <div class="project-media"><img src="blob:null/432f2efd-88a3-492c-bea4-7f7a80600817" alt="1：1 封面"><span class="project-index">06</span><div class="project-hover-title"><span>1：1</span></div></div>
+          <div class="project-media"><img src="blob:null/785bc64a-ee21-4484-93b6-06f57df8a644" alt="1：1 封面"><span class="project-index">06</span><div class="project-hover-title"><span>1：1</span></div></div>
           <div class="project-info"><h3 class="project-title">1：1</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -750,6 +762,7 @@
     </div>
     <div class="detail-gallery" id="detailGallery">
       <div class="detail-exhibition" id="detailExhibition" aria-label="九宫格展览"></div>
+      <div class="detail-vertical" id="detailVertical" aria-label="纵向图片浏览"></div>
       <div class="detail-stage" id="detailStage">
         <button class="detail-nav" id="prevImage" type="button" aria-label="上一张图片">←</button>
         <figure class="detail-figure">
@@ -784,15 +797,15 @@
       </div>
       <div class="studio-layout">
         <nav class="studio-tabs" aria-label="管理页面分类">
-          <button class="studio-tab" type="button" data-studio-tab="overview">基本资料</button>
+          <button class="studio-tab is-active" type="button" data-studio-tab="overview">基本资料</button>
           <button class="studio-tab" type="button" data-studio-tab="record">Record</button>
           <button class="studio-tab" type="button" data-studio-tab="essays">Essays</button>
           <button class="studio-tab" type="button" data-studio-tab="pages">页面设置</button>
-          <button class="studio-tab is-active" type="button" data-studio-tab="publish">音乐与发布</button>
+          <button class="studio-tab" type="button" data-studio-tab="publish">音乐与发布</button>
         </nav>
 
         <div class="studio-content">
-          <section class="studio-section" data-studio-section="overview">
+          <section class="studio-section is-active" data-studio-section="overview">
             <div class="studio-section-head"><h3>基本资料</h3><p>控制首页姓名、身份说明、首页简介与 Record 列表上方的说明文字。</p></div>
             <div class="studio-card">
               <div class="studio-two-column">
@@ -843,7 +856,7 @@
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/ea98e064-aa52-49c1-a281-0ee06aab5b89" alt="">
+          <img class="manager-thumb" src="blob:null/b186d45b-f1ee-43e0-815c-aa83fc544ec3" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -851,7 +864,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/6bc316f3-253a-48b7-8dc2-09fe83392ddb" alt="">
+          <img class="manager-thumb" src="blob:null/977102cb-341b-42ec-9e0f-baa74546b18f" alt="">
           <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 7 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -859,7 +872,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/b0b915ff-0af8-4160-ae83-8953d3e3b5eb" alt="">
+          <img class="manager-thumb" src="blob:null/137cf7e8-4c6f-47e4-8068-d9edf6f9f813" alt="">
           <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -867,7 +880,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/f033e400-c1b0-4a59-8794-32dec9371c07" alt="">
+          <img class="manager-thumb" src="blob:null/1c59141a-1e3d-4384-ba79-22795a7d3d9d" alt="">
           <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 8 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -875,7 +888,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/3f09e8cd-db9d-4707-907c-fd6f31e71c4f" alt="">
+          <img class="manager-thumb" src="blob:null/0536e3aa-6e54-4258-aca2-74eb29225b83" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -883,7 +896,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/432f2efd-88a3-492c-bea4-7f7a80600817" alt="">
+          <img class="manager-thumb" src="blob:null/785bc64a-ee21-4484-93b6-06f57df8a644" alt="">
           <div><h4 class="manager-name">1：1</h4><span class="manager-sub">UNDATED / 29 IMAGES / 九宫格展览</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -974,7 +987,7 @@
             </div>
           </section>
 
-          <section class="studio-section is-active" data-studio-section="publish">
+          <section class="studio-section" data-studio-section="publish">
             <div class="studio-section-head"><h3>音乐与发布</h3><p>网页代码发布到 GitHub，图片、拖尾、文章图片和音乐发布到腾讯云 COS。完整包用于首次上线；更新包只包含新 index.html 与发生变化的媒体资源。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
             <div class="studio-two-column">
               <div class="studio-card music-settings">
@@ -1010,7 +1023,7 @@
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status">背景音乐已保存</div>
+  <div class="toast" id="toast" role="status"></div>
   <audio id="backgroundMusic" loop="" preload="metadata"></audio>
   <noscript><div class="noscript">这个作品网站需要 JavaScript 才能上传和显示图片。</div></noscript>
 
@@ -1914,9 +1927,12 @@
       const exhibitionMode = project.displayMode === "exhibition";
       if (exhibitionMode) renderDetailExhibition();
       else $("#detailExhibition").replaceChildren();
+      if (!exhibitionMode) renderDetailVertical();
+      else $("#detailVertical").replaceChildren();
       $("#detailExhibition").classList.toggle("is-active", exhibitionMode);
-      $("#detailStage").hidden = exhibitionMode;
-      $("#detailThumbs").hidden = exhibitionMode || currentDetailProject.displayImages.length <= 1;
+      $("#detailVertical").classList.toggle("is-active", !exhibitionMode);
+      $("#detailStage").hidden = true;
+      $("#detailThumbs").hidden = true;
       elements.projectView.classList.add("is-open");
       elements.projectView.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -1954,6 +1970,35 @@
         block.append(grid);
         exhibition.append(block);
       }
+    }
+
+    function renderDetailVertical() {
+      const vertical = $("#detailVertical");
+      vertical.innerHTML = "";
+      if (!currentDetailProject?.displayImages.length) return;
+      currentDetailProject.displayImages.forEach((image, index) => {
+        const figure = document.createElement("figure");
+        figure.className = "detail-vertical-figure";
+        const button = document.createElement("button");
+        button.className = "detail-vertical-button";
+        button.type = "button";
+        button.setAttribute("aria-label", `放大查看第 ${index + 1} 张图片`);
+        const picture = document.createElement("img");
+        picture.src = image.displayUrl;
+        picture.alt = "";
+        picture.loading = index < 2 ? "eager" : "lazy";
+        picture.decoding = "async";
+        button.append(picture);
+        button.addEventListener("click", () => {
+          currentDetailIndex = index;
+          openLightbox();
+        });
+        const counter = document.createElement("figcaption");
+        counter.className = "detail-vertical-counter";
+        counter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(currentDetailProject.displayImages.length).padStart(2, "0")}`;
+        figure.append(button, counter);
+        vertical.append(figure);
+      });
     }
 
     function renderDetailThumbs() {
