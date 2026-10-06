@@ -4,6 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A local-first photography portfolio and project archive.">
   <title>HUMORPOPPY / Photography Archive</title>
+  <link rel="preconnect" href="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com" crossorigin="">
+  <link rel="dns-prefetch" href="//humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com">
   <link rel="preload" as="image" href="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" type="image/webp">
   <style>
     :root {
@@ -418,8 +420,9 @@
     .exhibition-block:nth-child(3) { margin-left: 7%; }
     .exhibition-block:nth-child(4) { margin-left: 29%; }
     .exhibition-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: clamp(5px, .7vw, 11px); aspect-ratio: 1; }
-    .exhibition-tile { min-width: 0; min-height: 0; border: 0; padding: 0; color: inherit; background: #aaa9a5; cursor: zoom-in; overflow: hidden; }
+    .exhibition-tile { min-width: 0; min-height: 0; border: 0; padding: 0; color: inherit; background: transparent; cursor: zoom-in; overflow: hidden; }
     .exhibition-tile img { display: block; width: 100%; height: 100%; object-fit: cover; filter: none; transition: filter .2s linear, transform .3s ease; }
+    .exhibition-tile.is-failed { outline: 1px dashed var(--grey); outline-offset: -1px; }
     .exhibition-tile:hover img, .exhibition-tile:focus-visible img { filter: contrast(1.06) saturate(1.04); transform: scale(1.035); }
     .detail-vertical { display: none; width: min(980px, 100%); margin: 0 auto; flex-direction: column; gap: clamp(58px, 8vw, 120px); }
     .detail-vertical.is-active { display: flex; }
@@ -432,8 +435,8 @@
     .image-lightbox { position: fixed; inset: 0; z-index: 1400; display: none; box-sizing: border-box; width: 100%; height: 100%; overflow: hidden; padding: 52px 18px 24px; background: rgba(8,8,8,.96); cursor: zoom-out; }
     .image-lightbox.is-open { display: flex; }
     .image-lightbox-stage { position: relative; display: grid; width: 100%; height: 100%; min-width: 0; min-height: 0; place-items: center; overflow: hidden; }
-    .image-lightbox-image-wrap { display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 0 clamp(48px, 6vw, 76px); overflow: hidden; touch-action: pan-y; }
-    .image-lightbox img { display: block; flex: 0 1 auto; width: auto !important; height: auto !important; max-width: min(100%, calc(100vw - 132px)); max-height: calc(100vh - 88px); max-height: calc(100dvh - 88px); margin: auto; object-fit: contain; box-shadow: 0 0 0 1px rgba(255,255,255,.28); cursor: zoom-out; user-select: none; -webkit-user-drag: none; }
+    .image-lightbox-image-wrap { display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 0 clamp(48px, 6vw, 76px); overflow: hidden; touch-action: none; }
+    .image-lightbox img { display: block; flex: 0 1 auto; width: auto !important; height: auto !important; max-width: min(100%, calc(100vw - 132px)); max-height: calc(100vh - 88px); max-height: calc(100dvh - 88px); margin: auto; object-fit: contain; box-shadow: 0 0 0 1px rgba(255,255,255,.28); cursor: zoom-out; user-select: none; -webkit-user-drag: none; transform-origin: center center; will-change: transform; transition: transform .18s ease; }
     .image-lightbox-close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border: 1px solid var(--white); color: var(--white); background: transparent; font-size: 24px; line-height: 1; cursor: pointer; }
     .image-lightbox-close:hover { color: var(--black); background: var(--white); }
     .image-lightbox-nav { position: absolute; top: 50%; z-index: 3; display: grid; place-items: center; width: 44px; height: 58px; border: 0; border-radius: 0; padding: 0; color: rgba(255,255,255,.72); background: transparent; font: 300 30px/1 Arial, Helvetica, sans-serif; transform: translateY(-50%); cursor: pointer; transition: color .16s ease, opacity .16s ease, transform .16s ease; }
@@ -694,7 +697,7 @@
 <body class="butterfly-cursor-enabled is-loading home-gated" style="">
   <div class="grain" aria-hidden="true"></div>
   <div class="butterfly-cursor is-visible" id="butterflyCursor" aria-hidden="true">
-    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(294.5px, 122px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
+    <div class="butterfly-cursor-mark" id="butterflyCursorMark" style="transform: translate3d(508.5px, 421px, 0px);"><img src="https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/assets/cursor/butterfly.webp" alt="" width="180" height="149" decoding="async" fetchpriority="high"></div>
   </div>
   <section class="site-loader" id="siteLoader" aria-live="polite" aria-busy="true" aria-label="Loading website">
     <div class="site-loader-wipe" aria-hidden="true"></div>
@@ -731,17 +734,17 @@
       </div>
       <div class="archive-meta"><span id="projectCount">06 Record</span><span id="archiveYear">Archive / 2026</span></div>
       <div class="project-grid" id="projectGrid"><button class="project-card" type="button" aria-label="打开 Record wanglaoji">
-          <div class="project-media"><img src="blob:null/b186d45b-f1ee-43e0-815c-aa83fc544ec3" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
+          <div class="project-media"><img src="blob:null/41f8f923-8fa8-4fd7-a93e-fe16272efa72" alt="wanglaoji 封面"><span class="project-index">01</span><div class="project-hover-title"><span>wanglaoji</span></div></div>
           <div class="project-info"><h3 class="project-title">wanglaoji</h3><span class="project-meta">2025<br>Street</span></div></button><button class="project-card" type="button" aria-label="打开 Record night">
-          <div class="project-media"><img src="blob:null/977102cb-341b-42ec-9e0f-baa74546b18f" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
+          <div class="project-media"><img src="blob:null/a5a8db8e-2ea0-4a67-9cb0-096e5bdb9b5f" alt="night 封面"><span class="project-index">02</span><div class="project-hover-title"><span>night</span></div></div>
           <div class="project-info"><h3 class="project-title">night</h3><span class="project-meta">2024<br>Urban</span></div></button><button class="project-card" type="button" aria-label="打开 Record sea">
-          <div class="project-media"><img src="blob:null/137cf7e8-4c6f-47e4-8068-d9edf6f9f813" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
+          <div class="project-media"><img src="blob:null/ff8ca4e9-0979-49c9-8812-429173affbf6" alt="sea 封面"><span class="project-index">03</span><div class="project-hover-title"><span>sea</span></div></div>
           <div class="project-info"><h3 class="project-title">sea</h3><span class="project-meta">2024<br>Fragments</span></div></button><button class="project-card" type="button" aria-label="打开 Record ice">
-          <div class="project-media"><img src="blob:null/1c59141a-1e3d-4384-ba79-22795a7d3d9d" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
+          <div class="project-media"><img src="blob:null/2618aa64-cbd8-4ab9-9d63-170c50af7ace" alt="ice 封面"><span class="project-index">04</span><div class="project-hover-title"><span>ice</span></div></div>
           <div class="project-info"><h3 class="project-title">ice</h3><span class="project-meta">2024<br>ice</span></div></button><button class="project-card" type="button" aria-label="打开 Record 几分之几">
-          <div class="project-media"><img src="blob:null/0536e3aa-6e54-4258-aca2-74eb29225b83" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
+          <div class="project-media"><img src="blob:null/d7bcd35e-6733-4c16-bc69-3c82d98cb720" alt="几分之几 封面"><span class="project-index">05</span><div class="project-hover-title"><span>几分之几</span></div></div>
           <div class="project-info"><h3 class="project-title">几分之几</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button><button class="project-card" type="button" aria-label="打开 Record 1：1">
-          <div class="project-media"><img src="blob:null/785bc64a-ee21-4484-93b6-06f57df8a644" alt="1：1 封面"><span class="project-index">06</span><div class="project-hover-title"><span>1：1</span></div></div>
+          <div class="project-media"><img src="blob:null/4fb2682c-8f2f-4678-8ebc-7424c0027109" alt="1：1 封面"><span class="project-index">06</span><div class="project-hover-title"><span>1：1</span></div></div>
           <div class="project-info"><h3 class="project-title">1：1</h3><span class="project-meta">UNDATED<br>RECORD</span></div></button></div>
     </section>
 
@@ -797,15 +800,15 @@
       </div>
       <div class="studio-layout">
         <nav class="studio-tabs" aria-label="管理页面分类">
-          <button class="studio-tab is-active" type="button" data-studio-tab="overview">基本资料</button>
+          <button class="studio-tab" type="button" data-studio-tab="overview">基本资料</button>
           <button class="studio-tab" type="button" data-studio-tab="record">Record</button>
           <button class="studio-tab" type="button" data-studio-tab="essays">Essays</button>
           <button class="studio-tab" type="button" data-studio-tab="pages">页面设置</button>
-          <button class="studio-tab" type="button" data-studio-tab="publish">音乐与发布</button>
+          <button class="studio-tab is-active" type="button" data-studio-tab="publish">音乐与发布</button>
         </nav>
 
         <div class="studio-content">
-          <section class="studio-section is-active" data-studio-section="overview">
+          <section class="studio-section" data-studio-section="overview">
             <div class="studio-section-head"><h3>基本资料</h3><p>控制首页姓名、身份说明、首页简介与 Record 列表上方的说明文字。</p></div>
             <div class="studio-card">
               <div class="studio-two-column">
@@ -856,7 +859,7 @@
                 </form>
               </div>
               <div class="studio-card"><h4 class="studio-card-title">Record 顺序</h4><div class="manager-list" id="managerList"><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/b186d45b-f1ee-43e0-815c-aa83fc544ec3" alt="">
+          <img class="manager-thumb" src="blob:null/41f8f923-8fa8-4fd7-a93e-fe16272efa72" alt="">
           <div><h4 class="manager-name">wanglaoji</h4><span class="manager-sub">2025 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动" disabled="">↑</button>
@@ -864,7 +867,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/977102cb-341b-42ec-9e0f-baa74546b18f" alt="">
+          <img class="manager-thumb" src="blob:null/a5a8db8e-2ea0-4a67-9cb0-096e5bdb9b5f" alt="">
           <div><h4 class="manager-name">night</h4><span class="manager-sub">2024 / 7 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -872,7 +875,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/137cf7e8-4c6f-47e4-8068-d9edf6f9f813" alt="">
+          <img class="manager-thumb" src="blob:null/ff8ca4e9-0979-49c9-8812-429173affbf6" alt="">
           <div><h4 class="manager-name">sea</h4><span class="manager-sub">2024 / 3 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -880,7 +883,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/1c59141a-1e3d-4384-ba79-22795a7d3d9d" alt="">
+          <img class="manager-thumb" src="blob:null/2618aa64-cbd8-4ab9-9d63-170c50af7ace" alt="">
           <div><h4 class="manager-name">ice</h4><span class="manager-sub">2024 / 8 IMAGES</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -888,7 +891,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/0536e3aa-6e54-4258-aca2-74eb29225b83" alt="">
+          <img class="manager-thumb" src="blob:null/d7bcd35e-6733-4c16-bc69-3c82d98cb720" alt="">
           <div><h4 class="manager-name">几分之几</h4><span class="manager-sub">UNDATED / 1 IMAGE</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -896,7 +899,7 @@
             <button class="mini-button" type="button" data-action="edit" title="编辑" aria-label="编辑">✎</button>
             <button class="mini-button" type="button" data-action="delete" title="删除" aria-label="删除">×</button>
           </div></article><article class="manager-item">
-          <img class="manager-thumb" src="blob:null/785bc64a-ee21-4484-93b6-06f57df8a644" alt="">
+          <img class="manager-thumb" src="blob:null/4fb2682c-8f2f-4678-8ebc-7424c0027109" alt="">
           <div><h4 class="manager-name">1：1</h4><span class="manager-sub">UNDATED / 29 IMAGES / 九宫格展览</span></div>
           <div class="manager-actions">
             <button class="mini-button" type="button" data-action="up" title="向上移动" aria-label="向上移动">↑</button>
@@ -987,7 +990,7 @@
             </div>
           </section>
 
-          <section class="studio-section" data-studio-section="publish">
+          <section class="studio-section is-active" data-studio-section="publish">
             <div class="studio-section-head"><h3>音乐与发布</h3><p>网页代码发布到 GitHub，图片、拖尾、文章图片和音乐发布到腾讯云 COS。完整包用于首次上线；更新包只包含新 index.html 与发生变化的媒体资源。若从文件夹直接打开 index.html，请保留同目录的 butterfly-fallback.js。</p></div>
             <div class="studio-two-column">
               <div class="studio-card music-settings">
@@ -1013,7 +1016,7 @@
                 <h4 class="studio-card-title">GitHub + COS 增量更新</h4>
                 <p class="field-label">更新包不会重复放入未变化的旧图片和音乐。将 index.html 上传到 GitHub；更新包里的 assets 文件夹上传到 COS 的同名路径。第一次使用时，如果管理页面内容与当前线上网站完全一致，请先建立线上基准；如果不一致，请先生成并上传一次完整包。</p>
                 <div class="form-actions"><button class="action-button" id="markPublishBaseline" type="button">确认当前内容已上线并更新基准</button><button class="action-button primary" id="buildUpdatePublishSecondary" type="button">生成更新包</button></div>
-                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/9/26 09:59:37 / 60 个 COS 资源文件。GitHub 和 COS 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
+                <p class="publish-baseline-status" id="publishBaselineStatus">当前基准：2026/10/6 09:37:51 / 60 个 COS 资源文件。GitHub 和 COS 上传成功后，请点击“确认当前内容已上线并更新基准”。</p>
               </div>
             </div>
           </section>
@@ -1124,6 +1127,15 @@
     let lightboxSwipeStartX = null;
     let lightboxSwipeStartY = null;
     let lightboxSwipeMoved = false;
+    let lightboxScale = 1;
+    let lightboxOffsetX = 0;
+    let lightboxOffsetY = 0;
+    let lightboxPinching = false;
+    let lightboxPanning = false;
+    let lightboxPinchStartDistance = 0;
+    let lightboxPinchStartScale = 1;
+    let lightboxPanLastX = 0;
+    let lightboxPanLastY = 0;
     let siteLoaderStarted = false;
     let siteLoaderFinished = false;
     let siteLoaderHideScheduled = false;
@@ -1925,14 +1937,17 @@
       renderDetailThumbs();
       showDetailImage(currentDetailIndex);
       const exhibitionMode = project.displayMode === "exhibition";
-      if (exhibitionMode) renderDetailExhibition();
-      else $("#detailExhibition").replaceChildren();
-      if (!exhibitionMode) renderDetailVertical();
-      else $("#detailVertical").replaceChildren();
       $("#detailExhibition").classList.toggle("is-active", exhibitionMode);
       $("#detailVertical").classList.toggle("is-active", !exhibitionMode);
       $("#detailStage").hidden = true;
       $("#detailThumbs").hidden = true;
+      if (exhibitionMode) {
+        renderDetailExhibition();
+        $("#detailVertical").replaceChildren();
+      } else {
+        renderDetailVertical();
+        $("#detailExhibition").replaceChildren();
+      }
       elements.projectView.classList.add("is-open");
       elements.projectView.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -1956,10 +1971,30 @@
           button.type = "button";
           button.setAttribute("aria-label", `放大查看第 ${index + 1} 张图片`);
           const picture = document.createElement("img");
-          picture.src = image.displayUrl;
           picture.alt = "";
-          picture.loading = "lazy";
+          // Exhibition grids are a deliberate overview: request every tile up front
+          // so a second 3x3 group does not remain as gray placeholders below the fold.
+          picture.loading = "eager";
           picture.decoding = "async";
+          let retried = false;
+          picture.addEventListener("load", () => {
+            button.classList.remove("is-failed");
+            button.removeAttribute("title");
+          });
+          picture.addEventListener("error", () => {
+            if (!retried && /^https?:/i.test(image.displayUrl)) {
+              retried = true;
+              window.setTimeout(() => {
+                if (!picture.isConnected) return;
+                picture.removeAttribute("src");
+                picture.src = image.displayUrl;
+              }, 500);
+              return;
+            }
+            button.classList.add("is-failed");
+            button.title = "图片加载失败，可点击尝试放大查看";
+          });
+          picture.src = image.displayUrl;
           button.append(picture);
           button.addEventListener("click", () => {
             currentDetailIndex = index;
@@ -2048,6 +2083,7 @@
       $("#lightboxCounter").textContent = `${String(currentDetailIndex + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
       $("#lightboxPrev").disabled = total <= 1;
       $("#lightboxNext").disabled = total <= 1;
+      resetLightboxZoom();
     }
 
     function changeLightboxImage(direction) {
@@ -2064,6 +2100,34 @@
       $("#closeLightbox").focus();
     }
 
+    function applyLightboxZoom() {
+      const image = $("#lightboxImage");
+      if (!image) return;
+      image.style.transform = `translate3d(${lightboxOffsetX}px, ${lightboxOffsetY}px, 0) scale(${lightboxScale})`;
+      image.style.cursor = lightboxScale > 1 ? "grab" : "zoom-out";
+    }
+
+    function resetLightboxZoom() {
+      lightboxScale = 1;
+      lightboxOffsetX = 0;
+      lightboxOffsetY = 0;
+      lightboxPinching = false;
+      lightboxPanning = false;
+      applyLightboxZoom();
+    }
+
+    function pinchDistance(first, second) {
+      return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+    }
+
+    function clampLightboxZoom() {
+      lightboxScale = Math.max(1, Math.min(4, lightboxScale));
+      const limitX = Math.max(0, (window.innerWidth * (lightboxScale - 1)) * .48);
+      const limitY = Math.max(0, (window.innerHeight * (lightboxScale - 1)) * .48);
+      lightboxOffsetX = Math.max(-limitX, Math.min(limitX, lightboxOffsetX));
+      lightboxOffsetY = Math.max(-limitY, Math.min(limitY, lightboxOffsetY));
+    }
+
     function closeLightbox() {
       $("#imageLightbox").classList.remove("is-open");
       $("#imageLightbox").setAttribute("aria-hidden", "true");
@@ -2071,6 +2135,7 @@
       lightboxSwipeStartX = null;
       lightboxSwipeStartY = null;
       lightboxSwipeMoved = false;
+      resetLightboxZoom();
       if (elements.projectView.classList.contains("is-open")) document.body.style.overflow = "hidden";
       else if (!elements.studio.classList.contains("is-open")) document.body.style.overflow = "";
     }
@@ -3879,22 +3944,103 @@
     }
 
     $("#lightboxImageWrap").addEventListener("touchstart", (event) => {
+      if (event.touches.length >= 2) {
+        event.preventDefault();
+        lightboxPinching = true;
+        lightboxPanning = false;
+        lightboxSwipeMoved = true;
+        lightboxSwipeStartX = null;
+        lightboxSwipeStartY = null;
+        lightboxPinchStartDistance = pinchDistance(event.touches[0], event.touches[1]);
+        lightboxPinchStartScale = lightboxScale;
+        $("#lightboxImage").style.transition = "none";
+        return;
+      }
       const touch = event.touches[0];
       if (!touch) return;
       lightboxSwipeMoved = false;
-      lightboxSwipeStartX = touch.clientX;
-      lightboxSwipeStartY = touch.clientY;
-    }, { passive: true });
+      if (lightboxScale > 1.01) {
+        event.preventDefault();
+        lightboxPanning = true;
+        lightboxPanLastX = touch.clientX;
+        lightboxPanLastY = touch.clientY;
+        $("#lightboxImage").style.transition = "none";
+      } else {
+        lightboxPanning = false;
+        lightboxSwipeStartX = touch.clientX;
+        lightboxSwipeStartY = touch.clientY;
+      }
+    }, { passive: false });
+    $("#lightboxImageWrap").addEventListener("touchmove", (event) => {
+      if (event.touches.length >= 2) {
+        event.preventDefault();
+        if (!lightboxPinching) {
+          lightboxPinching = true;
+          lightboxSwipeMoved = true;
+          lightboxPinchStartDistance = pinchDistance(event.touches[0], event.touches[1]);
+          lightboxPinchStartScale = lightboxScale;
+        }
+        const distance = pinchDistance(event.touches[0], event.touches[1]);
+        if (lightboxPinchStartDistance > 0) lightboxScale = lightboxPinchStartScale * distance / lightboxPinchStartDistance;
+        clampLightboxZoom();
+        applyLightboxZoom();
+        return;
+      }
+      const touch = event.touches[0];
+      if (!touch) return;
+      if (lightboxPinching) {
+        event.preventDefault();
+        lightboxPinching = false;
+        if (lightboxScale > 1.01) {
+          lightboxPanning = true;
+          lightboxPanLastX = touch.clientX;
+          lightboxPanLastY = touch.clientY;
+        }
+        return;
+      }
+      if (lightboxPanning && lightboxScale > 1.01) {
+        event.preventDefault();
+        lightboxOffsetX += touch.clientX - lightboxPanLastX;
+        lightboxOffsetY += touch.clientY - lightboxPanLastY;
+        lightboxPanLastX = touch.clientX;
+        lightboxPanLastY = touch.clientY;
+        lightboxSwipeMoved = true;
+        clampLightboxZoom();
+        applyLightboxZoom();
+      }
+    }, { passive: false });
     $("#lightboxImageWrap").addEventListener("touchend", (event) => {
+      if (event.touches.length > 0) {
+        if (event.touches.length === 1 && lightboxPinching) {
+          lightboxPinching = false;
+          lightboxPanning = lightboxScale > 1.01;
+          const touch = event.touches[0];
+          lightboxPanLastX = touch.clientX;
+          lightboxPanLastY = touch.clientY;
+        }
+        return;
+      }
+      $("#lightboxImage").style.transition = "transform .18s ease";
+      lightboxPinching = false;
+      if (lightboxPanning || lightboxScale > 1.01) {
+        lightboxPanning = false;
+        lightboxSwipeStartX = null;
+        lightboxSwipeStartY = null;
+        lightboxSwipeMoved = true;
+        return;
+      }
       const touch = event.changedTouches[0];
       if (!touch) return;
       finishLightboxSwipe(touch.clientX, touch.clientY);
-    }, { passive: true });
+    }, { passive: false });
     $("#lightboxImageWrap").addEventListener("touchcancel", () => {
       lightboxSwipeStartX = null;
       lightboxSwipeStartY = null;
+      lightboxPinching = false;
+      lightboxPanning = false;
       lightboxSwipeMoved = false;
-    }, { passive: true });
+      $("#lightboxImage").style.transition = "transform .18s ease";
+    }, { passive: false });
     $("#lightboxImage").addEventListener("click", () => {
       if (lightboxSwipeMoved) {
         lightboxSwipeMoved = false;
