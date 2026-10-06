@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <title>HUMORPOPPY / Static Admin</title>
+  <style>
+    :root{color-scheme:dark;--black:#090909;--white:#f5f4ef;--grey:#9a9994;--line:#4b4b48;--signal:#9c2d24}*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--white);background:var(--black);font:14px/1.5 "Courier New",monospace}main{width:min(920px,100%);margin:auto;padding:18px 12px 70px}header{display:flex;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--white)}h1{margin:0;font:900 clamp(30px,9vw,70px)/.86 Arial,sans-serif;letter-spacing:-.05em;text-transform:uppercase}h2{margin:0 0 12px;font:800 18px/1 Arial,sans-serif;text-transform:uppercase}p{color:var(--grey);font-size:11px}.card{margin-top:16px;border:1px solid var(--line);padding:14px;background:#121212}.field{display:grid;gap:6px;margin:0 0 12px}label{color:var(--grey);font-size:10px;text-transform:uppercase}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:0;padding:10px;color:var(--white);background:#1b1b1b;font:13px/1.45 "Courier New",monospace}textarea{min-height:330px;resize:vertical}button{border:1px solid var(--white);border-radius:0;padding:10px 13px;color:var(--white);background:transparent;font:800 11px/1 Arial,sans-serif;text-transform:uppercase;cursor:pointer}button:hover,button.primary{color:var(--black);background:var(--white)}.actions{display:flex;flex-wrap:wrap;gap:8px}.status{min-height:22px;margin:12px 0 0;color:#b9d29d;font-size:11px}.status.error{color:#efaaa2}.muted{color:var(--grey);font-size:10px}.upload-list{display:grid;gap:7px;margin-top:10px}.upload-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:7px;font-size:11px}.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}code{color:#d7c78b;word-break:break-all}.tip{border-left:2px solid var(--white);padding-left:10px}.hidden{display:none!important}@media(max-width:560px){main{padding:14px 9px 55px}.card{padding:11px}header{display:block}.actions button{flex:1 1 140px}textarea{min-height:390px}.quick-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <header><div><span class="muted">HUMORPOPPY / PRIVATE STUDIO</span><h1>Static<br>Admin</h1></div></header>
+  <section class="card">
+    <h2>无需云函数</h2>
+    <p class="tip">此页面只在手机浏览器本地编辑数据，不保存密码、不接触 COS 密钥。编辑完成后下载更新包，再到腾讯云 COS 手动上传。</p>
+    <div class="actions"><button id="loadRemote" class="primary" type="button">读取线上数据</button><button id="importData" type="button">导入 JSON</button><input id="importFile" class="hidden" type="file" accept="application/json,.json"></div>
+    <p id="loadStatus" class="status"></p>
+  </section>
+  <section id="editorPanel" class="hidden">
+    <div class="card">
+      <h2>快速编辑网站信息</h2>
+      <p>这里修改首页、About 和联系信息；Essays 等完整内容可以在下方 JSON 编辑器中修改。</p>
+      <div class="quick-grid"><div class="field"><label for="profileName">姓名</label><input id="profileName"></div><div class="field"><label for="profileEmail">邮箱</label><input id="profileEmail" type="email"></div></div>
+      <div class="field"><label for="profileIntro">首页介绍</label><textarea id="profileIntro" style="min-height:100px"></textarea></div>
+      <div class="field"><label for="profileAbout">About 内容</label><textarea id="profileAbout" style="min-height:120px"></textarea></div>
+      <div class="field"><label for="profileContact">Contact 内容</label><textarea id="profileContact" style="min-height:100px"></textarea></div>
+      <button id="applyProfile" class="primary" type="button">应用网站信息</button>
+    </div>
+    <div class="card">
+      <h2>上传 Record 图片</h2>
+      <p>图片会在手机本地压缩为 WebP，加入更新包；不会自动上传 COS。生成更新包后请保持 assets 路径不变。</p>
+      <div class="field"><label for="uploadTarget">上传到 Record</label><select id="uploadTarget"></select></div>
+      <div class="field"><label for="mediaFiles">选择图片（可一次选择多张）</label><input id="mediaFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple></div>
+      <div id="uploadList" class="upload-list"></div>
+    </div>
+    <div class="card">
+      <h2>快速编辑 Record</h2>
+      <div class="field"><label for="recordTarget">选择 Record</label><select id="recordTarget"></select></div>
+      <div class="quick-grid"><div class="field"><label for="recordTitle">名称</label><input id="recordTitle"></div><div class="field"><label for="recordYear">年份</label><input id="recordYear"></div></div>
+      <div class="field"><label for="recordCategory">类别</label><input id="recordCategory"></div>
+      <div class="field"><label for="recordMode">详情展示方式</label><select id="recordMode"><option value="standard">标准纵向模式</option><option value="exhibition">九宫格展览模式</option></select></div>
+      <div class="field"><label for="recordDescription">说明</label><textarea id="recordDescription" style="min-height:120px"></textarea></div>
+      <div class="actions"><button id="newRecord" type="button">新建 Record</button><button id="applyRecord" class="primary" type="button">应用修改</button></div>
+    </div>
+    <div class="card">
+      <h2>完整 site-data.json</h2>
+      <p>Essays、菜单文字、音乐地址和其他高级字段都可以在这里编辑。修改后先点击格式化，再导出。</p>
+      <div class="actions"><button id="formatData" type="button">格式化 JSON</button><button id="downloadData" type="button">下载 JSON 备份</button></div>
+      <div class="field"><label for="dataEditor">site-data.json</label><textarea id="dataEditor" spellcheck="false"></textarea></div>
+    </div>
+    <div class="card">
+      <h2>生成发布更新包</h2>
+      <p>ZIP 中包含新的 site-data.json、发生变化的 assets 和上传说明。现有 COS 资源不需要重复上传。</p>
+      <div class="actions"><button id="exportPackage" class="primary" type="button">生成更新包 ZIP</button></div>
+      <p id="exportStatus" class="status"></p>
+    </div>
+  </section>
+</main>
+<script>
+(() => {
+  "use strict";
+  const COS_DATA_URL = "https://humorpoppy-media-1468764212.cos.ap-guangzhou.myqcloud.com/site-data.json";
+  const $ = (s) => document.querySelector(s);
+  const editorPanel = $("#editorPanel"), dataEditor = $("#dataEditor"), loadStatus = $("#loadStatus"), exportStatus = $("#exportStatus");
+  let workingData = null; const queuedAssets = [];
+  const setStatus = (el, text, error = false) => { el.textContent = text; el.classList.toggle("error", error); };
+  const defaultData = () => ({ version: 3, profile: {}, essays: [], music: {}, projects: [] });
+  function ensureData(data) { if (!data || typeof data !== "object") throw new Error("JSON 不是对象"); if (!Array.isArray(data.projects)) data.projects = []; if (!data.profile || typeof data.profile !== "object") data.profile = {}; if (!Array.isArray(data.essays)) data.essays = []; return data; }
+  function syncEditor() { dataEditor.value = JSON.stringify(workingData, null, 2); refreshSelectors(); fillRecordForm(); fillProfileForm(); }
+  function refreshSelectors() { [$("#uploadTarget"), $("#recordTarget")].forEach((select) => { const previous = select.value; select.innerHTML = ""; (workingData?.projects || []).forEach((p, i) => { const o = document.createElement("option"); o.value = String(i); o.textContent = `${String(i + 1).padStart(2, "0")} / ${p.title || "未命名 Record"}`; select.append(o); }); if (select.options.length) select.value = [...select.options].some(o => o.value === previous) ? previous : "0"; }); }
+  function fillRecordForm() { const p = workingData?.projects?.[Number($("#recordTarget").value)]; $("#recordTitle").value = p?.title || ""; $("#recordYear").value = p?.year || ""; $("#recordCategory").value = p?.category || ""; $("#recordMode").value = p?.displayMode === "exhibition" ? "exhibition" : "standard"; $("#recordDescription").value = p?.description || ""; }
+  function fillProfileForm() { const p = workingData?.profile || {}; $("#profileName").value = p.name || ""; $("#profileEmail").value = p.email || ""; $("#profileIntro").value = p.intro || ""; $("#profileAbout").value = p.about || ""; $("#profileContact").value = p.contactBody || ""; }
+  function showEditor() { editorPanel.classList.remove("hidden"); syncEditor(); }
+  async function loadRemote() { setStatus(loadStatus, "正在读取 COS 中的 site-data.json……"); try { const response = await fetch(`${COS_DATA_URL}?t=${Date.now()}`, { cache: "no-store" }); if (!response.ok) throw new Error(`读取失败（${response.status}）`); workingData = ensureData(await response.json()); showEditor(); setStatus(loadStatus, "线上数据已读取。", false); } catch (error) { setStatus(loadStatus, `${error.message}。也可以点击“导入 JSON”读取手机中的备份。`, true); } }
+  $("#loadRemote").addEventListener("click", loadRemote);
+  $("#importData").addEventListener("click", () => $("#importFile").click());
+  $("#importFile").addEventListener("change", async (e) => { const file = e.target.files?.[0]; if (!file) return; try { workingData = ensureData(JSON.parse(await file.text())); showEditor(); setStatus(loadStatus, "JSON 备份已读取。", false); } catch (error) { setStatus(loadStatus, `导入失败：${error.message}`, true); } e.target.value = ""; });
+  $("#recordTarget").addEventListener("change", fillRecordForm);
+  $("#applyProfile").addEventListener("click", () => { if (!workingData) return; Object.assign(workingData.profile, { name: $("#profileName").value.trim(), email: $("#profileEmail").value.trim(), intro: $("#profileIntro").value.trim(), about: $("#profileAbout").value.trim(), contactBody: $("#profileContact").value.trim() }); syncEditor(); setStatus(exportStatus, "网站信息已应用，请生成更新包。", false); });
+  $("#applyRecord").addEventListener("click", () => { if (!workingData?.projects?.length) return setStatus(exportStatus, "请先新建或导入 Record。", true); const p = workingData.projects[Number($("#recordTarget").value)]; Object.assign(p, { title: $("#recordTitle").value.trim(), year: $("#recordYear").value.trim(), category: $("#recordCategory").value.trim(), displayMode: $("#recordMode").value === "exhibition" ? "exhibition" : "standard", description: $("#recordDescription").value.trim() }); syncEditor(); setStatus(exportStatus, "Record 修改已应用。", false); });
+  $("#newRecord").addEventListener("click", () => { if (!workingData) workingData = defaultData(); workingData.projects.push({ id: `mobile-${Date.now()}`, order: workingData.projects.length, title: "新 Record", year: "", category: "", description: "", displayMode: "standard", coverIndex: 0, images: [] }); syncEditor(); $("#recordTarget").value = String(workingData.projects.length - 1); fillRecordForm(); setStatus(exportStatus, "新 Record 已建立。", false); });
+  function compressImage(file) { return new Promise(async (resolve) => { if (!file.type.startsWith("image/") || file.type === "image/webp") return resolve(file); const source = await createImageBitmap(file); const scale = Math.min(1, 2400 / Math.max(source.width, source.height)); const canvas = document.createElement("canvas"); canvas.width = Math.max(1, Math.round(source.width * scale)); canvas.height = Math.max(1, Math.round(source.height * scale)); canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height); source.close?.(); canvas.toBlob(blob => resolve(blob || file), "image/webp", .84); }); }
+  $("#mediaFiles").addEventListener("change", async (event) => { if (!workingData?.projects?.length) { setStatus(exportStatus, "请先读取数据或新建 Record。", true); event.target.value = ""; return; } const project = workingData.projects[Number($("#uploadTarget").value)]; project.images = Array.isArray(project.images) ? project.images : []; for (const original of [...event.target.files]) { const item = document.createElement("div"); item.className = "upload-item"; item.innerHTML = `<span>${original.name} / 压缩中</span><code></code>`; $("#uploadList").prepend(item); try { const blob = await compressImage(original); const safe = original.name.replace(/[^a-z0-9._-]+/gi, "-").replace(/^-+|-+$/g, "") || "upload"; const path = `assets/images/mobile-${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${safe.replace(/\.[^.]+$/, "")}.webp`; queuedAssets.push({ name: path, data: blob }); project.images.push({ name: original.name, url: path }); if (project.images.length === 1) project.coverIndex = 0; item.querySelector("span").textContent = `${original.name} / 已加入更新包`; item.querySelector("code").textContent = path; syncEditor(); } catch (error) { item.querySelector("span").textContent = `${original.name} / 失败：${error.message}`; } } event.target.value = ""; });
+  $("#formatData").addEventListener("click", () => { try { workingData = ensureData(JSON.parse(dataEditor.value)); syncEditor(); setStatus(exportStatus, "JSON 已格式化。", false); } catch (error) { setStatus(exportStatus, `JSON 格式错误：${error.message}`, true); } });
+  function download(blob, name) { const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url), 3000); }
+  $("#downloadData").addEventListener("click", () => { try { workingData = ensureData(JSON.parse(dataEditor.value)); download(new Blob([JSON.stringify(workingData, null, 2)], { type: "application/json" }), "site-data.json"); } catch (error) { setStatus(exportStatus, `无法下载：${error.message}`, true); } });
+  function crc32(bytes) { if (!crc32.table) { crc32.table = new Uint32Array(256); for (let i = 0; i < 256; i++) { let v = i; for (let b = 0; b < 8; b++) v = (v & 1) ? (0xEDB88320 ^ (v >>> 1)) : (v >>> 1); crc32.table[i] = v >>> 0; } } let v = 0xFFFFFFFF; for (const byte of bytes) v = crc32.table[(v ^ byte) & 255] ^ (v >>> 8); return (v ^ 0xFFFFFFFF) >>> 0; }
+  function zipTimestamp(date = new Date()) { const year = Math.max(1980, date.getFullYear()); return { time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2), date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate() }; }
+  function writeZipHeader(view, values) { for (const [offset, size, value] of values) size === 2 ? view.setUint16(offset, value, true) : view.setUint32(offset, value, true); }
+  async function createZip(entries) { const encoder = new TextEncoder(), local = [], central = [], stamp = zipTimestamp(); let offset = 0; for (const entry of entries) { const name = encoder.encode(entry.name.replace(/\\/g, "/")), data = entry.data instanceof Blob ? entry.data : new Blob([entry.data]), checksum = crc32(new Uint8Array(await data.arrayBuffer())); const lh = new Uint8Array(30 + name.length), lv = new DataView(lh.buffer); writeZipHeader(lv, [[0,4,0x04034B50],[4,2,20],[6,2,0x0800],[8,2,0],[10,2,stamp.time],[12,2,stamp.date],[14,4,checksum],[18,4,data.size],[22,4,data.size],[26,2,name.length],[28,2,0]]); lh.set(name,30); local.push(lh,data); const ch = new Uint8Array(46 + name.length), cv = new DataView(ch.buffer); writeZipHeader(cv, [[0,4,0x02014B50],[4,2,20],[6,2,20],[8,2,0x0800],[10,2,0],[12,2,stamp.time],[14,2,stamp.date],[16,4,checksum],[20,4,data.size],[24,4,data.size],[28,2,name.length],[30,2,0],[32,2,0],[34,2,0],[36,2,0],[38,4,0],[42,4,offset]]); ch.set(name,46); central.push(ch); offset += lh.length + data.size; } const centralSize = central.reduce((n, part) => n + part.length, 0), end = new Uint8Array(22), ev = new DataView(end.buffer); writeZipHeader(ev, [[0,4,0x06054B50],[4,2,0],[6,2,0],[8,2,entries.length],[10,2,entries.length],[12,4,centralSize],[16,4,offset],[20,2,0]]); return new Blob([...local, ...central, end], { type: "application/zip" }); }
+  $("#exportPackage").addEventListener("click", async () => { try { workingData = ensureData(JSON.parse(dataEditor.value)); const entries = [{ name: "site-data.json", data: new Blob([JSON.stringify(workingData, null, 2)], { type: "application/json" }) }, { name: "UPLOAD-INSTRUCTIONS.txt", data: new Blob(["1. 将 site-data.json 上传到 COS 存储桶根目录并覆盖旧文件。\r\n2. 将 assets 文件夹中的文件上传到 COS 的同名路径。\r\n3. 不要删除 COS 中没有出现在本次更新包里的旧资源。\r\n4. 本次只更新数据和资源，不需要更新 GitHub 的 index.html。\r\n"], { type: "text/plain;charset=utf-8" }) }, ...queuedAssets]; setStatus(exportStatus, "正在生成 ZIP，请稍候……"); const blob = await createZip(entries); download(blob, "cos-update-package.zip"); setStatus(exportStatus, `更新包已生成，包含 ${queuedAssets.length} 个新资源。`, false); } catch (error) { setStatus(exportStatus, `生成失败：${error.message}`, true); } });
+})();
+</script>
+</body>
+</html>
